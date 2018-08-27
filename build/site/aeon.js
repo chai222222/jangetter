@@ -498,33 +498,35 @@ var AeonSearch = function () {
     key: 'getJan',
     value: function () {
       var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+        var url;
         return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
                 console.log('*** getJan ***');
+                _context11.prev = 1;
                 _context11.t0 = this;
                 _context11.t1 = AEON_CONSTANTS.replacer;
-                _context11.next = 5;
+                _context11.next = 6;
                 return this.page.$eval('div.pc2015-item-other', function (item) {
                   return item.textContent;
                 });
 
-              case 5:
+              case 6:
                 _context11.t2 = _context11.sent;
-                _context11.next = 8;
+                _context11.next = 9;
                 return this.page.$eval('div.pc2015-main-block-body', function (item) {
                   return item.textContent;
                 });
 
-              case 8:
+              case 9:
                 _context11.t3 = _context11.sent;
-                _context11.next = 11;
+                _context11.next = 12;
                 return this.page.$eval('title', function (item) {
                   return item.textContent;
                 });
 
-              case 11:
+              case 12:
                 _context11.t4 = _context11.sent;
                 _context11.t5 = {
                   jan: _context11.t2,
@@ -533,12 +535,24 @@ var AeonSearch = function () {
                 };
                 return _context11.abrupt('return', _context11.t0.replceValues.call(_context11.t0, _context11.t1, _context11.t5));
 
-              case 14:
+              case 17:
+                _context11.prev = 17;
+                _context11.t6 = _context11['catch'](1);
+                _context11.next = 21;
+                return this.page.url();
+
+              case 21:
+                url = _context11.sent;
+
+                console.log('couldn\'t get [' + url + ']');
+                return _context11.abrupt('return', { jan: '', category: '', title: '' });
+
+              case 24:
               case 'end':
                 return _context11.stop();
             }
           }
-        }, _callee11, this);
+        }, _callee11, this, [[1, 17]]);
       }));
 
       function getJan() {

@@ -142,7 +142,7 @@ export default class AeonSearch {
     } catch (e) {
       const url = await this.page.url();
       console.log(`couldn't get [${url}]`);
-      return { jan: '', category, '', title };
+      return { jan: '', category: '', title: '' };
     }
   }
 
