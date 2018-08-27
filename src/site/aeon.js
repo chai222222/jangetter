@@ -133,11 +133,17 @@ export default class AeonSearch {
    */
   async getJan() {
     console.log('*** getJan ***');
-    return this.replceValues(AEON_CONSTANTS.replacer, {
-      jan: await this.page.$eval('div.pc2015-item-other', item => item.textContent),
-      category: await this.page.$eval('div.pc2015-main-block-body', item => item.textContent),
-      title: await this.page.$eval('title', item => item.textContent),
-    });
+    try {
+      return this.replceValues(AEON_CONSTANTS.replacer, {
+        jan: await this.page.$eval('div.pc2015-item-other', item => item.textContent),
+        category: await this.page.$eval('div.pc2015-main-block-body', item => item.textContent),
+        title: await this.page.$eval('title', item => item.textContent),
+      });
+    } catch (e) {
+      const url = await this.page.url();
+      console.log(`couldn't get [${url}]`);
+      return { jan: '', category, '', title };
+    }
   }
 
   /**
