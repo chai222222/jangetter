@@ -1,4 +1,4 @@
-import { map, mapSeries } from 'p-iteration';
+import { map, mapSeries, every } from 'p-iteration';
 
 const AEON_CONSTANTS = {
   timeout: 30000,
@@ -41,7 +41,7 @@ export default class AeonSearch {
    * @param {*} selectors
    */
   async existsAll(...selectors) {
-    return selectors.every(async (selector) => (await this.page.$(selector)) !== null);
+    return selectors.length > 0 && every(selectors, async (selector) => (await this.page.$(selector)) !== null);
   }
 
   /**
@@ -49,7 +49,11 @@ export default class AeonSearch {
    */
   async waitLoaded() {
     console.log('*** waitLoaded ***');
-    return await this.page.waitForNavigation({ timeout: AEON_CONSTANTS.timeout, waitUntil: 'domcontentloaded'});
+    try {
+      await this.page.waitForNavigation({ timeout: AEON_CONSTANTS.timeout, waitUntil: 'domcontentloaded'});
+    } catch (e) {
+      // ignore.
+    }
   }
 
   /**
@@ -99,7 +103,7 @@ export default class AeonSearch {
    */
   async eachItemFromSearchResult() {
     console.log('*** eachItemFromSearchResult ***');
-    const links = await this.page.$$eval('ul.pc2015-item-list-selectable li > a:first-child', list => list.map(item => item.href));
+    const links = await this.getAllJanUrls();
     console.log(links);
     return await mapSeries(links, async link => {
       await this.page.goto(link, {waitUntil: 'networkidle2'});
@@ -107,6 +111,23 @@ export default class AeonSearch {
     });
   }
 
+  /**
+   * 検索結果ページの商品URLをすべて取得します。次ページがある場合にはすべてのページを取得します。
+   */
+  async getAllJanUrls() {
+    console.log('*** getAllJanUrls ***');
+    let page = 1;
+    const productsCss = 'ul.pc2015-item-list-selectable li > a:first-child';
+    const nextCss = 'div.pc2015-item-list-header a[rel=next]';
+    const links = await this.page.$$eval(productsCss, list => list.map(item => item.href));
+    while (await this.existsAll(nextCss)) { // →ボタンがある
+      console.log(`page ${++page}`);
+      await this.page.click(nextCss);
+      await this.waitLoaded();
+      links.push(... await this.page.$$eval(productsCss, list => list.map(item => item.href)));
+    }
+    return links;
+  }
   /**
    * 商品ページからjan情報をかえします。
    */

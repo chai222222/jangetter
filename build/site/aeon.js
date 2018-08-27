@@ -10,6 +10,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _pIteration = require('p-iteration');
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -71,7 +73,7 @@ var AeonSearch = function () {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                return _context2.abrupt('return', selectors.every(function () {
+                return _context2.abrupt('return', selectors.length > 0 && (0, _pIteration.every)(selectors, function () {
                   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(selector) {
                     return regeneratorRuntime.wrap(function _callee$(_context) {
                       while (1) {
@@ -125,18 +127,24 @@ var AeonSearch = function () {
             switch (_context3.prev = _context3.next) {
               case 0:
                 console.log('*** waitLoaded ***');
-                _context3.next = 3;
+                _context3.prev = 1;
+                _context3.next = 4;
                 return this.page.waitForNavigation({ timeout: AEON_CONSTANTS.timeout, waitUntil: 'domcontentloaded' });
 
-              case 3:
-                return _context3.abrupt('return', _context3.sent);
-
               case 4:
+                _context3.next = 8;
+                break;
+
+              case 6:
+                _context3.prev = 6;
+                _context3.t0 = _context3['catch'](1);
+
+              case 8:
               case 'end':
                 return _context3.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee3, this, [[1, 6]]);
       }));
 
       function waitLoaded() {
@@ -345,11 +353,7 @@ var AeonSearch = function () {
               case 0:
                 console.log('*** eachItemFromSearchResult ***');
                 _context9.next = 3;
-                return this.page.$$eval('ul.pc2015-item-list-selectable li > a:first-child', function (list) {
-                  return list.map(function (item) {
-                    return item.href;
-                  });
-                });
+                return this.getAllJanUrls();
 
               case 3:
                 links = _context9.sent;
@@ -404,49 +408,75 @@ var AeonSearch = function () {
     }()
 
     /**
-     * 商品ページからjan情報をかえします。
+     * 検索結果ページの商品URLをすべて取得します。次ページがある場合にはすべてのページを取得します。
      */
 
   }, {
-    key: 'getJan',
+    key: 'getAllJanUrls',
     value: function () {
       var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+        var page, productsCss, nextCss, links;
         return regeneratorRuntime.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                console.log('*** getJan ***');
-                _context10.t0 = this;
-                _context10.t1 = AEON_CONSTANTS.replacer;
-                _context10.next = 5;
-                return this.page.$eval('div.pc2015-item-other', function (item) {
-                  return item.textContent;
+                console.log('*** getAllJanUrls ***');
+                page = 1;
+                productsCss = 'ul.pc2015-item-list-selectable li > a:first-child';
+                nextCss = 'div.pc2015-item-list-header a[rel=next]';
+                _context10.next = 6;
+                return this.page.$$eval(productsCss, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
                 });
 
-              case 5:
-                _context10.t2 = _context10.sent;
-                _context10.next = 8;
-                return this.page.$eval('div.pc2015-main-block-body', function (item) {
-                  return item.textContent;
+              case 6:
+                links = _context10.sent;
+
+              case 7:
+                _context10.next = 9;
+                return this.existsAll(nextCss);
+
+              case 9:
+                if (!_context10.sent) {
+                  _context10.next = 25;
+                  break;
+                }
+
+                // →ボタンがある
+                console.log('page ' + ++page);
+                _context10.next = 13;
+                return this.page.click(nextCss);
+
+              case 13:
+                _context10.next = 15;
+                return this.waitLoaded();
+
+              case 15:
+                _context10.t0 = links.push;
+                _context10.t1 = links;
+                _context10.t2 = _toConsumableArray;
+                _context10.next = 20;
+                return this.page.$$eval(productsCss, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
                 });
 
-              case 8:
+              case 20:
                 _context10.t3 = _context10.sent;
-                _context10.next = 11;
-                return this.page.$eval('title', function (item) {
-                  return item.textContent;
-                });
+                _context10.t4 = (0, _context10.t2)(_context10.t3);
 
-              case 11:
-                _context10.t4 = _context10.sent;
-                _context10.t5 = {
-                  jan: _context10.t2,
-                  category: _context10.t3,
-                  title: _context10.t4
-                };
-                return _context10.abrupt('return', _context10.t0.replceValues.call(_context10.t0, _context10.t1, _context10.t5));
+                _context10.t0.apply.call(_context10.t0, _context10.t1, _context10.t4);
 
-              case 14:
+                _context10.next = 7;
+                break;
+
+              case 25:
+                return _context10.abrupt('return', links);
+
+              case 26:
               case 'end':
                 return _context10.stop();
             }
@@ -454,8 +484,65 @@ var AeonSearch = function () {
         }, _callee10, this);
       }));
 
-      function getJan() {
+      function getAllJanUrls() {
         return _ref10.apply(this, arguments);
+      }
+
+      return getAllJanUrls;
+    }()
+    /**
+     * 商品ページからjan情報をかえします。
+     */
+
+  }, {
+    key: 'getJan',
+    value: function () {
+      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                console.log('*** getJan ***');
+                _context11.t0 = this;
+                _context11.t1 = AEON_CONSTANTS.replacer;
+                _context11.next = 5;
+                return this.page.$eval('div.pc2015-item-other', function (item) {
+                  return item.textContent;
+                });
+
+              case 5:
+                _context11.t2 = _context11.sent;
+                _context11.next = 8;
+                return this.page.$eval('div.pc2015-main-block-body', function (item) {
+                  return item.textContent;
+                });
+
+              case 8:
+                _context11.t3 = _context11.sent;
+                _context11.next = 11;
+                return this.page.$eval('title', function (item) {
+                  return item.textContent;
+                });
+
+              case 11:
+                _context11.t4 = _context11.sent;
+                _context11.t5 = {
+                  jan: _context11.t2,
+                  category: _context11.t3,
+                  title: _context11.t4
+                };
+                return _context11.abrupt('return', _context11.t0.replceValues.call(_context11.t0, _context11.t1, _context11.t5));
+
+              case 14:
+              case 'end':
+                return _context11.stop();
+            }
+          }
+        }, _callee11, this);
+      }));
+
+      function getJan() {
+        return _ref11.apply(this, arguments);
       }
 
       return getJan;
