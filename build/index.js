@@ -18,11 +18,17 @@ var _iconvLite = require('iconv-lite');
 
 var _iconvLite2 = _interopRequireDefault(_iconvLite);
 
+var _pIteration = require('p-iteration');
+
 var _json2csv = require('json2csv');
 
-var _aeon = require('./site/aeon');
+var _AeonSearch = require('./site/AeonSearch');
 
-var _aeon2 = _interopRequireDefault(_aeon);
+var _AeonSearch2 = _interopRequireDefault(_AeonSearch);
+
+var _IyecSearch = require('./site/IyecSearch');
+
+var _IyecSearch2 = _interopRequireDefault(_IyecSearch);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,12 +39,22 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 process.on('unhandledRejection', console.dir);
 
-_argv2.default.option({
+_argv2.default.option([{
   name: 'output',
   short: 'o',
   type: 'path',
   description: 'output csv file path.'
-});
+}, {
+  name: 'itoyokado',
+  short: 'I',
+  type: 'boolean',
+  description: 'search from ito yoka do'
+}, {
+  name: 'aeon',
+  short: 'A',
+  type: 'boolean',
+  description: 'search from aeon(default)'
+}]);
 var args = _argv2.default.run();
 
 if (args.targets.length < 1) {
@@ -47,15 +63,17 @@ if (args.targets.length < 1) {
 }
 
 var outputCsv = args.options.output || 'jan.csv';
+var searchers = [];
 
 (function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(words) {
-    var browser, page, aeon, result, fields, json2csvParser, csv, sjCsv;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(words) {
+    var browser, page, _searchers, result, fields, json2csvParser, csv, sjCsv;
+
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
-            _context.next = 2;
+            _context2.next = 2;
             return _puppeteer2.default.launch({
               ignoreHTTPSErrors: true,
               headless: true,
@@ -63,33 +81,61 @@ var outputCsv = args.options.output || 'jan.csv';
             });
 
           case 2:
-            browser = _context.sent;
-            _context.prev = 3;
-            _context.next = 6;
+            browser = _context2.sent;
+            _context2.prev = 3;
+            _context2.next = 6;
             return browser.newPage();
 
           case 6:
-            page = _context.sent;
-            _context.next = 9;
+            page = _context2.sent;
+            _context2.next = 9;
             return page.on('framenavigated', function (frm) {
               console.log("### URL ", frm.url());
             });
 
           case 9:
-            _context.next = 11;
+            _context2.next = 11;
             return page.setViewport({ width: 1600, height: 1200 });
 
           case 11:
+            _searchers = [];
 
-            // AEONから検索
-            aeon = new _aeon2.default(page);
-            _context.next = 14;
-            return aeon.janSearch.apply(aeon, _toConsumableArray(words)).catch(function (e) {
-              console.log(e.stack);
-            });
 
-          case 14:
-            result = _context.sent;
+            if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(page));
+            if (args.options.aeon) _searchers.push(new _AeonSearch2.default(page));
+            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(page));
+
+            _context2.t0 = Array.prototype.concat;
+            _context2.t1 = [];
+            _context2.next = 19;
+            return (0, _pIteration.map)(_searchers, function () {
+              var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        _context.next = 2;
+                        return s.search.apply(s, _toConsumableArray(words));
+
+                      case 2:
+                        return _context.abrupt('return', _context.sent);
+
+                      case 3:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                }, _callee, undefined);
+              }));
+
+              return function (_x2) {
+                return _ref2.apply(this, arguments);
+              };
+            }());
+
+          case 19:
+            _context2.t2 = _context2.sent;
+            result = _context2.t0.apply.call(_context2.t0, _context2.t1, _context2.t2);
 
 
             // 結果をCSV(ShiftJIS)にして保存
@@ -105,28 +151,28 @@ var outputCsv = args.options.output || 'jan.csv';
               }
             });
             console.log('Output done. [' + outputCsv + ']');
-            _context.next = 26;
+            _context2.next = 32;
             break;
 
-          case 23:
-            _context.prev = 23;
-            _context.t0 = _context['catch'](3);
+          case 29:
+            _context2.prev = 29;
+            _context2.t3 = _context2['catch'](3);
 
-            console.log(_context.t0.stack);
+            console.log(_context2.t3.stack);
 
-          case 26:
-            _context.prev = 26;
+          case 32:
+            _context2.prev = 32;
 
             console.log('finally');
             browser.close();
-            return _context.finish(26);
+            return _context2.finish(32);
 
-          case 30:
+          case 36:
           case 'end':
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee, undefined, [[3, 23, 26, 30]]);
+    }, _callee2, undefined, [[3, 29, 32, 36]]);
   }));
 
   return function (_x) {

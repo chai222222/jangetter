@@ -3,18 +3,30 @@ import fs from 'fs';
 import argv from 'argv';
 import puppeteer from 'puppeteer';
 import iconv from 'iconv-lite';
+import { map } from 'p-iteration';
 
 import { Parser as Json2csvParser } from 'json2csv';
-import AeonSearch from './site/aeon'
+import AeonSearch from './site/AeonSearch';
+import IyecSearch from './site/IyecSearch';
 
 process.on('unhandledRejection', console.dir);
 
-argv.option({
-    name: 'output',
-    short: 'o',
-    type: 'path',
-    description: 'output csv file path.',
-});
+argv.option([ {
+  name: 'output',
+  short: 'o',
+  type: 'path',
+  description: 'output csv file path.',
+}, {
+  name: 'itoyokado',
+  short: 'I',
+  type: 'boolean',
+  description: 'search from ito yoka do',
+}, {
+  name: 'aeon',
+  short: 'A',
+  type: 'boolean',
+  description: 'search from aeon(default)',
+} ]);
 const args = argv.run();
 
 if (args.targets.length < 1) {
@@ -23,6 +35,7 @@ if (args.targets.length < 1) {
 }
 
 const outputCsv = args.options.output || 'jan.csv';
+const searchers = [];
 
 (async (words) => {
   const browser = await puppeteer.launch({
@@ -43,11 +56,14 @@ const outputCsv = args.options.output || 'jan.csv';
     });
     await page.setViewport({ width: 1600, height: 1200 });
 
-    // AEONから検索
-    const aeon = new AeonSearch(page);
-    const result = await aeon.janSearch(...words).catch(e => {
-      console.log(e.stack);
-    });
+    const searchers = [];
+
+    if (args.options.itoyokado) searchers.push(new IyecSearch(page));
+    if (args.options.aeon)      searchers.push(new AeonSearch(page));
+    if (searchers.length === 0) searchers.push(new AeonSearch(page));
+
+    const result = Array.prototype.concat.apply([],
+      await map(searchers, async s => await s.search(...words)));
 
     // 結果をCSV(ShiftJIS)にして保存
     const fields = ['jan', 'title', 'category'];
