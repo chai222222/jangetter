@@ -45,6 +45,11 @@ _argv2.default.option([{
   type: 'path',
   description: 'output csv file path.'
 }, {
+  name: 'error',
+  short: 'e',
+  type: 'path',
+  description: 'output error file path.'
+}, {
   name: 'itoyokado',
   short: 'I',
   type: 'boolean',
@@ -63,11 +68,12 @@ if (args.targets.length < 1) {
 }
 
 var outputCsv = args.options.output || 'jan.csv';
+var errorTxt = args.options.error || 'error.txt';
 var searchers = [];
 
 (function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(words) {
-    var browser, page, _searchers, result, fields, json2csvParser, csv, sjCsv;
+    var browser, page, errors, _searchers, result, fields, json2csvParser, csv, sjCsv;
 
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
@@ -98,16 +104,17 @@ var searchers = [];
             return page.setViewport({ width: 1600, height: 1200 });
 
           case 11:
+            errors = [];
             _searchers = [];
 
 
-            if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(page));
-            if (args.options.aeon) _searchers.push(new _AeonSearch2.default(page));
-            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(page));
+            if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(page, errors));
+            if (args.options.aeon) _searchers.push(new _AeonSearch2.default(page, errors));
+            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(page, errors));
 
             _context2.t0 = Array.prototype.concat;
             _context2.t1 = [];
-            _context2.next = 19;
+            _context2.next = 20;
             return (0, _pIteration.map)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -133,7 +140,7 @@ var searchers = [];
               };
             }());
 
-          case 19:
+          case 20:
             _context2.t2 = _context2.sent;
             result = _context2.t0.apply.call(_context2.t0, _context2.t1, _context2.t2);
 
@@ -151,28 +158,36 @@ var searchers = [];
               }
             });
             console.log('Output done. [' + outputCsv + ']');
-            _context2.next = 32;
+            if (errors.length) {
+              console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
+              _fs2.default.writeFile(errorTxt, errors.join('\n'), function (err) {
+                if (err) {
+                  throw err;
+                }
+              });
+            }
+            _context2.next = 34;
             break;
 
-          case 29:
-            _context2.prev = 29;
+          case 31:
+            _context2.prev = 31;
             _context2.t3 = _context2['catch'](3);
 
             console.log(_context2.t3.stack);
 
-          case 32:
-            _context2.prev = 32;
+          case 34:
+            _context2.prev = 34;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(32);
+            return _context2.finish(34);
 
-          case 36:
+          case 38:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 29, 32, 36]]);
+    }, _callee2, undefined, [[3, 31, 34, 38]]);
   }));
 
   return function (_x) {

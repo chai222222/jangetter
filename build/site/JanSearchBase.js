@@ -17,10 +17,11 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var JanSearchBase = function () {
-  function JanSearchBase(page) {
+  function JanSearchBase(page, errors) {
     _classCallCheck(this, JanSearchBase);
 
     this.page = page;
+    this.errors = errors;
     this.timeout = 30000;
   }
 
@@ -124,6 +125,15 @@ var JanSearchBase = function () {
 
       return waitLoaded;
     }()
+  }, {
+    key: 'addErr',
+    value: function addErr() {
+      for (var _len2 = arguments.length, errs = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        errs[_key2] = arguments[_key2];
+      }
+
+      this.errors.push(errs.join(','));
+    }
 
     /**
      * jan, title, categoryの値を定義にそって置き換えを行います。
@@ -178,8 +188,8 @@ var JanSearchBase = function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
         var _this2 = this;
 
-        for (var _len2 = arguments.length, keywords = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-          keywords[_key2] = arguments[_key2];
+        for (var _len3 = arguments.length, keywords = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+          keywords[_key3] = arguments[_key3];
         }
 
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
@@ -299,7 +309,7 @@ var JanSearchBase = function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
         var _this3 = this;
 
-        var links;
+        var links, result;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
@@ -319,22 +329,30 @@ var JanSearchBase = function () {
                       while (1) {
                         switch (_context8.prev = _context8.next) {
                           case 0:
-                            _context8.next = 2;
+                            _context8.prev = 0;
+                            _context8.next = 3;
                             return _this3.page.goto(link, { waitUntil: 'networkidle2' });
 
-                          case 2:
-                            _context8.next = 4;
+                          case 3:
+                            _context8.next = 5;
                             return _this3.getJan();
 
-                          case 4:
+                          case 5:
                             return _context8.abrupt('return', _context8.sent);
 
-                          case 5:
+                          case 8:
+                            _context8.prev = 8;
+                            _context8.t0 = _context8['catch'](0);
+
+                            _this3.addErr('商品ページへ移動できませんでした', link, _context8.t0);
+                            return _context8.abrupt('return', null);
+
+                          case 12:
                           case 'end':
                             return _context8.stop();
                         }
                       }
-                    }, _callee8, _this3);
+                    }, _callee8, _this3, [[0, 8]]);
                   }));
 
                   return function (_x4) {
@@ -343,9 +361,12 @@ var JanSearchBase = function () {
                 }());
 
               case 7:
-                return _context9.abrupt('return', _context9.sent);
+                result = _context9.sent;
+                return _context9.abrupt('return', result.filter(function (r) {
+                  return r !== null;
+                }));
 
-              case 8:
+              case 9:
               case 'end':
                 return _context9.stop();
             }
@@ -492,7 +513,7 @@ var JanSearchBase = function () {
               case 21:
                 url = _context11.sent;
 
-                console.log('couldn\'t get [' + url + ']');
+                this.addErr('JANがページから取得できませんでした', url);
                 return _context11.abrupt('return', { jan: '', category: '', title: '' });
 
               case 24:

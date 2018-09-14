@@ -2,8 +2,9 @@ import { map, mapSeries, every } from 'p-iteration';
 
 export default class JanSearchBase {
 
-  constructor(page) {
+  constructor(page, errors) {
     this.page = page;
+    this.errors = errors;
     this.timeout = 30000;
   }
 
@@ -25,6 +26,10 @@ export default class JanSearchBase {
     } catch (e) {
       // ignore.
     }
+  }
+
+  addErr(...errs) {
+    this.errors.push(errs.join(','));
   }
 
   /**
@@ -75,10 +80,16 @@ export default class JanSearchBase {
     console.log('*** eachItemFromSearchResult ***');
     const links = await this.getAllJanUrls();
     console.log(links);
-    return await mapSeries(links, async link => {
-      await this.page.goto(link, {waitUntil: 'networkidle2'});
-      return await this.getJan();
+    const result = await mapSeries(links, async link => {
+      try {
+        await this.page.goto(link, {waitUntil: 'networkidle2'});
+        return await this.getJan();
+      } catch (e) {
+        this.addErr('商品ページへ移動できませんでした', link, e);
+        return null;
+      }
     });
+    return result.filter(r => r !== null);
   }
 
   /**
@@ -112,7 +123,7 @@ export default class JanSearchBase {
       });
     } catch (e) {
       const url = await this.page.url();
-      console.log(`couldn't get [${url}]`);
+      this.addErr('JANがページから取得できませんでした', url);
       return { jan: '', category: '', title: '' };
     }
   }
