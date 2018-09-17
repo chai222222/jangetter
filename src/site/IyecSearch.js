@@ -18,6 +18,9 @@ const IYEC_CONSTANTS = {
       title: [{
         pattern: /.*ネット通販./g,
         value: '',
+      }, {
+        pattern: / +通販 *$/g,
+        value: '',
       }],
       jan: [{
         pattern: /\D/g,
