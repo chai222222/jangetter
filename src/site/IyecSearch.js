@@ -21,6 +21,14 @@ const IYEC_CONSTANTS = {
       }, {
         pattern: / +通販 *$/g,
         value: '',
+      }, {
+        pattern: /　+/g,
+        value: ' ',
+      }, {
+        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
+        value: (s) => {
+          return String.fromCharCode(s.charCodeAt(0) - 65248);
+        },
       }],
       jan: [{
         pattern: /\D/g,
