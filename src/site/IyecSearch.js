@@ -2,6 +2,7 @@ import JanSearchBase from './JanSearchBase';
 
 const IYEC_CONSTANTS = {
   searchConfig: {
+    prefix: 'Iyec',
     top: 'https://iyec.omni7.jp',
     searchPageSelectors: {
       productsLink: 'div.mod-spetialBrand p.productImg > a',

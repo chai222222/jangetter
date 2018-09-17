@@ -3,7 +3,7 @@ import fs from 'fs';
 import argv from 'argv';
 import puppeteer from 'puppeteer';
 import iconv from 'iconv-lite';
-import { map } from 'p-iteration';
+import { forEachSeries } from 'p-iteration';
 
 import { Parser as Json2csvParser } from 'json2csv';
 import AeonSearch from './site/AeonSearch';
@@ -15,7 +15,7 @@ argv.option([ {
   name: 'output',
   short: 'o',
   type: 'path',
-  description: 'output csv file path.',
+  description: 'output csv directory path.',
 }, {
   name: 'error',
   short: 'e',
@@ -39,7 +39,7 @@ if (args.targets.length < 1) {
   process.exit(0);
 }
 
-const outputCsv = args.options.output || 'jan.csv';
+const outputDir = args.options.output || '.';
 const errorTxt = args.options.error || 'error.txt';
 const searchers = [];
 
@@ -65,25 +65,12 @@ const searchers = [];
     const errors = [];
     const searchers = [];
 
-    if (args.options.itoyokado) searchers.push(new IyecSearch(page, errors));
-    if (args.options.aeon)      searchers.push(new AeonSearch(page, errors));
-    if (searchers.length === 0) searchers.push(new AeonSearch(page, errors));
+    if (args.options.itoyokado) searchers.push(new IyecSearch(outputDir, page, errors));
+    if (args.options.aeon)      searchers.push(new AeonSearch(outputDir, page, errors));
+    if (searchers.length === 0) searchers.push(new AeonSearch(outputDir, page, errors));
 
-    const result = Array.prototype.concat.apply([],
-      await map(searchers, async s => await s.search(...words)));
+    await forEachSeries(searchers, async s => await s.search(...words));
 
-    // 結果をCSV(ShiftJIS)にして保存
-    const fields = ['jan', 'title', 'category'];
-    const json2csvParser = new Json2csvParser({fields});
-    const csv = json2csvParser.parse(result);
-    const sjCsv = iconv.encode(csv, "Shift_JIS");
-
-    fs.writeFile(outputCsv, sjCsv, (err) => {
-      if (err) {
-          throw err;
-      }
-    });
-    console.log(`Output done. [${outputCsv}]`);
     if (errors.length) {
       console.log(`エラーが発生しました。${errorTxt} へ出力します。`);
       fs.writeFile(errorTxt, errors.join('\n'), (err) => {

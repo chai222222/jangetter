@@ -8,7 +8,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _stream = require('stream');
+
+var _stream2 = _interopRequireDefault(_stream);
+
 var _pIteration = require('p-iteration');
+
+var _WriterCreator = require('../util/WriterCreator');
+
+var _WriterCreator2 = _interopRequireDefault(_WriterCreator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -17,9 +27,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var JanSearchBase = function () {
-  function JanSearchBase(page, errors) {
+  function JanSearchBase(outputDir, page, errors) {
     _classCallCheck(this, JanSearchBase);
 
+    this.outputDir = outputDir;
     this.page = page;
     this.errors = errors;
     this.timeout = 30000;
@@ -177,6 +188,9 @@ var JanSearchBase = function () {
   }, {
     key: 'getSrcConfig',
     value: function getSrcConfig() {}
+  }, {
+    key: 'setNewReader',
+    value: function setNewReader() {}
 
     /**
      * 引数で渡された検索ワードを検索して jan 情報を返します。
@@ -205,10 +219,8 @@ var JanSearchBase = function () {
                 return this.init();
 
               case 5:
-                _context6.t0 = Array.prototype.concat;
-                _context6.t1 = [];
-                _context6.next = 9;
-                return (0, _pIteration.map)(keywords, function () {
+                _context6.next = 7;
+                return (0, _pIteration.forEachSeries)(keywords, function () {
                   var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(keyword) {
                     return regeneratorRuntime.wrap(function _callee5$(_context5) {
                       while (1) {
@@ -233,11 +245,7 @@ var JanSearchBase = function () {
                   };
                 }());
 
-              case 9:
-                _context6.t2 = _context6.sent;
-                return _context6.abrupt('return', _context6.t0.apply.call(_context6.t0, _context6.t1, _context6.t2));
-
-              case 11:
+              case 7:
               case 'end':
                 return _context6.stop();
             }
@@ -261,30 +269,36 @@ var JanSearchBase = function () {
     key: 'searchWord',
     value: function () {
       var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(word) {
+        var config, outputFile;
         return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                console.log('*** searchWord ***');
-                _context7.next = 3;
-                return this.page.type(this.getSrcConfig().searchPageSelectors.searchText, word);
+                console.log('*** search[' + word + '] ***');
+                config = this.getSrcConfig();
+                outputFile = this.outputDir + '/' + config.prefix + '_' + word.replace(/ +/g, '_') + '.csv';
 
-              case 3:
-                _context7.next = 5;
-                return this.page.click(this.getSrcConfig().searchPageSelectors.searchButton);
+                this.writer = _WriterCreator2.default.createCsvWriter(outputFile);
+                _context7.next = 6;
+                return this.page.type(config.searchPageSelectors.searchText, word);
 
-              case 5:
-                _context7.next = 7;
+              case 6:
+                _context7.next = 8;
+                return this.page.click(config.searchPageSelectors.searchButton);
+
+              case 8:
+                _context7.next = 10;
                 return this.waitLoaded();
 
-              case 7:
-                _context7.next = 9;
+              case 10:
+                _context7.next = 12;
                 return this.eachItemFromSearchResult();
 
-              case 9:
-                return _context7.abrupt('return', _context7.sent);
+              case 12:
+                this.writer.close();
+                console.log('Output done. [' + outputFile + ']');
 
-              case 10:
+              case 14:
               case 'end':
                 return _context7.stop();
             }
@@ -325,6 +339,7 @@ var JanSearchBase = function () {
                 _context9.next = 7;
                 return (0, _pIteration.mapSeries)(links, function () {
                   var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(link) {
+                    var jan;
                     return regeneratorRuntime.wrap(function _callee8$(_context8) {
                       while (1) {
                         switch (_context8.prev = _context8.next) {
@@ -338,21 +353,25 @@ var JanSearchBase = function () {
                             return _this3.getJan();
 
                           case 5:
-                            return _context8.abrupt('return', _context8.sent);
+                            jan = _context8.sent;
 
-                          case 8:
-                            _context8.prev = 8;
+                            _this3.writer.write(jan);
+                            _context8.next = 13;
+                            break;
+
+                          case 9:
+                            _context8.prev = 9;
                             _context8.t0 = _context8['catch'](0);
 
                             _this3.addErr('商品ページへ移動できませんでした', link, _context8.t0);
                             return _context8.abrupt('return', null);
 
-                          case 12:
+                          case 13:
                           case 'end':
                             return _context8.stop();
                         }
                       }
-                    }, _callee8, _this3, [[0, 8]]);
+                    }, _callee8, _this3, [[0, 9]]);
                   }));
 
                   return function (_x4) {
@@ -362,11 +381,8 @@ var JanSearchBase = function () {
 
               case 7:
                 result = _context9.sent;
-                return _context9.abrupt('return', result.filter(function (r) {
-                  return r !== null;
-                }));
 
-              case 9:
+              case 8:
               case 'end':
                 return _context9.stop();
             }

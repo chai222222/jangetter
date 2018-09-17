@@ -20,6 +20,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var IYEC_CONSTANTS = {
   searchConfig: {
+    prefix: 'Iyec',
     top: 'https://iyec.omni7.jp',
     searchPageSelectors: {
       productsLink: 'div.mod-spetialBrand p.productImg > a',
@@ -36,6 +37,17 @@ var IYEC_CONSTANTS = {
       title: [{
         pattern: /.*ネット通販./g,
         value: ''
+      }, {
+        pattern: / +通販 *$/g,
+        value: ''
+      }, {
+        pattern: /　+/g,
+        value: ' '
+      }, {
+        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
+        value: function value(s) {
+          return String.fromCharCode(s.charCodeAt(0) - 65248);
+        }
       }],
       jan: [{
         pattern: /\D/g,

@@ -43,7 +43,7 @@ _argv2.default.option([{
   name: 'output',
   short: 'o',
   type: 'path',
-  description: 'output csv file path.'
+  description: 'output csv directory path.'
 }, {
   name: 'error',
   short: 'e',
@@ -67,13 +67,13 @@ if (args.targets.length < 1) {
   process.exit(0);
 }
 
-var outputCsv = args.options.output || 'jan.csv';
+var outputDir = args.options.output || '.';
 var errorTxt = args.options.error || 'error.txt';
 var searchers = [];
 
 (function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(words) {
-    var browser, page, errors, _searchers, result, fields, json2csvParser, csv, sjCsv;
+    var browser, page, errors, _searchers;
 
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
@@ -108,14 +108,12 @@ var searchers = [];
             _searchers = [];
 
 
-            if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(page, errors));
-            if (args.options.aeon) _searchers.push(new _AeonSearch2.default(page, errors));
-            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(page, errors));
+            if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
+            if (args.options.aeon) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
+            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
 
-            _context2.t0 = Array.prototype.concat;
-            _context2.t1 = [];
-            _context2.next = 20;
-            return (0, _pIteration.map)(_searchers, function () {
+            _context2.next = 18;
+            return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                   while (1) {
@@ -140,24 +138,8 @@ var searchers = [];
               };
             }());
 
-          case 20:
-            _context2.t2 = _context2.sent;
-            result = _context2.t0.apply.call(_context2.t0, _context2.t1, _context2.t2);
+          case 18:
 
-
-            // 結果をCSV(ShiftJIS)にして保存
-            fields = ['jan', 'title', 'category'];
-            json2csvParser = new _json2csv.Parser({ fields: fields });
-            csv = json2csvParser.parse(result);
-            sjCsv = _iconvLite2.default.encode(csv, "Shift_JIS");
-
-
-            _fs2.default.writeFile(outputCsv, sjCsv, function (err) {
-              if (err) {
-                throw err;
-              }
-            });
-            console.log('Output done. [' + outputCsv + ']');
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
               _fs2.default.writeFile(errorTxt, errors.join('\n'), function (err) {
@@ -166,28 +148,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 34;
+            _context2.next = 24;
             break;
 
-          case 31:
-            _context2.prev = 31;
-            _context2.t3 = _context2['catch'](3);
+          case 21:
+            _context2.prev = 21;
+            _context2.t0 = _context2['catch'](3);
 
-            console.log(_context2.t3.stack);
+            console.log(_context2.t0.stack);
 
-          case 34:
-            _context2.prev = 34;
+          case 24:
+            _context2.prev = 24;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(34);
+            return _context2.finish(24);
 
-          case 38:
+          case 28:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 31, 34, 38]]);
+    }, _callee2, undefined, [[3, 21, 24, 28]]);
   }));
 
   return function (_x) {

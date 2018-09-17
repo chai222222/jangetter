@@ -5,6 +5,7 @@ const AEON_CONSTANTS = {
   zip1: '214',
   zip2: '0038',
   searchConfig: {
+    prefix: 'Aeon',
     top: 'https://www.aeonnetshop.com/',
     searchPageSelectors: {
       productsLink: 'ul.pc2015-item-list-selectable li > a:first-child',

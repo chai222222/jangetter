@@ -1,8 +1,11 @@
-import { map, mapSeries, every } from 'p-iteration';
+import stream from 'stream';
+import { forEachSeries, map, mapSeries, every } from 'p-iteration';
+import WriterCreator from '../util/WriterCreator';
 
 export default class JanSearchBase {
 
-  constructor(page, errors) {
+  constructor(outputDir, page, errors) {
+    this.outputDir = outputDir;
     this.page = page;
     this.errors = errors;
     this.timeout = 30000;
@@ -51,6 +54,9 @@ export default class JanSearchBase {
   getSrcConfig() {
   }
 
+  setNewReader() {
+  }
+
   /**
    * 引数で渡された検索ワードを検索して jan 情報を返します。
    */
@@ -58,7 +64,7 @@ export default class JanSearchBase {
     console.log('*** janSearch ***');
     await this.page.goto(this.getSrcConfig().top, {waitUntil: 'networkidle2'});
     await this.init(); // 検索できる画面までの画面処理をする。
-    return Array.prototype.concat.apply([], await map(keywords, async keyword => await this.searchWord(keyword)));
+    await forEachSeries(keywords, async keyword => await this.searchWord(keyword));
   }
 
   /**
@@ -66,11 +72,16 @@ export default class JanSearchBase {
    * @param {*} word
    */
   async searchWord(word) {
-    console.log('*** searchWord ***');
-    await this.page.type(this.getSrcConfig().searchPageSelectors.searchText, word);
-    await this.page.click(this.getSrcConfig().searchPageSelectors.searchButton);
+    console.log(`*** search[${word}] ***`);
+    const config = this.getSrcConfig();
+    const outputFile = `${this.outputDir}/${config.prefix}_${word.replace(/ +/g, '_')}.csv`;
+    this.writer = WriterCreator.createCsvWriter(outputFile)
+    await this.page.type(config.searchPageSelectors.searchText, word);
+    await this.page.click(config.searchPageSelectors.searchButton);
     await this.waitLoaded();
-    return await this.eachItemFromSearchResult();
+    await this.eachItemFromSearchResult();
+    this.writer.close();
+    console.log(`Output done. [${outputFile}]`);
   }
 
   /**
@@ -83,13 +94,13 @@ export default class JanSearchBase {
     const result = await mapSeries(links, async link => {
       try {
         await this.page.goto(link, {waitUntil: 'networkidle2'});
-        return await this.getJan();
+        const jan = await this.getJan();
+        this.writer.write(jan);
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
         return null;
       }
     });
-    return result.filter(r => r !== null);
   }
 
   /**
