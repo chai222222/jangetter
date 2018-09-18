@@ -67,7 +67,7 @@ const searchers = [];
 
     if (args.options.itoyokado) searchers.push(new IyecSearch(outputDir, page, errors));
     if (args.options.aeon)      searchers.push(new AeonSearch(outputDir, page, errors));
-    if (searchers.length === 0) searchers.push(new AeonSearch(outputDir, page, errors));
+    if (searchers.length === 0) searchers.push(new IyecSearch(outputDir, page, errors));
 
     await forEachSeries(searchers, async s => await s.search(...words));
 

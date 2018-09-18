@@ -110,7 +110,7 @@ var searchers = [];
 
             if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
             if (args.options.aeon) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
-            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
+            if (_searchers.length === 0) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
 
             _context2.next = 18;
             return (0, _pIteration.forEachSeries)(_searchers, function () {

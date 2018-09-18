@@ -6,7 +6,7 @@ const IYEC_CONSTANTS = {
     top: 'https://iyec.omni7.jp',
     searchPageSelectors: {
       productsLink: 'div.mod-spetialBrand p.productImg > a',
-      nextLink: 'p.paginationNavBtn > a',
+      nextLink: 'p.paginationNavBtn > a.next',
       searchText: '#keyword',
       searchButton: 'form[name=search] button[type=submit]',
     },
