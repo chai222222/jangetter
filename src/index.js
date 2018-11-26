@@ -8,6 +8,7 @@ import { forEachSeries } from 'p-iteration';
 import { Parser as Json2csvParser } from 'json2csv';
 import AeonSearch from './site/AeonSearch';
 import IyecSearch from './site/IyecSearch';
+import TajimaSearch from './site/TajimaSearch';
 
 process.on('unhandledRejection', console.dir);
 
@@ -21,6 +22,11 @@ argv.option([ {
   short: 'e',
   type: 'path',
   description: 'output error file path.',
+}, {
+  name: 'tajima',
+  short: 'T',
+  type: 'boolean',
+  description: 'search from tajima',
 }, {
   name: 'itoyokado',
   short: 'I',
@@ -67,6 +73,7 @@ const searchers = [];
 
     if (args.options.itoyokado) searchers.push(new IyecSearch(outputDir, page, errors));
     if (args.options.aeon)      searchers.push(new AeonSearch(outputDir, page, errors));
+    if (args.options.tajima)    searchers.push(new TajimaSearch(outputDir, page, errors));
     if (searchers.length === 0) searchers.push(new IyecSearch(outputDir, page, errors));
 
     await forEachSeries(searchers, async s => await s.search(...words));

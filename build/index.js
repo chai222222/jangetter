@@ -30,6 +30,10 @@ var _IyecSearch = require('./site/IyecSearch');
 
 var _IyecSearch2 = _interopRequireDefault(_IyecSearch);
 
+var _TajimaSearch = require('./site/TajimaSearch');
+
+var _TajimaSearch2 = _interopRequireDefault(_TajimaSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -49,6 +53,11 @@ _argv2.default.option([{
   short: 'e',
   type: 'path',
   description: 'output error file path.'
+}, {
+  name: 'tajima',
+  short: 'T',
+  type: 'boolean',
+  description: 'search from tajima'
 }, {
   name: 'itoyokado',
   short: 'I',
@@ -110,9 +119,10 @@ var searchers = [];
 
             if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
             if (args.options.aeon) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
+            if (args.options.tajima) _searchers.push(new _TajimaSearch2.default(outputDir, page, errors));
             if (_searchers.length === 0) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
 
-            _context2.next = 18;
+            _context2.next = 19;
             return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -138,7 +148,7 @@ var searchers = [];
               };
             }());
 
-          case 18:
+          case 19:
 
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
@@ -148,28 +158,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 24;
+            _context2.next = 25;
             break;
 
-          case 21:
-            _context2.prev = 21;
+          case 22:
+            _context2.prev = 22;
             _context2.t0 = _context2['catch'](3);
 
             console.log(_context2.t0.stack);
 
-          case 24:
-            _context2.prev = 24;
+          case 25:
+            _context2.prev = 25;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(24);
+            return _context2.finish(25);
 
-          case 28:
+          case 29:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 21, 24, 28]]);
+    }, _callee2, undefined, [[3, 22, 25, 29]]);
   }));
 
   return function (_x) {
