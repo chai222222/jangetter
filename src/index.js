@@ -9,6 +9,7 @@ import { Parser as Json2csvParser } from 'json2csv';
 import AeonSearch from './site/AeonSearch';
 import IyecSearch from './site/IyecSearch';
 import TajimaSearch from './site/TajimaSearch';
+import LohacoSearch from './site/LohacoSearch';
 
 process.on('unhandledRejection', console.dir);
 
@@ -22,6 +23,11 @@ argv.option([ {
   short: 'e',
   type: 'path',
   description: 'output error file path.',
+}, {
+  name: 'lohaco',
+  short: 'L',
+  type: 'boolean',
+  description: 'search from LOHACO',
 }, {
   name: 'tajima',
   short: 'T',
@@ -74,7 +80,8 @@ const searchers = [];
     if (args.options.itoyokado) searchers.push(new IyecSearch(outputDir, page, errors));
     if (args.options.aeon)      searchers.push(new AeonSearch(outputDir, page, errors));
     if (args.options.tajima)    searchers.push(new TajimaSearch(outputDir, page, errors));
-    if (searchers.length === 0) searchers.push(new IyecSearch(outputDir, page, errors));
+    if (args.options.lohaco)    searchers.push(new LohacoSearch(outputDir, page, errors));
+    if (searchers.length === 0) searchers.push(new AeonSearch(outputDir, page, errors));
 
     await forEachSeries(searchers, async s => await s.search(...words));
 

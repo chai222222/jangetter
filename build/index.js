@@ -34,6 +34,10 @@ var _TajimaSearch = require('./site/TajimaSearch');
 
 var _TajimaSearch2 = _interopRequireDefault(_TajimaSearch);
 
+var _LohacoSearch = require('./site/LohacoSearch');
+
+var _LohacoSearch2 = _interopRequireDefault(_LohacoSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -53,6 +57,11 @@ _argv2.default.option([{
   short: 'e',
   type: 'path',
   description: 'output error file path.'
+}, {
+  name: 'lohaco',
+  short: 'L',
+  type: 'boolean',
+  description: 'search from LOHACO'
 }, {
   name: 'tajima',
   short: 'T',
@@ -120,9 +129,10 @@ var searchers = [];
             if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
             if (args.options.aeon) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
             if (args.options.tajima) _searchers.push(new _TajimaSearch2.default(outputDir, page, errors));
-            if (_searchers.length === 0) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
+            if (args.options.lohaco) _searchers.push(new _LohacoSearch2.default(outputDir, page, errors));
+            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
 
-            _context2.next = 19;
+            _context2.next = 20;
             return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -148,7 +158,7 @@ var searchers = [];
               };
             }());
 
-          case 19:
+          case 20:
 
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
@@ -158,28 +168,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 25;
+            _context2.next = 26;
             break;
 
-          case 22:
-            _context2.prev = 22;
+          case 23:
+            _context2.prev = 23;
             _context2.t0 = _context2['catch'](3);
 
             console.log(_context2.t0.stack);
 
-          case 25:
-            _context2.prev = 25;
+          case 26:
+            _context2.prev = 26;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(25);
+            return _context2.finish(26);
 
-          case 29:
+          case 30:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 22, 25, 29]]);
+    }, _callee2, undefined, [[3, 23, 26, 30]]);
   }));
 
   return function (_x) {
