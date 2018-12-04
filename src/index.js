@@ -10,6 +10,7 @@ import AeonSearch from './site/AeonSearch';
 import IyecSearch from './site/IyecSearch';
 import TajimaSearch from './site/TajimaSearch';
 import LohacoSearch from './site/LohacoSearch';
+import CoopSearch from './site/CoopSearch';
 
 process.on('unhandledRejection', console.dir);
 
@@ -24,6 +25,11 @@ argv.option([ {
   type: 'path',
   description: 'output error file path.',
 }, {
+  name: 'coop',
+  short: 'C',
+  type: 'boolean',
+  description: 'search from Coop',
+}, {
   name: 'lohaco',
   short: 'L',
   type: 'boolean',
@@ -32,17 +38,17 @@ argv.option([ {
   name: 'tajima',
   short: 'T',
   type: 'boolean',
-  description: 'search from tajima',
+  description: 'search from Tajima',
 }, {
   name: 'itoyokado',
   short: 'I',
   type: 'boolean',
-  description: 'search from ito yoka do',
+  description: 'search from Ito_yoka_do',
 }, {
   name: 'aeon',
   short: 'A',
   type: 'boolean',
-  description: 'search from aeon(default)',
+  description: 'search from Aeon(default)',
 } ]);
 const args = argv.run();
 
@@ -81,6 +87,7 @@ const searchers = [];
     if (args.options.aeon)      searchers.push(new AeonSearch(outputDir, page, errors));
     if (args.options.tajima)    searchers.push(new TajimaSearch(outputDir, page, errors));
     if (args.options.lohaco)    searchers.push(new LohacoSearch(outputDir, page, errors));
+    if (args.options.coop)      searchers.push(new CoopSearch(outputDir, page, errors));
     if (searchers.length === 0) searchers.push(new AeonSearch(outputDir, page, errors));
 
     await forEachSeries(searchers, async s => await s.search(...words));
