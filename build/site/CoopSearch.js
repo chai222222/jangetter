@@ -48,7 +48,7 @@ var COOP_CONSTANTS = {
         }
       }, {
         pattern: /^/g,
-        value: 'コープ  '
+        value: 'コープ '
       }],
       jan: [{
         pattern: /^.*shohindetail\//,
