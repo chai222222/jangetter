@@ -1,6 +1,6 @@
 {
   "name": "jangetter",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "get jan!",
   "main": "index.js",
   "bin": {
