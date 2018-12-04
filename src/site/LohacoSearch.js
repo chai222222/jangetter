@@ -48,6 +48,17 @@ const LOHACO_CONSTANTS = {
 
 export default class TajimaSearch extends JanSearchBase {
 
+  /**
+   * 検索可能画面になるまで遷移する。
+   */
+  async init() {
+    const popupedModal = await this.existsAll('div.campaignModal > p.close');
+    if (popupedModal) {
+      this.page.click('div.campaignModal > p.close')
+      await this.waitLoaded();
+    }
+  }
+
   getSrcConfig() {
     return LOHACO_CONSTANTS.searchConfig;
   }

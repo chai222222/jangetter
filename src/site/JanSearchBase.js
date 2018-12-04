@@ -128,9 +128,9 @@ export default class JanSearchBase {
     console.log('*** getJan ***');
     try {
       return this.replceValues(this.getSrcConfig().replacer, {
-        jan: await this.getPageJan(),
-        category: await this.getPageCategory(),
-        title: await this.getPageTitle(),
+        jan: await this.getPageText('jan'),
+        category: await this.getPageText('category'),
+        title: await this.getPageText('title'),
       });
     } catch (e) {
       const url = await this.page.url();
@@ -139,13 +139,8 @@ export default class JanSearchBase {
     }
   }
 
-  async getPageJan() {
-    return await this.page.$eval(this.getSrcConfig().productPageSelectors.jan, item => item.textContent);
-  }
-  async getPageCategory() {
-    return await this.page.$eval(this.getSrcConfig().productPageSelectors.category, item => item.textContent);
-  }
-  async getPageTitle() {
-    return await this.page.$eval(this.getSrcConfig().productPageSelectors.title, item => item.textContent);
+  async getPageText(key) {
+    console.log(this.getSrcConfig().productPageSelectors[key]);
+    return await this.page.$eval(this.getSrcConfig().productPageSelectors[key], item => item.textContent);
   }
 }

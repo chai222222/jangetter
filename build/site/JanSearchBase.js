@@ -499,17 +499,17 @@ var JanSearchBase = function () {
                 _context11.t0 = this;
                 _context11.t1 = this.getSrcConfig().replacer;
                 _context11.next = 6;
-                return this.getPageJan();
+                return this.getPageText('jan');
 
               case 6:
                 _context11.t2 = _context11.sent;
                 _context11.next = 9;
-                return this.getPageCategory();
+                return this.getPageText('category');
 
               case 9:
                 _context11.t3 = _context11.sent;
                 _context11.next = 12;
-                return this.getPageTitle();
+                return this.getPageText('title');
 
               case 12:
                 _context11.t4 = _context11.sent;
@@ -547,22 +547,23 @@ var JanSearchBase = function () {
       return getJan;
     }()
   }, {
-    key: 'getPageJan',
+    key: 'getPageText',
     value: function () {
-      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(key) {
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                _context12.next = 2;
-                return this.page.$eval(this.getSrcConfig().productPageSelectors.jan, function (item) {
+                console.log(this.getSrcConfig().productPageSelectors[key]);
+                _context12.next = 3;
+                return this.page.$eval(this.getSrcConfig().productPageSelectors[key], function (item) {
                   return item.textContent;
                 });
 
-              case 2:
+              case 3:
                 return _context12.abrupt('return', _context12.sent);
 
-              case 3:
+              case 4:
               case 'end':
                 return _context12.stop();
             }
@@ -570,71 +571,11 @@ var JanSearchBase = function () {
         }, _callee12, this);
       }));
 
-      function getPageJan() {
+      function getPageText(_x5) {
         return _ref12.apply(this, arguments);
       }
 
-      return getPageJan;
-    }()
-  }, {
-    key: 'getPageCategory',
-    value: function () {
-      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
-          while (1) {
-            switch (_context13.prev = _context13.next) {
-              case 0:
-                _context13.next = 2;
-                return this.page.$eval(this.getSrcConfig().productPageSelectors.category, function (item) {
-                  return item.textContent;
-                });
-
-              case 2:
-                return _context13.abrupt('return', _context13.sent);
-
-              case 3:
-              case 'end':
-                return _context13.stop();
-            }
-          }
-        }, _callee13, this);
-      }));
-
-      function getPageCategory() {
-        return _ref13.apply(this, arguments);
-      }
-
-      return getPageCategory;
-    }()
-  }, {
-    key: 'getPageTitle',
-    value: function () {
-      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
-          while (1) {
-            switch (_context14.prev = _context14.next) {
-              case 0:
-                _context14.next = 2;
-                return this.page.$eval(this.getSrcConfig().productPageSelectors.title, function (item) {
-                  return item.textContent;
-                });
-
-              case 2:
-                return _context14.abrupt('return', _context14.sent);
-
-              case 3:
-              case 'end':
-                return _context14.stop();
-            }
-          }
-        }, _callee14, this);
-      }));
-
-      function getPageTitle() {
-        return _ref14.apply(this, arguments);
-      }
-
-      return getPageTitle;
+      return getPageText;
     }()
   }]);
 
