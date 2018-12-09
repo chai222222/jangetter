@@ -49,10 +49,14 @@ _argv2.default.option([{
   short: 'e',
   type: 'path',
   description: 'output error file path.'
+}, {
+  name: 'enable-cheerio-httpcli',
+  type: 'boolean',
+  description: 'disable cheerio-httpcli.'
 }].concat(_toConsumableArray(Object.keys(_site2.default).map(function (name) {
   return {
     name: name,
-    short: name.charAt(0).toLocaleUpperCase(),
+    short: name.charAt(0).toLocaleUpperCase(), /// 先頭一文字目はかぶらない前提
     type: 'boolean',
     description: 'search from ' + name
   };
@@ -107,7 +111,7 @@ var searchers = [];
             _searchers = Object.keys(_site2.default).filter(function (name) {
               return args.options[name];
             }).map(function (name) {
-              return _site2.default[name](outputDir, page, errors);
+              return _site2.default[name]({ outputDir: outputDir, page: page, errors: errors, options: args.options });
             });
             _context2.next = 15;
             return (0, _pIteration.forEachSeries)(_searchers, function () {

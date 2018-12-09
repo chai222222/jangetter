@@ -14,6 +14,10 @@ var _stream2 = _interopRequireDefault(_stream);
 
 var _pIteration = require('p-iteration');
 
+var _cheerioHttpcli = require('cheerio-httpcli');
+
+var _cheerioHttpcli2 = _interopRequireDefault(_cheerioHttpcli);
+
 var _WriterCreator = require('../util/WriterCreator');
 
 var _WriterCreator2 = _interopRequireDefault(_WriterCreator);
@@ -31,13 +35,14 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var JanSearchBase = function () {
-  function JanSearchBase(outputDir, page, errors) {
+  function JanSearchBase(args) {
     _classCallCheck(this, JanSearchBase);
 
-    this.outputDir = outputDir;
-    this.page = page;
-    this.errors = errors;
-    this.timeout = 30000;
+    Object.assign(this, args);
+    // this.outputDir = outputDir;
+    // this.page = page;
+    // this.errors = errors;
+    this.timeout = _constants2.default.timeout;
   }
 
   /**
@@ -327,7 +332,7 @@ var JanSearchBase = function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
         var _this3 = this;
 
-        var links, result;
+        var links, skipCheerio, result;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
@@ -340,7 +345,8 @@ var JanSearchBase = function () {
                 links = _context9.sent;
 
                 console.log(links);
-                _context9.next = 7;
+                skipCheerio = false;
+                _context9.next = 8;
                 return (0, _pIteration.mapSeries)(links, function () {
                   var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(link) {
                     var jan;
@@ -349,33 +355,60 @@ var JanSearchBase = function () {
                         switch (_context8.prev = _context8.next) {
                           case 0:
                             _context8.prev = 0;
-                            _context8.next = 3;
-                            return _this3.page.goto(link, { waitUntil: 'networkidle2' });
+                            jan = void 0;
 
-                          case 3:
+                            if (!(_this3.options['enable-cheerio-httpcli'] && !skipCheerio)) {
+                              _context8.next = 7;
+                              break;
+                            }
+
                             _context8.next = 5;
-                            return _this3.getJan();
+                            return _this3.getJanByCheerioHttpcli(link);
 
                           case 5:
                             jan = _context8.sent;
 
-                            _this3.writer.write(jan);
-                            _context8.next = 13;
+                            skipCheerio = jan === undefined;
+
+                          case 7:
+                            if (jan) {
+                              _context8.next = 11;
+                              break;
+                            }
+
+                            _context8.next = 10;
+                            return _this3.getJan(link);
+
+                          case 10:
+                            jan = _context8.sent;
+
+                          case 11:
+                            if (jan) {
+                              _context8.next = 14;
+                              break;
+                            }
+
+                            _this3.addErr('商品ページへ移動できませんでした', link);
+                            return _context8.abrupt('return');
+
+                          case 14:
+                            _this3.writer.write(_this3.replceValues(_this3.getSrcConfig().replacer, jan));
+                            _context8.next = 21;
                             break;
 
-                          case 9:
-                            _context8.prev = 9;
+                          case 17:
+                            _context8.prev = 17;
                             _context8.t0 = _context8['catch'](0);
 
                             _this3.addErr('商品ページへ移動できませんでした', link, _context8.t0);
-                            return _context8.abrupt('return', null);
+                            return _context8.abrupt('return');
 
-                          case 13:
+                          case 21:
                           case 'end':
                             return _context8.stop();
                         }
                       }
-                    }, _callee8, _this3, [[0, 9]]);
+                    }, _callee8, _this3, [[0, 17]]);
                   }));
 
                   return function (_x4) {
@@ -383,10 +416,10 @@ var JanSearchBase = function () {
                   };
                 }());
 
-              case 7:
+              case 8:
                 result = _context9.sent;
 
-              case 8:
+              case 9:
               case 'end':
                 return _context9.stop();
             }
@@ -647,18 +680,19 @@ var JanSearchBase = function () {
   }, {
     key: 'getJan',
     value: function () {
-      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(url) {
         var _this4 = this;
 
-        var url;
         return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
             switch (_context15.prev = _context15.next) {
               case 0:
                 console.log('*** getJan ***');
-                _context15.prev = 1;
-                _context15.t0 = this;
-                _context15.t1 = this.getSrcConfig().replacer;
+                _context15.next = 3;
+                return this.page.goto(url, { waitUntil: 'networkidle2' });
+
+              case 3:
+                _context15.prev = 3;
                 _context15.next = 6;
                 return (0, _pIteration.reduce)(Object.keys(this.getSrcConfig().productPageSelectors), function () {
                   var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(acc, key) {
@@ -681,53 +715,64 @@ var JanSearchBase = function () {
                     }, _callee14, _this4);
                   }));
 
-                  return function (_x7, _x8) {
+                  return function (_x8, _x9) {
                     return _ref15.apply(this, arguments);
                   };
                 }(), {});
 
               case 6:
-                _context15.t2 = _context15.sent;
-                return _context15.abrupt('return', _context15.t0.replceValues.call(_context15.t0, _context15.t1, _context15.t2));
+                return _context15.abrupt('return', _context15.sent);
 
-              case 10:
-                _context15.prev = 10;
-                _context15.t3 = _context15['catch'](1);
-                _context15.next = 14;
-                return this.page.url();
-
-              case 14:
-                url = _context15.sent;
+              case 9:
+                _context15.prev = 9;
+                _context15.t0 = _context15['catch'](3);
 
                 this.addErr('JANがページから取得できませんでした', url);
-                return _context15.abrupt('return', { jan: '', category: '', title: '' });
+                return _context15.abrupt('return', undefined);
 
-              case 17:
+              case 13:
               case 'end':
                 return _context15.stop();
             }
           }
-        }, _callee15, this, [[1, 10]]);
+        }, _callee15, this, [[3, 9]]);
       }));
 
-      function getJan() {
+      function getJan(_x7) {
         return _ref14.apply(this, arguments);
       }
 
       return getJan;
     }()
   }, {
-    key: 'getPageText',
+    key: 'getJanByCheerioHttpcli',
     value: function () {
-      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(key) {
+      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(url) {
+        var _this5 = this;
+
         return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
               case 0:
-                console.log(this.getSrcConfig().productPageSelectors[key]);
+                console.log('*** getJanByCheerioHttpcli ***');
                 _context16.next = 3;
-                return this.page.$eval(this.getSrcConfig().productPageSelectors[key], function (item) {
-                  return item.textContent;
+                return _cheerioHttpcli2.default.fetch(url).then(function (_ref17) {
+                  var err = _ref17.err,
+                      $ = _ref17.$,
+                      res = _ref17.res,
+                      body = _ref17.body;
+
+                  return Object.keys(_this5.getSrcConfig().productPageSelectors).reduce(function (acc, key) {
+                    var txt = $(_this5.getSrcConfig().productPageSelectors[key]).text();
+                    if (!acc || !txt) {
+                      console.log('getJanByCheerioHttpcli failed');
+                      return undefined;
+                    }
+                    acc[key] = txt.replace(/[\s　]+/, ' ').replace(/[\r\n]/g, '');
+                    return acc;
+                  }, {});
+                }).catch(function (e) {
+                  return undefined;
                 });
 
               case 3:
@@ -741,8 +786,39 @@ var JanSearchBase = function () {
         }, _callee16, this);
       }));
 
-      function getPageText(_x9) {
+      function getJanByCheerioHttpcli(_x10) {
         return _ref16.apply(this, arguments);
+      }
+
+      return getJanByCheerioHttpcli;
+    }()
+  }, {
+    key: 'getPageText',
+    value: function () {
+      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(key) {
+        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+          while (1) {
+            switch (_context17.prev = _context17.next) {
+              case 0:
+                console.log(this.getSrcConfig().productPageSelectors[key]);
+                _context17.next = 3;
+                return this.page.$eval(this.getSrcConfig().productPageSelectors[key], function (item) {
+                  return item.textContent;
+                });
+
+              case 3:
+                return _context17.abrupt('return', _context17.sent);
+
+              case 4:
+              case 'end':
+                return _context17.stop();
+            }
+          }
+        }, _callee17, this);
+      }));
+
+      function getPageText(_x11) {
+        return _ref18.apply(this, arguments);
       }
 
       return getPageText;

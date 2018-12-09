@@ -21,9 +21,13 @@ argv.option([ {
   short: 'e',
   type: 'path',
   description: 'output error file path.',
+}, {
+  name: 'enable-cheerio-httpcli',
+  type: 'boolean',
+  description: 'disable cheerio-httpcli.',
 }, ...Object.keys(Site).map(name => ({
   name,
-  short: name.charAt(0).toLocaleUpperCase(),
+  short: name.charAt(0).toLocaleUpperCase(), /// 先頭一文字目はかぶらない前提
   type: 'boolean',
   description: `search from ${name}`,
 })), ]);
@@ -58,7 +62,9 @@ const searchers = [];
     await page.setViewport(Constants.viewport);
 
     const errors = [];
-    const searchers = Object.keys(Site).filter(name => args.options[name]).map(name => Site[name](outputDir, page, errors));
+    const searchers = Object.keys(Site)
+      .filter(name => args.options[name])
+      .map(name => Site[name]({outputDir, page, errors, options: args.options}));
 
     await forEachSeries(searchers, async s => await s.search(...words));
 

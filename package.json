@@ -1,6 +1,6 @@
 {
   "name": "jangetter",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "get jan!",
   "main": "index.js",
   "bin": {
@@ -19,6 +19,7 @@
   "dependencies": {
     "argv": "0.0.2",
     "babel-polyfill": "^6.26.0",
+    "cheerio-httpcli": "^0.7.3",
     "iconv-lite": "^0.4.24",
     "json2csv": "^4.2.1",
     "p-iteration": "^1.1.7",

@@ -1,15 +1,18 @@
 import stream from 'stream';
 import { forEachSeries, map, mapSeries, every, reduce } from 'p-iteration';
+import cheerioClient from 'cheerio-httpcli';
+
 import WriterCreator from '../util/WriterCreator';
 import Constants from '../constants';
 
 export default class JanSearchBase {
 
-  constructor(outputDir, page, errors) {
-    this.outputDir = outputDir;
-    this.page = page;
-    this.errors = errors;
-    this.timeout = 30000;
+  constructor(args) {
+    Object.assign(this, args);
+    // this.outputDir = outputDir;
+    // this.page = page;
+    // this.errors = errors;
+    this.timeout = Constants.timeout;
   }
 
   /**
@@ -92,14 +95,23 @@ export default class JanSearchBase {
     console.log('*** eachItemFromSearchResult ***');
     const links = await this.getAllJanUrls();
     console.log(links);
+    let skipCheerio = false;
     const result = await mapSeries(links, async link => {
       try {
-        await this.page.goto(link, {waitUntil: 'networkidle2'});
-        const jan = await this.getJan();
-        this.writer.write(jan);
+        let jan;
+        if (this.options['enable-cheerio-httpcli'] && !skipCheerio) {
+          jan = await this.getJanByCheerioHttpcli(link);
+          skipCheerio = jan === undefined;
+        }
+        if (!jan) jan = await this.getJan(link);
+        if (!jan) {
+          this.addErr('商品ページへ移動できませんでした', link);
+          return;
+        }
+       this.writer.write(this.replceValues(this.getSrcConfig().replacer, jan));
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
-        return null;
+        return;
       }
     });
   }
@@ -172,19 +184,37 @@ export default class JanSearchBase {
   /**
    * 商品ページからjan情報をかえします。
    */
-  async getJan() {
+  async getJan(url) {
     console.log('*** getJan ***');
+    await this.page.goto(url, {waitUntil: 'networkidle2'});
     try {
-      return this.replceValues(this.getSrcConfig().replacer, await reduce(Object.keys(this.getSrcConfig().productPageSelectors), async (acc, key) => {
+      return await reduce(Object.keys(this.getSrcConfig().productPageSelectors), async (acc, key) => {
         acc[key] = await this.getPageText(key);
         return acc;
-      }, {}));
+      }, {});
     } catch (e) {
-      const url = await this.page.url();
       this.addErr('JANがページから取得できませんでした', url);
-      return { jan: '', category: '', title: '' };
+      return undefined;
     }
   }
+
+  async getJanByCheerioHttpcli(url) {
+    console.log('*** getJanByCheerioHttpcli ***');
+    return await cheerioClient.fetch(url).then(({err, $, res, body}) => {
+      return Object.keys(this.getSrcConfig().productPageSelectors).reduce((acc, key) => {
+        const txt = $(this.getSrcConfig().productPageSelectors[key]).text();
+        if (!acc  || !txt) {
+          console.log('getJanByCheerioHttpcli failed');
+          return undefined;
+        }
+        acc[key] = txt.replace(/[\s　]+/, ' ').replace(/[\r\n]/g, '');
+        return acc;
+      }, {});
+    }).catch(e => {
+      return undefined;
+    });
+  }
+
 
   async getPageText(key) {
     console.log(this.getSrcConfig().productPageSelectors[key]);

@@ -10,6 +10,7 @@ exports.default = {
   viewport: {
     width: 1600,
     height: 1200
-  }
+  },
+  timeout: 30000
 };
 //# sourceMappingURL=constants.js.map
