@@ -42,6 +42,14 @@ var _CoopSearch = require('./site/CoopSearch');
 
 var _CoopSearch2 = _interopRequireDefault(_CoopSearch);
 
+var _KokubuSearch = require('./site/KokubuSearch');
+
+var _KokubuSearch2 = _interopRequireDefault(_KokubuSearch);
+
+var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -61,6 +69,11 @@ _argv2.default.option([{
   short: 'e',
   type: 'path',
   description: 'output error file path.'
+}, {
+  name: 'kokubu',
+  short: 'K',
+  type: 'boolean',
+  description: 'search from Kokubu'
 }, {
   name: 'coop',
   short: 'C',
@@ -128,7 +141,7 @@ var searchers = [];
 
           case 9:
             _context2.next = 11;
-            return page.setViewport({ width: 1600, height: 1200 });
+            return page.setViewport(_constants2.default.viewport);
 
           case 11:
             errors = [];
@@ -140,9 +153,10 @@ var searchers = [];
             if (args.options.tajima) _searchers.push(new _TajimaSearch2.default(outputDir, page, errors));
             if (args.options.lohaco) _searchers.push(new _LohacoSearch2.default(outputDir, page, errors));
             if (args.options.coop) _searchers.push(new _CoopSearch2.default(outputDir, page, errors));
+            if (args.options.kokubu) _searchers.push(new _KokubuSearch2.default(outputDir, page, errors));
             if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
 
-            _context2.next = 21;
+            _context2.next = 22;
             return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -168,7 +182,7 @@ var searchers = [];
               };
             }());
 
-          case 21:
+          case 22:
 
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
@@ -178,28 +192,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 27;
+            _context2.next = 28;
             break;
 
-          case 24:
-            _context2.prev = 24;
+          case 25:
+            _context2.prev = 25;
             _context2.t0 = _context2['catch'](3);
 
             console.log(_context2.t0.stack);
 
-          case 27:
-            _context2.prev = 27;
+          case 28:
+            _context2.prev = 28;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(27);
+            return _context2.finish(28);
 
-          case 31:
+          case 32:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 24, 27, 31]]);
+    }, _callee2, undefined, [[3, 25, 28, 32]]);
   }));
 
   return function (_x) {

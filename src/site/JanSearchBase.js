@@ -1,6 +1,7 @@
 import stream from 'stream';
 import { forEachSeries, map, mapSeries, every } from 'p-iteration';
 import WriterCreator from '../util/WriterCreator';
+import Constants from '../constants';
 
 export default class JanSearchBase {
 
@@ -108,6 +109,18 @@ export default class JanSearchBase {
    */
   async getAllJanUrls() {
     console.log('*** getAllJanUrls ***');
+    const config = this.getSrcConfig();
+    if (config.searchPageSelectors.scrollToBottom) {
+      return this.getAllJanUrlsScrollToBottom();
+    } else if (config.searchPageSelectors.nextLink) {
+      return this.getAllJanUrlsPageTransition();
+    }
+    this.addErr('JANリンク取得方法が定義されていません。');
+    return [];
+  }
+
+  async getAllJanUrlsPageTransition() {
+    console.log('*** getAllJanUrlsPageTransition ***');
     let page = 1;
     const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
     const nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
@@ -120,6 +133,41 @@ export default class JanSearchBase {
     }
     return links;
   }
+
+  async getAllJanUrlsScrollToBottom() {
+    console.log('*** getAllJanUrlsScrollToBottom ***');
+    await this.scrollToBottom(this.page, Constants.viewport.height);
+    const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+    return await this.page.$$eval(productsSel, list => list.map(item => item.href));
+  }
+
+  async scrollToBottom(page, viewportHeight) {
+    const getScrollHeight = () => {
+      return Promise.resolve(document.documentElement.scrollHeight) }
+
+    let scrollHeight = await page.evaluate(getScrollHeight)
+    let currentPosition = 0
+    let scrollNumber = 0
+
+    while (currentPosition < scrollHeight) {
+      scrollNumber += 1
+      const nextPosition = scrollNumber * viewportHeight
+      await page.evaluate(function (scrollTo) {
+        return Promise.resolve(window.scrollTo(0, scrollTo))
+      }, nextPosition)
+      await page.waitForNavigation({waitUntil: 'networkidle2', timeout: 5000})
+                .catch(e => console.log('timeout exceed. proceed to next operation'));
+
+      currentPosition = nextPosition;
+      console.log(`scrollNumber: ${scrollNumber}`)
+      console.log(`currentPosition: ${currentPosition}`)
+
+      // 2
+      scrollHeight = await page.evaluate(getScrollHeight)
+      console.log(`ScrollHeight ${scrollHeight}`)
+    }
+  }
+
 
   /**
    * 商品ページからjan情報をかえします。

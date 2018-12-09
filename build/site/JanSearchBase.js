@@ -18,6 +18,10 @@ var _WriterCreator = require('../util/WriterCreator');
 
 var _WriterCreator2 = _interopRequireDefault(_WriterCreator);
 
+var _constants = require('../constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -405,68 +409,34 @@ var JanSearchBase = function () {
     key: 'getAllJanUrls',
     value: function () {
       var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-        var page, productsSel, nextSel, links;
+        var config;
         return regeneratorRuntime.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
                 console.log('*** getAllJanUrls ***');
-                page = 1;
-                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
-                nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
-                _context10.next = 6;
-                return this.page.$$eval(productsSel, function (list) {
-                  return list.map(function (item) {
-                    return item.href;
-                  });
-                });
+                config = this.getSrcConfig();
 
-              case 6:
-                links = _context10.sent;
-
-              case 7:
-                _context10.next = 9;
-                return this.existsAll(nextSel);
-
-              case 9:
-                if (!_context10.sent) {
-                  _context10.next = 25;
+                if (!config.searchPageSelectors.scrollToBottom) {
+                  _context10.next = 6;
                   break;
                 }
 
-                // →ボタンがある
-                console.log('page ' + ++page);
-                _context10.next = 13;
-                return this.page.click(nextSel);
+                return _context10.abrupt('return', this.getAllJanUrlsScrollToBottom());
 
-              case 13:
-                _context10.next = 15;
-                return this.waitLoaded();
+              case 6:
+                if (!config.searchPageSelectors.nextLink) {
+                  _context10.next = 8;
+                  break;
+                }
 
-              case 15:
-                _context10.t0 = links.push;
-                _context10.t1 = links;
-                _context10.t2 = _toConsumableArray;
-                _context10.next = 20;
-                return this.page.$$eval(productsSel, function (list) {
-                  return list.map(function (item) {
-                    return item.href;
-                  });
-                });
+                return _context10.abrupt('return', this.getAllJanUrlsPageTransition());
 
-              case 20:
-                _context10.t3 = _context10.sent;
-                _context10.t4 = (0, _context10.t2)(_context10.t3);
+              case 8:
+                this.addErr('JANリンク取得方法が定義されていません。');
+                return _context10.abrupt('return', []);
 
-                _context10.t0.apply.call(_context10.t0, _context10.t1, _context10.t4);
-
-                _context10.next = 7;
-                break;
-
-              case 25:
-                return _context10.abrupt('return', links);
-
-              case 26:
+              case 10:
               case 'end':
                 return _context10.stop();
             }
@@ -480,6 +450,195 @@ var JanSearchBase = function () {
 
       return getAllJanUrls;
     }()
+  }, {
+    key: 'getAllJanUrlsPageTransition',
+    value: function () {
+      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+        var page, productsSel, nextSel, links;
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                console.log('*** getAllJanUrlsPageTransition ***');
+                page = 1;
+                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+                nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
+                _context11.next = 6;
+                return this.page.$$eval(productsSel, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
+                });
+
+              case 6:
+                links = _context11.sent;
+
+              case 7:
+                _context11.next = 9;
+                return this.existsAll(nextSel);
+
+              case 9:
+                if (!_context11.sent) {
+                  _context11.next = 25;
+                  break;
+                }
+
+                // →ボタンがある
+                console.log('page ' + ++page);
+                _context11.next = 13;
+                return this.page.click(nextSel);
+
+              case 13:
+                _context11.next = 15;
+                return this.waitLoaded();
+
+              case 15:
+                _context11.t0 = links.push;
+                _context11.t1 = links;
+                _context11.t2 = _toConsumableArray;
+                _context11.next = 20;
+                return this.page.$$eval(productsSel, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
+                });
+
+              case 20:
+                _context11.t3 = _context11.sent;
+                _context11.t4 = (0, _context11.t2)(_context11.t3);
+
+                _context11.t0.apply.call(_context11.t0, _context11.t1, _context11.t4);
+
+                _context11.next = 7;
+                break;
+
+              case 25:
+                return _context11.abrupt('return', links);
+
+              case 26:
+              case 'end':
+                return _context11.stop();
+            }
+          }
+        }, _callee11, this);
+      }));
+
+      function getAllJanUrlsPageTransition() {
+        return _ref11.apply(this, arguments);
+      }
+
+      return getAllJanUrlsPageTransition;
+    }()
+  }, {
+    key: 'getAllJanUrlsScrollToBottom',
+    value: function () {
+      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+        var productsSel;
+        return regeneratorRuntime.wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                console.log('*** getAllJanUrlsScrollToBottom ***');
+                _context12.next = 3;
+                return this.scrollToBottom(this.page, _constants2.default.viewport.height);
+
+              case 3:
+                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+                _context12.next = 6;
+                return this.page.$$eval(productsSel, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
+                });
+
+              case 6:
+                return _context12.abrupt('return', _context12.sent);
+
+              case 7:
+              case 'end':
+                return _context12.stop();
+            }
+          }
+        }, _callee12, this);
+      }));
+
+      function getAllJanUrlsScrollToBottom() {
+        return _ref12.apply(this, arguments);
+      }
+
+      return getAllJanUrlsScrollToBottom;
+    }()
+  }, {
+    key: 'scrollToBottom',
+    value: function () {
+      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(page, viewportHeight) {
+        var getScrollHeight, scrollHeight, currentPosition, scrollNumber, nextPosition;
+        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                getScrollHeight = function getScrollHeight() {
+                  return Promise.resolve(document.documentElement.scrollHeight);
+                };
+
+                _context13.next = 3;
+                return page.evaluate(getScrollHeight);
+
+              case 3:
+                scrollHeight = _context13.sent;
+                currentPosition = 0;
+                scrollNumber = 0;
+
+              case 6:
+                if (!(currentPosition < scrollHeight)) {
+                  _context13.next = 22;
+                  break;
+                }
+
+                scrollNumber += 1;
+                nextPosition = scrollNumber * viewportHeight;
+                _context13.next = 11;
+                return page.evaluate(function (scrollTo) {
+                  return Promise.resolve(window.scrollTo(0, scrollTo));
+                }, nextPosition);
+
+              case 11:
+                _context13.next = 13;
+                return page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 5000 }).catch(function (e) {
+                  return console.log('timeout exceed. proceed to next operation');
+                });
+
+              case 13:
+
+                currentPosition = nextPosition;
+                console.log('scrollNumber: ' + scrollNumber);
+                console.log('currentPosition: ' + currentPosition);
+
+                // 2
+                _context13.next = 18;
+                return page.evaluate(getScrollHeight);
+
+              case 18:
+                scrollHeight = _context13.sent;
+
+                console.log('ScrollHeight ' + scrollHeight);
+                _context13.next = 6;
+                break;
+
+              case 22:
+              case 'end':
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this);
+      }));
+
+      function scrollToBottom(_x5, _x6) {
+        return _ref13.apply(this, arguments);
+      }
+
+      return scrollToBottom;
+    }()
 
     /**
      * 商品ページからjan情報をかえします。
@@ -488,60 +647,60 @@ var JanSearchBase = function () {
   }, {
     key: 'getJan',
     value: function () {
-      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
         var url;
-        return regeneratorRuntime.wrap(function _callee11$(_context11) {
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
           while (1) {
-            switch (_context11.prev = _context11.next) {
+            switch (_context14.prev = _context14.next) {
               case 0:
                 console.log('*** getJan ***');
-                _context11.prev = 1;
-                _context11.t0 = this;
-                _context11.t1 = this.getSrcConfig().replacer;
-                _context11.next = 6;
+                _context14.prev = 1;
+                _context14.t0 = this;
+                _context14.t1 = this.getSrcConfig().replacer;
+                _context14.next = 6;
                 return this.getPageText('jan');
 
               case 6:
-                _context11.t2 = _context11.sent;
-                _context11.next = 9;
+                _context14.t2 = _context14.sent;
+                _context14.next = 9;
                 return this.getPageText('category');
 
               case 9:
-                _context11.t3 = _context11.sent;
-                _context11.next = 12;
+                _context14.t3 = _context14.sent;
+                _context14.next = 12;
                 return this.getPageText('title');
 
               case 12:
-                _context11.t4 = _context11.sent;
-                _context11.t5 = {
-                  jan: _context11.t2,
-                  category: _context11.t3,
-                  title: _context11.t4
+                _context14.t4 = _context14.sent;
+                _context14.t5 = {
+                  jan: _context14.t2,
+                  category: _context14.t3,
+                  title: _context14.t4
                 };
-                return _context11.abrupt('return', _context11.t0.replceValues.call(_context11.t0, _context11.t1, _context11.t5));
+                return _context14.abrupt('return', _context14.t0.replceValues.call(_context14.t0, _context14.t1, _context14.t5));
 
               case 17:
-                _context11.prev = 17;
-                _context11.t6 = _context11['catch'](1);
-                _context11.next = 21;
+                _context14.prev = 17;
+                _context14.t6 = _context14['catch'](1);
+                _context14.next = 21;
                 return this.page.url();
 
               case 21:
-                url = _context11.sent;
+                url = _context14.sent;
 
                 this.addErr('JANがページから取得できませんでした', url);
-                return _context11.abrupt('return', { jan: '', category: '', title: '' });
+                return _context14.abrupt('return', { jan: '', category: '', title: '' });
 
               case 24:
               case 'end':
-                return _context11.stop();
+                return _context14.stop();
             }
           }
-        }, _callee11, this, [[1, 17]]);
+        }, _callee14, this, [[1, 17]]);
       }));
 
       function getJan() {
-        return _ref11.apply(this, arguments);
+        return _ref14.apply(this, arguments);
       }
 
       return getJan;
@@ -549,30 +708,30 @@ var JanSearchBase = function () {
   }, {
     key: 'getPageText',
     value: function () {
-      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(key) {
-        return regeneratorRuntime.wrap(function _callee12$(_context12) {
+      var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(key) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context12.prev = _context12.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
                 console.log(this.getSrcConfig().productPageSelectors[key]);
-                _context12.next = 3;
+                _context15.next = 3;
                 return this.page.$eval(this.getSrcConfig().productPageSelectors[key], function (item) {
                   return item.textContent;
                 });
 
               case 3:
-                return _context12.abrupt('return', _context12.sent);
+                return _context15.abrupt('return', _context15.sent);
 
               case 4:
               case 'end':
-                return _context12.stop();
+                return _context15.stop();
             }
           }
-        }, _callee12, this);
+        }, _callee15, this);
       }));
 
-      function getPageText(_x5) {
-        return _ref12.apply(this, arguments);
+      function getPageText(_x7) {
+        return _ref15.apply(this, arguments);
       }
 
       return getPageText;

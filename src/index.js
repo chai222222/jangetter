@@ -11,6 +11,8 @@ import IyecSearch from './site/IyecSearch';
 import TajimaSearch from './site/TajimaSearch';
 import LohacoSearch from './site/LohacoSearch';
 import CoopSearch from './site/CoopSearch';
+import KokubuSearch from './site/KokubuSearch';
+import Constants from './constants';
 
 process.on('unhandledRejection', console.dir);
 
@@ -24,6 +26,11 @@ argv.option([ {
   short: 'e',
   type: 'path',
   description: 'output error file path.',
+}, {
+  name: 'kokubu',
+  short: 'K',
+  type: 'boolean',
+  description: 'search from Kokubu',
 }, {
   name: 'coop',
   short: 'C',
@@ -78,7 +85,7 @@ const searchers = [];
     await page.on('framenavigated', frm => {
       console.log("### URL ", frm.url());
     });
-    await page.setViewport({ width: 1600, height: 1200 });
+    await page.setViewport(Constants.viewport);
 
     const errors = [];
     const searchers = [];
@@ -88,6 +95,7 @@ const searchers = [];
     if (args.options.tajima)    searchers.push(new TajimaSearch(outputDir, page, errors));
     if (args.options.lohaco)    searchers.push(new LohacoSearch(outputDir, page, errors));
     if (args.options.coop)      searchers.push(new CoopSearch(outputDir, page, errors));
+    if (args.options.kokubu)    searchers.push(new KokubuSearch(outputDir, page, errors));
     if (searchers.length === 0) searchers.push(new AeonSearch(outputDir, page, errors));
 
     await forEachSeries(searchers, async s => await s.search(...words));
