@@ -22,39 +22,19 @@ var _pIteration = require('p-iteration');
 
 var _json2csv = require('json2csv');
 
-var _AeonSearch = require('./site/AeonSearch');
-
-var _AeonSearch2 = _interopRequireDefault(_AeonSearch);
-
-var _IyecSearch = require('./site/IyecSearch');
-
-var _IyecSearch2 = _interopRequireDefault(_IyecSearch);
-
-var _TajimaSearch = require('./site/TajimaSearch');
-
-var _TajimaSearch2 = _interopRequireDefault(_TajimaSearch);
-
-var _LohacoSearch = require('./site/LohacoSearch');
-
-var _LohacoSearch2 = _interopRequireDefault(_LohacoSearch);
-
-var _CoopSearch = require('./site/CoopSearch');
-
-var _CoopSearch2 = _interopRequireDefault(_CoopSearch);
-
-var _KokubuSearch = require('./site/KokubuSearch');
-
-var _KokubuSearch2 = _interopRequireDefault(_KokubuSearch);
-
 var _constants = require('./constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
+var _site = require('./site');
+
+var _site2 = _interopRequireDefault(_site);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } // eslint-disable-line import/no-extraneous-dependencies
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } // eslint-disable-line import/no-extraneous-dependencies
 
 
 process.on('unhandledRejection', console.dir);
@@ -69,40 +49,19 @@ _argv2.default.option([{
   short: 'e',
   type: 'path',
   description: 'output error file path.'
-}, {
-  name: 'kokubu',
-  short: 'K',
-  type: 'boolean',
-  description: 'search from Kokubu'
-}, {
-  name: 'coop',
-  short: 'C',
-  type: 'boolean',
-  description: 'search from Coop'
-}, {
-  name: 'lohaco',
-  short: 'L',
-  type: 'boolean',
-  description: 'search from LOHACO'
-}, {
-  name: 'tajima',
-  short: 'T',
-  type: 'boolean',
-  description: 'search from Tajima'
-}, {
-  name: 'itoyokado',
-  short: 'I',
-  type: 'boolean',
-  description: 'search from Ito_yoka_do'
-}, {
-  name: 'aeon',
-  short: 'A',
-  type: 'boolean',
-  description: 'search from Aeon(default)'
-}]);
+}].concat(_toConsumableArray(Object.keys(_site2.default).map(function (name) {
+  return {
+    name: name,
+    short: name.charAt(0).toLocaleUpperCase(),
+    type: 'boolean',
+    description: 'search from ' + name
+  };
+}))));
 var args = _argv2.default.run();
 
-if (args.targets.length < 1) {
+if (args.targets.length < 1 || !Object.keys(_site2.default).some(function (name) {
+  return args.options[name];
+})) {
   _argv2.default.help();
   process.exit(0);
 }
@@ -145,18 +104,12 @@ var searchers = [];
 
           case 11:
             errors = [];
-            _searchers = [];
-
-
-            if (args.options.itoyokado) _searchers.push(new _IyecSearch2.default(outputDir, page, errors));
-            if (args.options.aeon) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
-            if (args.options.tajima) _searchers.push(new _TajimaSearch2.default(outputDir, page, errors));
-            if (args.options.lohaco) _searchers.push(new _LohacoSearch2.default(outputDir, page, errors));
-            if (args.options.coop) _searchers.push(new _CoopSearch2.default(outputDir, page, errors));
-            if (args.options.kokubu) _searchers.push(new _KokubuSearch2.default(outputDir, page, errors));
-            if (_searchers.length === 0) _searchers.push(new _AeonSearch2.default(outputDir, page, errors));
-
-            _context2.next = 22;
+            _searchers = Object.keys(_site2.default).filter(function (name) {
+              return args.options[name];
+            }).map(function (name) {
+              return _site2.default[name](outputDir, page, errors);
+            });
+            _context2.next = 15;
             return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -182,7 +135,7 @@ var searchers = [];
               };
             }());
 
-          case 22:
+          case 15:
 
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
@@ -192,28 +145,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 28;
+            _context2.next = 21;
             break;
 
-          case 25:
-            _context2.prev = 25;
+          case 18:
+            _context2.prev = 18;
             _context2.t0 = _context2['catch'](3);
 
             console.log(_context2.t0.stack);
 
-          case 28:
-            _context2.prev = 28;
+          case 21:
+            _context2.prev = 21;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(28);
+            return _context2.finish(21);
 
-          case 32:
+          case 25:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 25, 28, 32]]);
+    }, _callee2, undefined, [[3, 18, 21, 25]]);
   }));
 
   return function (_x) {

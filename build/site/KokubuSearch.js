@@ -38,10 +38,10 @@ var KOKUBU_CONSTANTS = {
         pattern: /.*問屋 *国分ネット卸 */g,
         value: ''
       }, {
-        pattern: /: .*/g,
+        pattern: / *: .*/g,
         value: ' '
       }, {
-        pattern: /[ 　]+/g,
+        pattern: /[ 　]+/g, // 全角空白半角空白を１つの空白に
         value: ' '
       }, {
         pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
