@@ -647,56 +647,67 @@ var JanSearchBase = function () {
   }, {
     key: 'getJan',
     value: function () {
-      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+        var _this4 = this;
+
         var url;
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
                 console.log('*** getJan ***');
-                _context14.prev = 1;
-                _context14.t0 = this;
-                _context14.t1 = this.getSrcConfig().replacer;
-                _context14.next = 6;
-                return this.getPageText('jan');
+                _context15.prev = 1;
+                _context15.t0 = this;
+                _context15.t1 = this.getSrcConfig().replacer;
+                _context15.next = 6;
+                return (0, _pIteration.reduce)(Object.keys(this.getSrcConfig().productPageSelectors), function () {
+                  var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(acc, key) {
+                    return regeneratorRuntime.wrap(function _callee14$(_context14) {
+                      while (1) {
+                        switch (_context14.prev = _context14.next) {
+                          case 0:
+                            _context14.next = 2;
+                            return _this4.getPageText(key);
+
+                          case 2:
+                            acc[key] = _context14.sent;
+                            return _context14.abrupt('return', acc);
+
+                          case 4:
+                          case 'end':
+                            return _context14.stop();
+                        }
+                      }
+                    }, _callee14, _this4);
+                  }));
+
+                  return function (_x7, _x8) {
+                    return _ref15.apply(this, arguments);
+                  };
+                }(), {});
 
               case 6:
-                _context14.t2 = _context14.sent;
-                _context14.next = 9;
-                return this.getPageText('category');
+                _context15.t2 = _context15.sent;
+                return _context15.abrupt('return', _context15.t0.replceValues.call(_context15.t0, _context15.t1, _context15.t2));
 
-              case 9:
-                _context14.t3 = _context14.sent;
-                _context14.next = 12;
-                return this.getPageText('title');
-
-              case 12:
-                _context14.t4 = _context14.sent;
-                _context14.t5 = {
-                  jan: _context14.t2,
-                  category: _context14.t3,
-                  title: _context14.t4
-                };
-                return _context14.abrupt('return', _context14.t0.replceValues.call(_context14.t0, _context14.t1, _context14.t5));
-
-              case 17:
-                _context14.prev = 17;
-                _context14.t6 = _context14['catch'](1);
-                _context14.next = 21;
+              case 10:
+                _context15.prev = 10;
+                _context15.t3 = _context15['catch'](1);
+                _context15.next = 14;
                 return this.page.url();
 
-              case 21:
-                url = _context14.sent;
+              case 14:
+                url = _context15.sent;
 
                 this.addErr('JANがページから取得できませんでした', url);
-                return _context14.abrupt('return', { jan: '', category: '', title: '' });
+                return _context15.abrupt('return', { jan: '', category: '', title: '' });
 
-              case 24:
+              case 17:
               case 'end':
-                return _context14.stop();
+                return _context15.stop();
             }
           }
-        }, _callee14, this, [[1, 17]]);
+        }, _callee15, this, [[1, 10]]);
       }));
 
       function getJan() {
@@ -708,30 +719,30 @@ var JanSearchBase = function () {
   }, {
     key: 'getPageText',
     value: function () {
-      var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(key) {
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(key) {
+        return regeneratorRuntime.wrap(function _callee16$(_context16) {
           while (1) {
-            switch (_context15.prev = _context15.next) {
+            switch (_context16.prev = _context16.next) {
               case 0:
                 console.log(this.getSrcConfig().productPageSelectors[key]);
-                _context15.next = 3;
+                _context16.next = 3;
                 return this.page.$eval(this.getSrcConfig().productPageSelectors[key], function (item) {
                   return item.textContent;
                 });
 
               case 3:
-                return _context15.abrupt('return', _context15.sent);
+                return _context16.abrupt('return', _context16.sent);
 
               case 4:
               case 'end':
-                return _context15.stop();
+                return _context16.stop();
             }
           }
-        }, _callee15, this);
+        }, _callee16, this);
       }));
 
-      function getPageText(_x7) {
-        return _ref15.apply(this, arguments);
+      function getPageText(_x9) {
+        return _ref16.apply(this, arguments);
       }
 
       return getPageText;

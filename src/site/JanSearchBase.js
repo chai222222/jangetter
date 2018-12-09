@@ -1,5 +1,5 @@
 import stream from 'stream';
-import { forEachSeries, map, mapSeries, every } from 'p-iteration';
+import { forEachSeries, map, mapSeries, every, reduce } from 'p-iteration';
 import WriterCreator from '../util/WriterCreator';
 import Constants from '../constants';
 
@@ -175,11 +175,10 @@ export default class JanSearchBase {
   async getJan() {
     console.log('*** getJan ***');
     try {
-      return this.replceValues(this.getSrcConfig().replacer, {
-        jan: await this.getPageText('jan'),
-        category: await this.getPageText('category'),
-        title: await this.getPageText('title'),
-      });
+      return this.replceValues(this.getSrcConfig().replacer, await reduce(Object.keys(this.getSrcConfig().productPageSelectors), async (acc, key) => {
+        acc[key] = await this.getPageText(key);
+        return acc;
+      }, {}));
     } catch (e) {
       const url = await this.page.url();
       this.addErr('JANがページから取得できませんでした', url);
