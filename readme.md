@@ -3,7 +3,7 @@
 各サイトから、puppeteerを使って JANコードとカテゴリ、商品名を取得し、csv出力します。
 
 ```
-Usage: index.js [options]
+Usage: jangetter [options]
 
 	--help, -h
 		Displays help information about this script
@@ -33,6 +33,8 @@ Usage: index.js [options]
 	--coop, -C
 		search from coop
 ```
+
+最低限、 ```search from``` のオプションは何か指定しないとエラーになる。
 
 ## 実験
 
