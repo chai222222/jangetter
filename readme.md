@@ -7,7 +7,7 @@ Usage: jangetter [options]
 
 	--help, -h
 		Displays help information about this script
-		'index.js -h' or 'index.js --help'
+		'jangetter -h' or 'jangetter --help'
 
 	--output, -o
 		output csv directory path.
@@ -16,7 +16,7 @@ Usage: jangetter [options]
 		output error file path.
 
 	--enable-cheerio-httpcli
-		disable cheerio-httpcli.
+		enable cheerio-httpcli.
 
 	--kokubu, -K
 		search from kokubu
