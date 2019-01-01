@@ -36,7 +36,10 @@ Usage: jangetter [options]
 	--iyec, -I
 		search from iyec
 
-	--kokubu, -K
+	--kenkocom, -K
+		search from kenkocom
+
+	--kokubu, -O
 		search from kokubu
 
 	--lohaco, -L
@@ -47,6 +50,7 @@ Usage: jangetter [options]
 
 	--tajima, -T
 		search from tajima
+
 ```
 
 

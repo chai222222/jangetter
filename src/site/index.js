@@ -5,6 +5,7 @@ import LohacoSearch from './LohacoSearch';
 import CoopSearch from './CoopSearch';
 import KokubuSearch from './KokubuSearch';
 import MogunaviSearch from './MogunaviSearch';
+import KenkocomSearch from './KenkocomSearch';
 
 export default {
   iyec: (...args) => new IyecSearch(...args),
@@ -14,4 +15,5 @@ export default {
   coop: (...args) => new CoopSearch(...args),
   kokubu: (...args) => new KokubuSearch(...args),
   mogunavi: (...args) => new MogunaviSearch(...args),
+  kenkocom: (...args) => new KenkocomSearch(...args),
 };

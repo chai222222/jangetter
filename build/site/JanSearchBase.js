@@ -954,10 +954,16 @@ var JanSearchBase = function () {
 
 exports.default = JanSearchBase;
 var REPLACERS = exports.REPLACERS = {
+  toHarfWidth: {
+    pattern: /[！-～]/g,
+    value: function value(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }
+  },
   toHarfWidthAlnum: {
     pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
     value: function value(s) {
-      return String.fromCharCode(s.charCodeAt(0) - 65248);
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     }
   },
   toHarfWidthSpace: {

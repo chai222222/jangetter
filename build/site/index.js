@@ -32,6 +32,10 @@ var _MogunaviSearch = require('./MogunaviSearch');
 
 var _MogunaviSearch2 = _interopRequireDefault(_MogunaviSearch);
 
+var _KenkocomSearch = require('./KenkocomSearch');
+
+var _KenkocomSearch2 = _interopRequireDefault(_KenkocomSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -83,6 +87,13 @@ exports.default = {
     }
 
     return new (Function.prototype.bind.apply(_MogunaviSearch2.default, [null].concat(args)))();
+  },
+  kenkocom: function kenkocom() {
+    for (var _len8 = arguments.length, args = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+      args[_key8] = arguments[_key8];
+    }
+
+    return new (Function.prototype.bind.apply(_KenkocomSearch2.default, [null].concat(args)))();
   }
 };
 //# sourceMappingURL=index.js.map

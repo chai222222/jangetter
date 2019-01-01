@@ -11,6 +11,11 @@ import Site from './site';
 
 process.on('unhandledRejection', console.dir);
 
+/**
+ * サイト名からオプションデータを作成する。
+ * 名前の一文字目を大文字にしたものがオプションになるが、すでにある場合は、二文字目以降で使われない文字を使う。
+ * @return {Array<Object>} オプションデータ
+ */
 function getSiteOpts() {
   const names = Object.keys(Site).sort();
   const flag = new Set();

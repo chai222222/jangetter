@@ -39,6 +39,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 process.on('unhandledRejection', console.dir);
 
+/**
+ * サイト名からオプションデータを作成する。
+ * 名前の一文字目を大文字にしたものがオプションになるが、すでにある場合は、二文字目以降で使われない文字を使う。
+ * @return {Array<Object>} オプションデータ
+ */
 function getSiteOpts() {
   var names = Object.keys(_site2.default).sort();
   var flag = new Set();

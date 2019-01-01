@@ -257,10 +257,16 @@ export default class JanSearchBase {
 
 /** 共通リプレーサ定義 */
 export const REPLACERS = {
+  toHarfWidth: {
+    pattern: /[！-～]/g,
+    value: (s) => {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    },
+  },
   toHarfWidthAlnum: {
     pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
     value: (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 65248);
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     },
   },
   toHarfWidthSpace: {
