@@ -7,7 +7,7 @@ Usage: jangetter [options]
 
 	--help, -h
 		Displays help information about this script
-		'jangetter -h' or 'jangetter --help'
+		'index.js -h' or 'index.js --help'
 
 	--output, -o
 		output csv directory path.
@@ -15,24 +15,40 @@ Usage: jangetter [options]
 	--error, -e
 		output error file path.
 
+	--debug-window
+		enable window
+
+	--debug-url
+		enable log url
+
+	--debug-pagetext
+		enable log url
+
 	--enable-cheerio-httpcli
 		enable cheerio-httpcli.
-
-	--kokubu, -K
-		search from kokubu
 
 	--aeon, -A
 		search from aeon
 
-	--tajima, -T
-		search from tajima
+	--coop, -C
+		search from coop
+
+	--iyec, -I
+		search from iyec
+
+	--kokubu, -K
+		search from kokubu
 
 	--lohaco, -L
 		search from lohaco
 
-	--coop, -C
-		search from coop
+	--mogunavi, -M
+		search from mogunavi
+
+	--tajima, -T
+		search from tajima
 ```
+
 
 最低限、 ```search from``` のオプションは何か指定しないとエラーになる。
 

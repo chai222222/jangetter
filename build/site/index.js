@@ -28,12 +28,14 @@ var _KokubuSearch = require('./KokubuSearch');
 
 var _KokubuSearch2 = _interopRequireDefault(_KokubuSearch);
 
+var _MogunaviSearch = require('./MogunaviSearch');
+
+var _MogunaviSearch2 = _interopRequireDefault(_MogunaviSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-exports.default = _defineProperty({
-  kokubu: function kokubu() {
+exports.default = {
+  iyec: function iyec() {
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
@@ -67,12 +69,20 @@ exports.default = _defineProperty({
     }
 
     return new (Function.prototype.bind.apply(_CoopSearch2.default, [null].concat(args)))();
-  }
-}, 'kokubu', function kokubu() {
-  for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-    args[_key6] = arguments[_key6];
-  }
+  },
+  kokubu: function kokubu() {
+    for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+      args[_key6] = arguments[_key6];
+    }
 
-  return new (Function.prototype.bind.apply(_KokubuSearch2.default, [null].concat(args)))();
-});
+    return new (Function.prototype.bind.apply(_KokubuSearch2.default, [null].concat(args)))();
+  },
+  mogunavi: function mogunavi() {
+    for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+      args[_key7] = arguments[_key7];
+    }
+
+    return new (Function.prototype.bind.apply(_MogunaviSearch2.default, [null].concat(args)))();
+  }
+};
 //# sourceMappingURL=index.js.map

@@ -39,23 +39,15 @@ var LOHACO_CONSTANTS = {
       title: [{
         pattern: /.*LOHACO *\- */g,
         value: ''
-      }, {
-        pattern: /　+/g,
-        value: ' '
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: function value(s) {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        }
-      }],
+      }, _JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidthAlnum],
       jan: [{
         pattern: /\r?\n/g,
         value: ''
       }, {
-        pattern: /.*JANコード */,
+        pattern: /.*JANコード\s*/,
         value: ''
       }, {
-        pattern: / +.*$/g,
+        pattern: /\s+.*$/g,
         value: ''
       }],
       category: [{

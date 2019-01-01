@@ -39,6 +39,33 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 process.on('unhandledRejection', console.dir);
 
+function getSiteOpts() {
+  var names = Object.keys(_site2.default).sort();
+  var flag = new Set();
+  var n2up = names.reduce(function (acc, name) {
+    var c = name.charAt(0);
+    if (flag.has(c)) {
+      c = [].concat(_toConsumableArray(name), _toConsumableArray('0123456789')).find(function (c, idx) {
+        return idx > 0 && names.every(function (name) {
+          return name.charAt(0) !== c;
+        });
+      });
+      if (!c) throw new Error('オプション設定できません');
+    }
+    flag.add(c);
+    acc[name] = c.toLocaleUpperCase();
+    return acc;
+  }, {});
+  return names.map(function (name) {
+    return {
+      name: name,
+      short: n2up[name],
+      type: 'boolean',
+      description: 'search from ' + name
+    };
+  });
+}
+
 _argv2.default.option([{
   name: 'output',
   short: 'o',
@@ -50,17 +77,22 @@ _argv2.default.option([{
   type: 'path',
   description: 'output error file path.'
 }, {
+  name: 'debug-window',
+  type: 'boolean',
+  description: 'enable window'
+}, {
+  name: 'debug-url',
+  type: 'boolean',
+  description: 'enable log url'
+}, {
+  name: 'debug-pagetext',
+  type: 'boolean',
+  description: 'enable log url'
+}, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
-  description: 'disable cheerio-httpcli.'
-}].concat(_toConsumableArray(Object.keys(_site2.default).map(function (name) {
-  return {
-    name: name,
-    short: name.charAt(0).toLocaleUpperCase(), /// 先頭一文字目はかぶらない前提
-    type: 'boolean',
-    description: 'search from ' + name
-  };
-}))));
+  description: 'enable cheerio-httpcli.'
+}].concat(_toConsumableArray(getSiteOpts())));
 var args = _argv2.default.run();
 
 if (args.targets.length < 1 || !Object.keys(_site2.default).some(function (name) {
@@ -85,7 +117,7 @@ var searchers = [];
             _context2.next = 2;
             return _puppeteer2.default.launch({
               ignoreHTTPSErrors: true,
-              headless: true,
+              headless: !args.options['debug-window'],
               args: ['--enable-features=NetworkService', '--enable-logging', '--no-sandbox', '--v=1']
             });
 
@@ -99,7 +131,9 @@ var searchers = [];
             page = _context2.sent;
             _context2.next = 9;
             return page.on('framenavigated', function (frm) {
-              console.log("### URL ", frm.url());
+              if (args.options['debug-url']) {
+                console.log("### URL ", frm.url());
+              }
             });
 
           case 9:

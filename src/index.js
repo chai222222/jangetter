@@ -11,6 +11,27 @@ import Site from './site';
 
 process.on('unhandledRejection', console.dir);
 
+function getSiteOpts() {
+  const names = Object.keys(Site).sort();
+  const flag = new Set();
+  const n2up = names.reduce((acc, name) => {
+    let c = name.charAt(0);
+    if (flag.has(c)) {
+      c = [ ...name, ...'0123456789'].find((c, idx) => idx > 0 && names.every(name => name.charAt(0) !== c));
+      if (!c) throw new Error('オプション設定できません');
+    }
+    flag.add(c);
+    acc[name] = c.toLocaleUpperCase();
+    return acc;
+  }, {})
+  return names.map(name => ({
+    name,
+    short: n2up[name],
+    type: 'boolean',
+    description: `search from ${name}`,
+  }));
+}
+
 argv.option([ {
   name: 'output',
   short: 'o',
@@ -22,15 +43,22 @@ argv.option([ {
   type: 'path',
   description: 'output error file path.',
 }, {
+  name: 'debug-window',
+  type: 'boolean',
+  description: 'enable window',
+}, {
+  name: 'debug-url',
+  type: 'boolean',
+  description: 'enable log url',
+}, {
+  name: 'debug-pagetext',
+  type: 'boolean',
+  description: 'enable log url',
+}, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
-  description: 'disable cheerio-httpcli.',
-}, ...Object.keys(Site).map(name => ({
-  name,
-  short: name.charAt(0).toLocaleUpperCase(), /// 先頭一文字目はかぶらない前提
-  type: 'boolean',
-  description: `search from ${name}`,
-})), ]);
+  description: 'enable cheerio-httpcli.',
+}, ...getSiteOpts() ]);
 const args = argv.run();
 
 if (args.targets.length < 1 || !Object.keys(Site).some(name => args.options[name])) {
@@ -45,7 +73,7 @@ const searchers = [];
 (async (words) => {
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
-    headless: true,
+    headless: !args.options['debug-window'],
     args: [
       '--enable-features=NetworkService',
       '--enable-logging',
@@ -57,7 +85,9 @@ const searchers = [];
   try {
     const page = await browser.newPage();
     await page.on('framenavigated', frm => {
-      console.log("### URL ", frm.url());
+      if (args.options['debug-url']) {
+        console.log("### URL ", frm.url());
+      }
     });
     await page.setViewport(Constants.viewport);
 

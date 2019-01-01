@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.REPLACERS = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -107,40 +108,140 @@ var JanSearchBase = function () {
     }()
 
     /**
+     * セレクタの要素を複数取得します。スラッシュ始まりの場合、XPath形式とみなします。
+     * @param {string} selector
+     * @return {Array<Promise>} 選択した要素
+     */
+
+  }, {
+    key: 'xselectLink',
+    value: function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(selector) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!selector.startsWith('/')) {
+                  _context3.next = 6;
+                  break;
+                }
+
+                _context3.next = 3;
+                return this.page.$x(selector);
+
+              case 3:
+                _context3.t0 = _context3.sent;
+                _context3.next = 9;
+                break;
+
+              case 6:
+                _context3.next = 8;
+                return this.page.$$(selector);
+
+              case 8:
+                _context3.t0 = _context3.sent;
+
+              case 9:
+                return _context3.abrupt('return', _context3.t0);
+
+              case 10:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function xselectLink(_x2) {
+        return _ref3.apply(this, arguments);
+      }
+
+      return xselectLink;
+    }()
+  }, {
+    key: 'xselectClick',
+    value: function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(selector) {
+        var link;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                if (!selector) {
+                  _context4.next = 11;
+                  break;
+                }
+
+                console.log('*** xselectClick ' + selector + ' ***');
+                _context4.next = 4;
+                return this.xselectLink(selector);
+
+              case 4:
+                link = _context4.sent;
+
+                if (!(link.length > 0)) {
+                  _context4.next = 11;
+                  break;
+                }
+
+                console.log('*** xselectClick ' + selector + ' click');
+                _context4.next = 9;
+                return link[0].click();
+
+              case 9:
+                _context4.next = 11;
+                return this.waitLoaded();
+
+              case 11:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function xselectClick(_x3) {
+        return _ref4.apply(this, arguments);
+      }
+
+      return xselectClick;
+    }()
+
+    /**
      * ページロードを待ちます。
      */
 
   }, {
     key: 'waitLoaded',
     value: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 console.log('*** waitLoaded ***');
-                _context3.prev = 1;
-                _context3.next = 4;
+                _context5.prev = 1;
+                _context5.next = 4;
                 return this.page.waitForNavigation({ timeout: this.timeout, waitUntil: 'domcontentloaded' });
 
               case 4:
-                _context3.next = 8;
+                _context5.next = 8;
                 break;
 
               case 6:
-                _context3.prev = 6;
-                _context3.t0 = _context3['catch'](1);
+                _context5.prev = 6;
+                _context5.t0 = _context5['catch'](1);
 
               case 8:
               case 'end':
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3, this, [[1, 6]]);
+        }, _callee5, this, [[1, 6]]);
       }));
 
       function waitLoaded() {
-        return _ref3.apply(this, arguments);
+        return _ref5.apply(this, arguments);
       }
 
       return waitLoaded;
@@ -176,20 +277,20 @@ var JanSearchBase = function () {
   }, {
     key: 'init',
     value: function () {
-      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
               case 'end':
-                return _context4.stop();
+                return _context6.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee6, this);
       }));
 
       function init() {
-        return _ref4.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       }
 
       return init;
@@ -208,62 +309,62 @@ var JanSearchBase = function () {
   }, {
     key: 'search',
     value: function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
         var _this2 = this;
 
         for (var _len3 = arguments.length, keywords = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
           keywords[_key3] = arguments[_key3];
         }
 
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 console.log('*** janSearch ***');
-                _context6.next = 3;
+                _context8.next = 3;
                 return this.page.goto(this.getSrcConfig().top, { waitUntil: 'networkidle2' });
 
               case 3:
-                _context6.next = 5;
+                _context8.next = 5;
                 return this.init();
 
               case 5:
-                _context6.next = 7;
+                _context8.next = 7;
                 return (0, _pIteration.forEachSeries)(keywords, function () {
-                  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(keyword) {
-                    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(keyword) {
+                    return regeneratorRuntime.wrap(function _callee7$(_context7) {
                       while (1) {
-                        switch (_context5.prev = _context5.next) {
+                        switch (_context7.prev = _context7.next) {
                           case 0:
-                            _context5.next = 2;
+                            _context7.next = 2;
                             return _this2.searchWord(keyword);
 
                           case 2:
-                            return _context5.abrupt('return', _context5.sent);
+                            return _context7.abrupt('return', _context7.sent);
 
                           case 3:
                           case 'end':
-                            return _context5.stop();
+                            return _context7.stop();
                         }
                       }
-                    }, _callee5, _this2);
+                    }, _callee7, _this2);
                   }));
 
-                  return function (_x2) {
-                    return _ref6.apply(this, arguments);
+                  return function (_x4) {
+                    return _ref8.apply(this, arguments);
                   };
                 }());
 
               case 7:
               case 'end':
-                return _context6.stop();
+                return _context8.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee8, this);
       }));
 
       function search() {
-        return _ref5.apply(this, arguments);
+        return _ref7.apply(this, arguments);
       }
 
       return search;
@@ -277,46 +378,50 @@ var JanSearchBase = function () {
   }, {
     key: 'searchWord',
     value: function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(word) {
+      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(word) {
         var config, outputFile;
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 console.log('*** search[' + word + '] ***');
                 config = this.getSrcConfig();
                 outputFile = this.outputDir + '/' + config.prefix + '_' + word.replace(/ +/g, '_') + '.csv';
 
                 this.writer = _WriterCreator2.default.createCsvWriter(outputFile);
-                _context7.next = 6;
+                _context9.next = 6;
                 return this.page.type(config.searchPageSelectors.searchText, word);
 
               case 6:
-                _context7.next = 8;
+                _context9.next = 8;
                 return this.page.click(config.searchPageSelectors.searchButton);
 
               case 8:
-                _context7.next = 10;
+                _context9.next = 10;
                 return this.waitLoaded();
 
               case 10:
-                _context7.next = 12;
-                return this.eachItemFromSearchResult();
+                _context9.next = 12;
+                return this.xselectClick(config.searchPageSelectors.cushion);
 
               case 12:
+                _context9.next = 14;
+                return this.eachItemFromSearchResult();
+
+              case 14:
                 this.writer.close();
                 console.log('Output done. [' + outputFile + ']');
 
-              case 14:
+              case 16:
               case 'end':
-                return _context7.stop();
+                return _context9.stop();
             }
           }
-        }, _callee7, this);
+        }, _callee9, this);
       }));
 
-      function searchWord(_x3) {
-        return _ref7.apply(this, arguments);
+      function searchWord(_x5) {
+        return _ref9.apply(this, arguments);
       }
 
       return searchWord;
@@ -329,106 +434,108 @@ var JanSearchBase = function () {
   }, {
     key: 'eachItemFromSearchResult',
     value: function () {
-      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
         var _this3 = this;
 
         var links, skipCheerio, result;
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
-            switch (_context9.prev = _context9.next) {
+            switch (_context11.prev = _context11.next) {
               case 0:
                 console.log('*** eachItemFromSearchResult ***');
-                _context9.next = 3;
+                _context11.next = 3;
                 return this.getAllJanUrls();
 
               case 3:
-                links = _context9.sent;
+                links = _context11.sent;
 
-                console.log(links);
+                console.log('** LINKS', links);
                 skipCheerio = false;
-                _context9.next = 8;
+                _context11.next = 8;
                 return (0, _pIteration.mapSeries)(links, function () {
-                  var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(link) {
+                  var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(link, idx) {
                     var jan;
-                    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                    return regeneratorRuntime.wrap(function _callee10$(_context10) {
                       while (1) {
-                        switch (_context8.prev = _context8.next) {
+                        switch (_context10.prev = _context10.next) {
                           case 0:
-                            _context8.prev = 0;
+                            _context10.prev = 0;
+
+                            console.log('PRODUCTS[' + (idx + 1) + '/' + links.length + ']');
                             jan = void 0;
 
                             if (!(_this3.options['enable-cheerio-httpcli'] && !skipCheerio)) {
-                              _context8.next = 7;
+                              _context10.next = 8;
                               break;
                             }
 
-                            _context8.next = 5;
+                            _context10.next = 6;
                             return _this3.getJanByCheerioHttpcli(link);
 
-                          case 5:
-                            jan = _context8.sent;
+                          case 6:
+                            jan = _context10.sent;
 
                             skipCheerio = jan === undefined;
 
-                          case 7:
+                          case 8:
                             if (jan) {
-                              _context8.next = 11;
+                              _context10.next = 12;
                               break;
                             }
 
-                            _context8.next = 10;
+                            _context10.next = 11;
                             return _this3.getJan(link);
 
-                          case 10:
-                            jan = _context8.sent;
-
                           case 11:
+                            jan = _context10.sent;
+
+                          case 12:
                             if (jan) {
-                              _context8.next = 14;
+                              _context10.next = 15;
                               break;
                             }
 
                             _this3.addErr('商品ページへ移動できませんでした', link);
-                            return _context8.abrupt('return');
+                            return _context10.abrupt('return');
 
-                          case 14:
+                          case 15:
                             _this3.writer.write(_this3.replceValues(_this3.getSrcConfig().replacer, jan));
-                            _context8.next = 21;
+                            _context10.next = 22;
                             break;
 
-                          case 17:
-                            _context8.prev = 17;
-                            _context8.t0 = _context8['catch'](0);
+                          case 18:
+                            _context10.prev = 18;
+                            _context10.t0 = _context10['catch'](0);
 
-                            _this3.addErr('商品ページへ移動できませんでした', link, _context8.t0);
-                            return _context8.abrupt('return');
+                            _this3.addErr('商品ページへ移動できませんでした', link, _context10.t0);
+                            return _context10.abrupt('return');
 
-                          case 21:
+                          case 22:
                           case 'end':
-                            return _context8.stop();
+                            return _context10.stop();
                         }
                       }
-                    }, _callee8, _this3, [[0, 17]]);
+                    }, _callee10, _this3, [[0, 18]]);
                   }));
 
-                  return function (_x4) {
-                    return _ref9.apply(this, arguments);
+                  return function (_x6, _x7) {
+                    return _ref11.apply(this, arguments);
                   };
                 }());
 
               case 8:
-                result = _context9.sent;
+                result = _context11.sent;
 
               case 9:
               case 'end':
-                return _context9.stop();
+                return _context11.stop();
             }
           }
-        }, _callee9, this);
+        }, _callee11, this);
       }));
 
       function eachItemFromSearchResult() {
-        return _ref8.apply(this, arguments);
+        return _ref10.apply(this, arguments);
       }
 
       return eachItemFromSearchResult;
@@ -441,153 +548,35 @@ var JanSearchBase = function () {
   }, {
     key: 'getAllJanUrls',
     value: function () {
-      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
         var config;
-        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+        return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context12.prev = _context12.next) {
               case 0:
                 console.log('*** getAllJanUrls ***');
                 config = this.getSrcConfig();
 
                 if (!config.searchPageSelectors.scrollToBottom) {
-                  _context10.next = 6;
+                  _context12.next = 6;
                   break;
                 }
 
-                return _context10.abrupt('return', this.getAllJanUrlsScrollToBottom());
+                return _context12.abrupt('return', this.getAllJanUrlsScrollToBottom());
 
               case 6:
                 if (!config.searchPageSelectors.nextLink) {
-                  _context10.next = 8;
+                  _context12.next = 8;
                   break;
                 }
 
-                return _context10.abrupt('return', this.getAllJanUrlsPageTransition());
+                return _context12.abrupt('return', this.getAllJanUrlsPageTransition());
 
               case 8:
                 this.addErr('JANリンク取得方法が定義されていません。');
-                return _context10.abrupt('return', []);
+                return _context12.abrupt('return', []);
 
               case 10:
-              case 'end':
-                return _context10.stop();
-            }
-          }
-        }, _callee10, this);
-      }));
-
-      function getAllJanUrls() {
-        return _ref10.apply(this, arguments);
-      }
-
-      return getAllJanUrls;
-    }()
-  }, {
-    key: 'getAllJanUrlsPageTransition',
-    value: function () {
-      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
-        var page, productsSel, nextSel, links;
-        return regeneratorRuntime.wrap(function _callee11$(_context11) {
-          while (1) {
-            switch (_context11.prev = _context11.next) {
-              case 0:
-                console.log('*** getAllJanUrlsPageTransition ***');
-                page = 1;
-                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
-                nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
-                _context11.next = 6;
-                return this.page.$$eval(productsSel, function (list) {
-                  return list.map(function (item) {
-                    return item.href;
-                  });
-                });
-
-              case 6:
-                links = _context11.sent;
-
-              case 7:
-                _context11.next = 9;
-                return this.existsAll(nextSel);
-
-              case 9:
-                if (!_context11.sent) {
-                  _context11.next = 25;
-                  break;
-                }
-
-                // →ボタンがある
-                console.log('page ' + ++page);
-                _context11.next = 13;
-                return this.page.click(nextSel);
-
-              case 13:
-                _context11.next = 15;
-                return this.waitLoaded();
-
-              case 15:
-                _context11.t0 = links.push;
-                _context11.t1 = links;
-                _context11.t2 = _toConsumableArray;
-                _context11.next = 20;
-                return this.page.$$eval(productsSel, function (list) {
-                  return list.map(function (item) {
-                    return item.href;
-                  });
-                });
-
-              case 20:
-                _context11.t3 = _context11.sent;
-                _context11.t4 = (0, _context11.t2)(_context11.t3);
-
-                _context11.t0.apply.call(_context11.t0, _context11.t1, _context11.t4);
-
-                _context11.next = 7;
-                break;
-
-              case 25:
-                return _context11.abrupt('return', links);
-
-              case 26:
-              case 'end':
-                return _context11.stop();
-            }
-          }
-        }, _callee11, this);
-      }));
-
-      function getAllJanUrlsPageTransition() {
-        return _ref11.apply(this, arguments);
-      }
-
-      return getAllJanUrlsPageTransition;
-    }()
-  }, {
-    key: 'getAllJanUrlsScrollToBottom',
-    value: function () {
-      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-        var productsSel;
-        return regeneratorRuntime.wrap(function _callee12$(_context12) {
-          while (1) {
-            switch (_context12.prev = _context12.next) {
-              case 0:
-                console.log('*** getAllJanUrlsScrollToBottom ***');
-                _context12.next = 3;
-                return this.scrollToBottom(this.page, _constants2.default.viewport.height);
-
-              case 3:
-                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
-                _context12.next = 6;
-                return this.page.$$eval(productsSel, function (list) {
-                  return list.map(function (item) {
-                    return item.href;
-                  });
-                });
-
-              case 6:
-                return _context12.abrupt('return', _context12.sent);
-
-              case 7:
               case 'end':
                 return _context12.stop();
             }
@@ -595,8 +584,129 @@ var JanSearchBase = function () {
         }, _callee12, this);
       }));
 
-      function getAllJanUrlsScrollToBottom() {
+      function getAllJanUrls() {
         return _ref12.apply(this, arguments);
+      }
+
+      return getAllJanUrls;
+    }()
+  }, {
+    key: 'getAllJanUrlsPageTransition',
+    value: function () {
+      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
+        var page, productsSel, nextSel, links, nexts;
+        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                console.log('*** getAllJanUrlsPageTransition ***');
+                page = 1;
+                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+                nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
+                _context13.next = 6;
+                return this.page.$$eval(productsSel, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
+                });
+
+              case 6:
+                links = _context13.sent;
+                nexts = void 0;
+
+              case 8:
+                _context13.next = 10;
+                return this.xselectLink(nextSel);
+
+              case 10:
+                _context13.t0 = (nexts = _context13.sent).length;
+
+                if (!(_context13.t0 > 0)) {
+                  _context13.next = 27;
+                  break;
+                }
+
+                // →ボタンがある
+                console.log('PAGE ' + ++page);
+                _context13.next = 15;
+                return nexts[0].click();
+
+              case 15:
+                _context13.next = 17;
+                return this.waitLoaded();
+
+              case 17:
+                _context13.t1 = links.push;
+                _context13.t2 = links;
+                _context13.t3 = _toConsumableArray;
+                _context13.next = 22;
+                return this.page.$$eval(productsSel, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
+                });
+
+              case 22:
+                _context13.t4 = _context13.sent;
+                _context13.t5 = (0, _context13.t3)(_context13.t4);
+
+                _context13.t1.apply.call(_context13.t1, _context13.t2, _context13.t5);
+
+                _context13.next = 8;
+                break;
+
+              case 27:
+                return _context13.abrupt('return', links);
+
+              case 28:
+              case 'end':
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this);
+      }));
+
+      function getAllJanUrlsPageTransition() {
+        return _ref13.apply(this, arguments);
+      }
+
+      return getAllJanUrlsPageTransition;
+    }()
+  }, {
+    key: 'getAllJanUrlsScrollToBottom',
+    value: function () {
+      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+        var productsSel;
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
+                console.log('*** getAllJanUrlsScrollToBottom ***');
+                _context14.next = 3;
+                return this.scrollToBottom(this.page, _constants2.default.viewport.height);
+
+              case 3:
+                productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+                _context14.next = 6;
+                return this.page.$$eval(productsSel, function (list) {
+                  return list.map(function (item) {
+                    return item.href;
+                  });
+                });
+
+              case 6:
+                return _context14.abrupt('return', _context14.sent);
+
+              case 7:
+              case 'end':
+                return _context14.stop();
+            }
+          }
+        }, _callee14, this);
+      }));
+
+      function getAllJanUrlsScrollToBottom() {
+        return _ref14.apply(this, arguments);
       }
 
       return getAllJanUrlsScrollToBottom;
@@ -604,39 +714,39 @@ var JanSearchBase = function () {
   }, {
     key: 'scrollToBottom',
     value: function () {
-      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(page, viewportHeight) {
+      var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(page, viewportHeight) {
         var getScrollHeight, scrollHeight, currentPosition, scrollNumber, nextPosition;
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
                 getScrollHeight = function getScrollHeight() {
                   return Promise.resolve(document.documentElement.scrollHeight);
                 };
 
-                _context13.next = 3;
+                _context15.next = 3;
                 return page.evaluate(getScrollHeight);
 
               case 3:
-                scrollHeight = _context13.sent;
+                scrollHeight = _context15.sent;
                 currentPosition = 0;
                 scrollNumber = 0;
 
               case 6:
                 if (!(currentPosition < scrollHeight)) {
-                  _context13.next = 22;
+                  _context15.next = 22;
                   break;
                 }
 
                 scrollNumber += 1;
                 nextPosition = scrollNumber * viewportHeight;
-                _context13.next = 11;
+                _context15.next = 11;
                 return page.evaluate(function (scrollTo) {
                   return Promise.resolve(window.scrollTo(0, scrollTo));
                 }, nextPosition);
 
               case 11:
-                _context13.next = 13;
+                _context15.next = 13;
                 return page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 5000 }).catch(function (e) {
                   return console.log('timeout exceed. proceed to next operation');
                 });
@@ -648,26 +758,26 @@ var JanSearchBase = function () {
                 console.log('currentPosition: ' + currentPosition);
 
                 // 2
-                _context13.next = 18;
+                _context15.next = 18;
                 return page.evaluate(getScrollHeight);
 
               case 18:
-                scrollHeight = _context13.sent;
+                scrollHeight = _context15.sent;
 
                 console.log('ScrollHeight ' + scrollHeight);
-                _context13.next = 6;
+                _context15.next = 6;
                 break;
 
               case 22:
               case 'end':
-                return _context13.stop();
+                return _context15.stop();
             }
           }
-        }, _callee13, this);
+        }, _callee15, this);
       }));
 
-      function scrollToBottom(_x5, _x6) {
-        return _ref13.apply(this, arguments);
+      function scrollToBottom(_x8, _x9) {
+        return _ref15.apply(this, arguments);
       }
 
       return scrollToBottom;
@@ -680,66 +790,66 @@ var JanSearchBase = function () {
   }, {
     key: 'getJan',
     value: function () {
-      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(url) {
+      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(url) {
         var _this4 = this;
 
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
+        return regeneratorRuntime.wrap(function _callee17$(_context17) {
           while (1) {
-            switch (_context15.prev = _context15.next) {
+            switch (_context17.prev = _context17.next) {
               case 0:
                 console.log('*** getJan ***');
-                _context15.next = 3;
+                _context17.next = 3;
                 return this.page.goto(url, { waitUntil: 'networkidle2' });
 
               case 3:
-                _context15.prev = 3;
-                _context15.next = 6;
+                _context17.prev = 3;
+                _context17.next = 6;
                 return (0, _pIteration.reduce)(Object.keys(this.getSrcConfig().productPageSelectors), function () {
-                  var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(acc, key) {
-                    return regeneratorRuntime.wrap(function _callee14$(_context14) {
+                  var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(acc, key) {
+                    return regeneratorRuntime.wrap(function _callee16$(_context16) {
                       while (1) {
-                        switch (_context14.prev = _context14.next) {
+                        switch (_context16.prev = _context16.next) {
                           case 0:
-                            _context14.next = 2;
+                            _context16.next = 2;
                             return _this4.getPageText(key);
 
                           case 2:
-                            acc[key] = _context14.sent;
-                            return _context14.abrupt('return', acc);
+                            acc[key] = _context16.sent;
+                            return _context16.abrupt('return', acc);
 
                           case 4:
                           case 'end':
-                            return _context14.stop();
+                            return _context16.stop();
                         }
                       }
-                    }, _callee14, _this4);
+                    }, _callee16, _this4);
                   }));
 
-                  return function (_x8, _x9) {
-                    return _ref15.apply(this, arguments);
+                  return function (_x11, _x12) {
+                    return _ref17.apply(this, arguments);
                   };
                 }(), {});
 
               case 6:
-                return _context15.abrupt('return', _context15.sent);
+                return _context17.abrupt('return', _context17.sent);
 
               case 9:
-                _context15.prev = 9;
-                _context15.t0 = _context15['catch'](3);
+                _context17.prev = 9;
+                _context17.t0 = _context17['catch'](3);
 
                 this.addErr('JANがページから取得できませんでした', url);
-                return _context15.abrupt('return', undefined);
+                return _context17.abrupt('return', undefined);
 
               case 13:
               case 'end':
-                return _context15.stop();
+                return _context17.stop();
             }
           }
-        }, _callee15, this, [[3, 9]]);
+        }, _callee17, this, [[3, 9]]);
       }));
 
-      function getJan(_x7) {
-        return _ref14.apply(this, arguments);
+      function getJan(_x10) {
+        return _ref16.apply(this, arguments);
       }
 
       return getJan;
@@ -747,20 +857,20 @@ var JanSearchBase = function () {
   }, {
     key: 'getJanByCheerioHttpcli',
     value: function () {
-      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(url) {
+      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(url) {
         var _this5 = this;
 
-        return regeneratorRuntime.wrap(function _callee16$(_context16) {
+        return regeneratorRuntime.wrap(function _callee18$(_context18) {
           while (1) {
-            switch (_context16.prev = _context16.next) {
+            switch (_context18.prev = _context18.next) {
               case 0:
                 console.log('*** getJanByCheerioHttpcli ***');
-                _context16.next = 3;
-                return _cheerioHttpcli2.default.fetch(url).then(function (_ref17) {
-                  var err = _ref17.err,
-                      $ = _ref17.$,
-                      res = _ref17.res,
-                      body = _ref17.body;
+                _context18.next = 3;
+                return _cheerioHttpcli2.default.fetch(url).then(function (_ref19) {
+                  var err = _ref19.err,
+                      $ = _ref19.$,
+                      res = _ref19.res,
+                      body = _ref19.body;
 
                   return Object.keys(_this5.getSrcConfig().productPageSelectors).reduce(function (acc, key) {
                     var txt = $(_this5.getSrcConfig().productPageSelectors[key]).text();
@@ -776,18 +886,18 @@ var JanSearchBase = function () {
                 });
 
               case 3:
-                return _context16.abrupt('return', _context16.sent);
+                return _context18.abrupt('return', _context18.sent);
 
               case 4:
               case 'end':
-                return _context16.stop();
+                return _context18.stop();
             }
           }
-        }, _callee16, this);
+        }, _callee18, this);
       }));
 
-      function getJanByCheerioHttpcli(_x10) {
-        return _ref16.apply(this, arguments);
+      function getJanByCheerioHttpcli(_x13) {
+        return _ref18.apply(this, arguments);
       }
 
       return getJanByCheerioHttpcli;
@@ -795,30 +905,41 @@ var JanSearchBase = function () {
   }, {
     key: 'getPageText',
     value: function () {
-      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(key) {
-        return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(key) {
+        var sel, text;
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
           while (1) {
-            switch (_context17.prev = _context17.next) {
+            switch (_context19.prev = _context19.next) {
               case 0:
-                console.log(this.getSrcConfig().productPageSelectors[key]);
-                _context17.next = 3;
-                return this.page.$eval(this.getSrcConfig().productPageSelectors[key], function (item) {
+                sel = this.getSrcConfig().productPageSelectors[key];
+                text = '';
+                _context19.prev = 2;
+                _context19.next = 5;
+                return this.page.$eval(sel, function (item) {
                   return item.textContent;
                 });
 
-              case 3:
-                return _context17.abrupt('return', _context17.sent);
+              case 5:
+                return _context19.abrupt('return', text = _context19.sent);
 
-              case 4:
+              case 6:
+                _context19.prev = 6;
+
+                if (this.options['debug-pagetext']) {
+                  console.log('getPageText[' + key + '][' + sel + '][' + text + ']');
+                }
+                return _context19.finish(6);
+
+              case 9:
               case 'end':
-                return _context17.stop();
+                return _context19.stop();
             }
           }
-        }, _callee17, this);
+        }, _callee19, this, [[2,, 6, 9]]);
       }));
 
-      function getPageText(_x11) {
-        return _ref18.apply(this, arguments);
+      function getPageText(_x14) {
+        return _ref20.apply(this, arguments);
       }
 
       return getPageText;
@@ -828,5 +949,20 @@ var JanSearchBase = function () {
   return JanSearchBase;
 }();
 
+/** 共通リプレーサ定義 */
+
+
 exports.default = JanSearchBase;
+var REPLACERS = exports.REPLACERS = {
+  toHarfWidthAlnum: {
+    pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
+    value: function value(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 65248);
+    }
+  },
+  toHarfWidthSpace: {
+    pattern: /　+/g,
+    value: ' '
+  }
+};
 //# sourceMappingURL=JanSearchBase.js.map

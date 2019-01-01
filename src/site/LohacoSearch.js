@@ -1,4 +1,4 @@
-import JanSearchBase from './JanSearchBase';
+import JanSearchBase, { REPLACERS } from './JanSearchBase';
 
 const LOHACO_CONSTANTS = {
   searchConfig: {
@@ -16,26 +16,20 @@ const LOHACO_CONSTANTS = {
       title: 'title',
     },
     replacer: {
-      title: [{
+      title: [ {
         pattern: /.*LOHACO *\- */g,
         value: '',
-      }, {
-        pattern: /　+/g,
-        value: ' ',
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: (s) => {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        },
-      }],
+      }, REPLACERS.toHarfWidthSpace,
+         REPLACERS.toHarfWidthAlnum
+      ],
       jan: [{
         pattern: /\r?\n/g,
         value: '',
       }, {
-        pattern: /.*JANコード */,
+        pattern: /.*JANコード\s*/,
         value: '',
       }, {
-        pattern: / +.*$/g,
+        pattern: /\s+.*$/g,
         value: '',
       }],
       category: [{

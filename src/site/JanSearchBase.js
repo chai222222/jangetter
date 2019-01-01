@@ -24,6 +24,29 @@ export default class JanSearchBase {
   }
 
   /**
+   * セレクタの要素を複数取得します。スラッシュ始まりの場合、XPath形式とみなします。
+   * @param {string} selector
+   * @return {Array<Promise>} 選択した要素
+   */
+  async xselectLink(selector) {
+    return selector.startsWith('/')
+      ? await this.page.$x(selector)
+      : await this.page.$$(selector);
+  }
+
+  async xselectClick(selector) {
+    if (selector) {
+      console.log(`*** xselectClick ${selector} ***`);
+      const link = await this.xselectLink(selector);
+      if (link.length > 0) {
+        console.log(`*** xselectClick ${selector} click`);
+        await link[0].click();
+        await this.waitLoaded();
+      }
+    }
+  }
+
+  /**
    * ページロードを待ちます。
    */
   async waitLoaded() {
@@ -83,6 +106,7 @@ export default class JanSearchBase {
     await this.page.type(config.searchPageSelectors.searchText, word);
     await this.page.click(config.searchPageSelectors.searchButton);
     await this.waitLoaded();
+    await this.xselectClick(config.searchPageSelectors.cushion);
     await this.eachItemFromSearchResult();
     this.writer.close();
     console.log(`Output done. [${outputFile}]`);
@@ -94,10 +118,11 @@ export default class JanSearchBase {
   async eachItemFromSearchResult() {
     console.log('*** eachItemFromSearchResult ***');
     const links = await this.getAllJanUrls();
-    console.log(links);
+    console.log('** LINKS', links);
     let skipCheerio = false;
-    const result = await mapSeries(links, async link => {
+    const result = await mapSeries(links, async (link, idx) => {
       try {
+        console.log(`PRODUCTS[${idx+1}/${links.length}]`);
         let jan;
         if (this.options['enable-cheerio-httpcli'] && !skipCheerio) {
           jan = await this.getJanByCheerioHttpcli(link);
@@ -137,9 +162,10 @@ export default class JanSearchBase {
     const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
     const nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
     const links = await this.page.$$eval(productsSel, list => list.map(item => item.href));
-    while (await this.existsAll(nextSel)) { // →ボタンがある
-      console.log(`page ${++page}`);
-      await this.page.click(nextSel);
+    let nexts;
+    while ((nexts = await this.xselectLink(nextSel)).length > 0) { // →ボタンがある
+      console.log(`PAGE ${++page}`);
+      await nexts[0].click();
       await this.waitLoaded();
       links.push(... await this.page.$$eval(productsSel, list => list.map(item => item.href)));
     }
@@ -217,7 +243,28 @@ export default class JanSearchBase {
 
 
   async getPageText(key) {
-    console.log(this.getSrcConfig().productPageSelectors[key]);
-    return await this.page.$eval(this.getSrcConfig().productPageSelectors[key], item => item.textContent);
+    const sel = this.getSrcConfig().productPageSelectors[key];
+    let text = '';
+    try {
+      return text = await this.page.$eval(sel, item => item.textContent);
+    } finally {
+      if (this.options['debug-pagetext']) {
+        console.log(`getPageText[${key}][${sel}][${text}]`);
+      }
+    }
+  }
+}
+
+/** 共通リプレーサ定義 */
+export const REPLACERS = {
+  toHarfWidthAlnum: {
+    pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
+    value: (s) => {
+      return String.fromCharCode(s.charCodeAt(0) - 65248);
+    },
+  },
+  toHarfWidthSpace: {
+    pattern: /　+/g,
+    value: ' ',
   }
 }
