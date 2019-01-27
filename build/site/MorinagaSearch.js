@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
@@ -20,77 +22,57 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var LOHACO_CONSTANTS = {
+var MORINAGA_CONSTANTS = {
   searchConfig: {
-    prefix: 'Lohaco',
-    top: 'https://lohaco.jp/',
+    prefix: 'Morinaga',
+    top: 'https://www.morinaga.co.jp/products/',
     searchPageSelectors: {
-      productsLink: 'div.prodImgBlc > a',
-      nextLink: 'p.nextBtn > a',
-      searchText: '#jsi-txtKeywd',
-      searchButton: 'div.searchBtn'
+      searchText: '#SS_searchQuery3',
+      searchButton: '#SS_searchQuery3 + input',
+      productsLink: 'div.SS_item > div.SS_image > a',
+      nextLink: 'span.SS_nextPage > a'
     },
     productPageSelectors: {
-      jan: 'table.prodSpecTable > tbody',
-      category: 'div.blcCategoryNav div.blcCatNav',
-      title: 'title'
+      jan: 'div.products-detailBox__inner dl.products-detailBox__list dd:last-child',
+      category: 'div.products-detailContents div.headingType02 p.headingType02__txt',
+      title: 'div.products-mainBox h2.headingType01__txt'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.toHarfWidthAlnum, {
-        pattern: /.*LOHACO *\- */g,
-        value: ''
-      }],
-      jan: [_JanSearchBase2.REPLACERS.toOneLine, {
-        pattern: /.*JANコード\s*/,
-        value: ''
-      }, {
-        pattern: /\s+.*$/g,
-        value: ''
-      }],
-      category: [_JanSearchBase2.REPLACERS.toOneSpace]
+      title: [_JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toHarfWidthSpace],
+      jan: [],
+      category: [_JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim]
     }
   }
 };
 
-var TajimaSearch = function (_JanSearchBase) {
-  _inherits(TajimaSearch, _JanSearchBase);
+var MorinagaSearch = function (_JanSearchBase) {
+  _inherits(MorinagaSearch, _JanSearchBase);
 
-  function TajimaSearch() {
-    _classCallCheck(this, TajimaSearch);
+  function MorinagaSearch() {
+    _classCallCheck(this, MorinagaSearch);
 
-    return _possibleConstructorReturn(this, (TajimaSearch.__proto__ || Object.getPrototypeOf(TajimaSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (MorinagaSearch.__proto__ || Object.getPrototypeOf(MorinagaSearch)).apply(this, arguments));
   }
 
-  _createClass(TajimaSearch, [{
-    key: 'init',
-
-
-    /**
-     * 検索可能画面になるまで遷移する。
-     */
+  _createClass(MorinagaSearch, [{
+    key: 'getAllJanUrls',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var popupedModal;
+        var links;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return this.existsAll('div.campaignModal > p.close');
+                return _get(MorinagaSearch.prototype.__proto__ || Object.getPrototypeOf(MorinagaSearch.prototype), 'getAllJanUrls', this).call(this);
 
               case 2:
-                popupedModal = _context.sent;
+                links = _context.sent;
+                return _context.abrupt('return', links.filter(function (url) {
+                  return url.indexOf('detail') > 0;
+                }));
 
-                if (!popupedModal) {
-                  _context.next = 7;
-                  break;
-                }
-
-                this.page.click('div.campaignModal > p.close');
-                _context.next = 7;
-                return this.waitLoaded();
-
-              case 7:
+              case 4:
               case 'end':
                 return _context.stop();
             }
@@ -98,21 +80,21 @@ var TajimaSearch = function (_JanSearchBase) {
         }, _callee, this);
       }));
 
-      function init() {
+      function getAllJanUrls() {
         return _ref.apply(this, arguments);
       }
 
-      return init;
+      return getAllJanUrls;
     }()
   }, {
     key: 'getSrcConfig',
     value: function getSrcConfig() {
-      return LOHACO_CONSTANTS.searchConfig;
+      return MORINAGA_CONSTANTS.searchConfig;
     }
   }]);
 
-  return TajimaSearch;
+  return MorinagaSearch;
 }(_JanSearchBase3.default);
 
-exports.default = TajimaSearch;
-//# sourceMappingURL=LohacoSearch.js.map
+exports.default = MorinagaSearch;
+//# sourceMappingURL=MorinagaSearch.js.map

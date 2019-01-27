@@ -69,7 +69,9 @@ export default class JanSearchBase {
     const nobj = { ...obj };
     Object.keys(replaceDef).filter(key => key in nobj)
       .forEach(key => nobj[key] = replaceDef[key].reduce((acc, def) => {
-        acc = acc.replace(def.pattern, def.value);
+        (Array.isArray(def) ? def : [def]).forEach(nestDef => {
+          acc = acc.replace(nestDef.pattern, nestDef.value);
+        });
         return acc;
       }, nobj[key]));
     return nobj;
@@ -78,6 +80,19 @@ export default class JanSearchBase {
   async init() {
   }
 
+  /**
+   * 検索設定定義を返す。
+   * @return {Object} 検索設定定義
+   * @property {String} prefix 出力プリフィックス
+   * @property {String} top アクセス先頭ページ
+   * @property {String} searchPageSelectors.searchText 検索文字列セレクタ
+   * @property {String} searchPageSelectors.searchButton 検索ボタンセレクタ
+   * @property {String} searchPageSelectors.nextLink 次へリンクセレクタ。XmlPathも設定可能
+   * @property {String} searchPageSelectors.productsLink 商品ページリンクセレクタ
+   * @property {String|Object} productPageSelectors.{カラム} データ取得セレクタ。
+   *           オブジェクトの場合には、selにセレクタ、methodに取得メソッドを指定する。
+   * @property {Array<Object>} replacer.{カラム} データ変換定義。patternに正規表現、valueに置き換え後の文字列。
+   */
   getSrcConfig() {
   }
 
@@ -130,7 +145,6 @@ export default class JanSearchBase {
         }
         if (!jan) jan = await this.getJan(link);
         if (!jan) {
-          this.addErr('商品ページへ移動できませんでした', link);
           return;
         }
        this.writer.write(this.replceValues(this.getSrcConfig().replacer, jan));
@@ -219,6 +233,7 @@ export default class JanSearchBase {
         return acc;
       }, {});
     } catch (e) {
+      console.log(e);
       this.addErr('JANがページから取得できませんでした', url);
       return undefined;
     }
@@ -237,6 +252,7 @@ export default class JanSearchBase {
         return acc;
       }, {});
     }).catch(e => {
+      this.addErr('JANがページから取得できませんでした', url);
       return undefined;
     });
   }
@@ -244,9 +260,10 @@ export default class JanSearchBase {
 
   async getPageText(key) {
     const sel = this.getSrcConfig().productPageSelectors[key];
+    const getter = (typeof sel === 'object') ? sel : { sel, method: item => item.textContent };
     let text = '';
     try {
-      return text = await this.page.$eval(sel, item => item.textContent);
+      return text = await this.page.$eval(getter.sel, getter.method);
     } finally {
       if (this.options['debug-pagetext']) {
         console.log(`getPageText[${key}][${sel}][${text}]`);
@@ -271,6 +288,16 @@ export const REPLACERS = {
   },
   toHarfWidthSpace: {
     pattern: /　+/g,
+    value: ' ',
+  },
+  trim: [ { pattern: /^\s+/, value: '' },
+          { pattern: /\s+$/, value: '' } ],
+  toOneSpace: {
+    pattern: /\s\s+/g,
+    value: ' ',
+  },
+  toOneLine: {
+    pattern: /\r?\n/g,
     value: ' ',
   }
 }

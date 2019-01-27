@@ -22,7 +22,9 @@ function getSiteOpts() {
   const n2up = names.reduce((acc, name) => {
     let c = name.charAt(0);
     if (flag.has(c)) {
-      c = [ ...name, ...'0123456789'].find((c, idx) => idx > 0 && names.every(name => name.charAt(0) !== c));
+      c = [ ...name, ...'0123456789'].find((c, idx) => idx > 0
+        && names.every(name => name.charAt(0) !== c)
+        && !flag.has(c));
       if (!c) throw new Error('オプション設定できません');
     }
     flag.add(c);

@@ -18,53 +18,50 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TAJIMA_CONSTANTS = {
+var CREATESD_CONSTANTS = {
   searchConfig: {
-    prefix: 'Tajima',
-    top: 'http://www.tajimaya-cc.net/',
+    prefix: 'CreateSD',
+    top: 'http://netshop.create-sd.co.jp/shop/default.aspx',
     searchPageSelectors: {
-      productsLink: 'div.boxProduct > a',
-      nextLink: '#page_navi_top div.navi > a:last-child',
-      searchText: 'p.searchftxt input',
-      searchButton: '#search_form p.btn input'
+      searchText: '#keyword',
+      searchButton: '#keyword + input',
+      productsLink: 'div.StyleD_Frame_ > div >div.img_ > a',
+      nextLink: 'li.navipage_next_ a'
     },
     productPageSelectors: {
-      jan: '#product_code_default',
-      category: 'li.onmark > p > a',
-      title: 'title'
+      jan: 'div.goodsdetail_.top_ + div + div > p.txt_',
+      category: '#bread-crumb-list',
+      title: 'div.common_h2_blue_ h2 span'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidthAlnum, {
-        pattern: /.*株式会社タジマヤ *\/ */g,
+      title: [_JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toHarfWidthSpace],
+      jan: [],
+      category: [_JanSearchBase2.REPLACERS.toOneLine, _JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim, {
+        pattern: /^\s*ホーム\s*/,
         value: ''
-      }],
-      jan: [{
-        pattern: /\D/g,
-        value: ''
-      }],
-      category: [_JanSearchBase2.REPLACERS.toOneLine]
+      }]
     }
   }
 };
 
-var TajimaSearch = function (_JanSearchBase) {
-  _inherits(TajimaSearch, _JanSearchBase);
+var CreateSdSearch = function (_JanSearchBase) {
+  _inherits(CreateSdSearch, _JanSearchBase);
 
-  function TajimaSearch() {
-    _classCallCheck(this, TajimaSearch);
+  function CreateSdSearch() {
+    _classCallCheck(this, CreateSdSearch);
 
-    return _possibleConstructorReturn(this, (TajimaSearch.__proto__ || Object.getPrototypeOf(TajimaSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (CreateSdSearch.__proto__ || Object.getPrototypeOf(CreateSdSearch)).apply(this, arguments));
   }
 
-  _createClass(TajimaSearch, [{
+  _createClass(CreateSdSearch, [{
     key: 'getSrcConfig',
     value: function getSrcConfig() {
-      return TAJIMA_CONSTANTS.searchConfig;
+      return CREATESD_CONSTANTS.searchConfig;
     }
   }]);
 
-  return TajimaSearch;
+  return CreateSdSearch;
 }(_JanSearchBase3.default);
 
-exports.default = TajimaSearch;
-//# sourceMappingURL=TajimaSearch.js.map
+exports.default = CreateSdSearch;
+//# sourceMappingURL=CreateSdSearch.js.map

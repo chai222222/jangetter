@@ -34,31 +34,20 @@ var KOKUBU_CONSTANTS = {
       title: 'title'
     },
     replacer: {
-      title: [{
+      title: [_JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidthAlnum, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim, {
         pattern: /.*問屋 *国分ネット卸 */g,
         value: ''
       }, {
-        pattern: /[ 　]+/g, // 全角空白半角空白を１つの空白に
-        value: ' '
-      }, {
         pattern: / *: .*/g, // 不要部分を削除
         value: ''
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: function value(s) {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        }
       }],
       jan: [{
         pattern: /\D/g,
         value: ''
       }],
-      category: [{
+      category: [_JanSearchBase2.REPLACERS.toOneSpace, {
         pattern: /問屋 *国分ネット卸：トップ *> */g,
         value: ''
-      }, {
-        pattern: /\s+/g,
-        value: ' '
       }]
     }
   }

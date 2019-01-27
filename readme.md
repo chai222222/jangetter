@@ -33,6 +33,9 @@ Usage: jangetter [options]
 	--coop, -C
 		search from coop
 
+	--createsd, -R
+		search from createsd
+
 	--iyec, -I
 		search from iyec
 
@@ -48,8 +51,13 @@ Usage: jangetter [options]
 	--mogunavi, -M
 		search from mogunavi
 
+	--morinaga, -N
+		search from morinaga
+
 	--tajima, -T
 		search from tajima
+
+
 
 ```
 

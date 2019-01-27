@@ -6,6 +6,8 @@ import CoopSearch from './CoopSearch';
 import KokubuSearch from './KokubuSearch';
 import MogunaviSearch from './MogunaviSearch';
 import KenkocomSearch from './KenkocomSearch';
+import CreateSdSearch from './CreateSdSearch';
+import MorinagaSearch from './MorinagaSearch';
 
 export default {
   iyec: (...args) => new IyecSearch(...args),
@@ -16,4 +18,6 @@ export default {
   kokubu: (...args) => new KokubuSearch(...args),
   mogunavi: (...args) => new MogunaviSearch(...args),
   kenkocom: (...args) => new KenkocomSearch(...args),
+  createsd: (...args) => new CreateSdSearch(...args),
+  morinaga: (...args) => new MorinagaSearch(...args),
 };

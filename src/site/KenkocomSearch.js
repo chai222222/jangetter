@@ -21,13 +21,8 @@ const KENKOCOM_CONSTANTS = {
       ],
       category: [
         REPLACERS.toHarfWidth,
-        {
-          pattern: /\s+/g,
-          value: ' ',
-        }, {
-          pattern: /\s+$/g,
-          value: '',
-        }
+        REPLACERS.toOneSpace,
+        REPLACERS.trim,
       ],
     },
   },

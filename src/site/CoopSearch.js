@@ -1,4 +1,4 @@
-import JanSearchBase from './JanSearchBase';
+import JanSearchBase, { REPLACERS } from './JanSearchBase';
 
 const COOP_CONSTANTS = {
   searchConfig: {
@@ -16,18 +16,15 @@ const COOP_CONSTANTS = {
       title: 'title',
     },
     replacer: {
-      title: [{
-        pattern: / < .*/g,
-        value: '',
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: (s) => {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        },
-      }, {
-        pattern: /^/g,
-        value: 'コープ ',
-      }],
+      title: [
+        REPLACERS.toHarfWidthAlnum, {
+          pattern: / < .*/g,
+          value: '',
+        }, {
+          pattern: /^/g,
+          value: 'コープ ',
+        }
+      ],
       jan: [{
         pattern: /^.*shohindetail\//,
         value: '',
@@ -38,10 +35,10 @@ const COOP_CONSTANTS = {
         pattern: /\D/g,
         value: '',
       }],
-      category: [{
-        pattern: /\s+/g,
-        value: ' ',
-      }],
+      category: [
+        REPLACERS.toOneSpace,
+        REPLACERS.trim,
+      ],
     },
   },
 };

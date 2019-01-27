@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.REPLACERS = undefined;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -268,7 +270,9 @@ var JanSearchBase = function () {
         return key in nobj;
       }).forEach(function (key) {
         return nobj[key] = replaceDef[key].reduce(function (acc, def) {
-          acc = acc.replace(def.pattern, def.value);
+          (Array.isArray(def) ? def : [def]).forEach(function (nestDef) {
+            acc = acc.replace(nestDef.pattern, nestDef.value);
+          });
           return acc;
         }, nobj[key]);
       });
@@ -295,6 +299,21 @@ var JanSearchBase = function () {
 
       return init;
     }()
+
+    /**
+     * 検索設定定義を返す。
+     * @return {Object} 検索設定定義
+     * @property {String} prefix 出力プリフィックス
+     * @property {String} top アクセス先頭ページ
+     * @property {String} searchPageSelectors.searchText 検索文字列セレクタ
+     * @property {String} searchPageSelectors.searchButton 検索ボタンセレクタ
+     * @property {String} searchPageSelectors.nextLink 次へリンクセレクタ。XmlPathも設定可能
+     * @property {String} searchPageSelectors.productsLink 商品ページリンクセレクタ
+     * @property {String|Object} productPageSelectors.{カラム} データ取得セレクタ。
+     *           オブジェクトの場合には、selにセレクタ、methodに取得メソッドを指定する。
+     * @property {Array<Object>} replacer.{カラム} データ変換定義。patternに正規表現、valueに置き換え後の文字列。
+     */
+
   }, {
     key: 'getSrcConfig',
     value: function getSrcConfig() {}
@@ -491,31 +510,30 @@ var JanSearchBase = function () {
 
                           case 12:
                             if (jan) {
-                              _context10.next = 15;
+                              _context10.next = 14;
                               break;
                             }
 
-                            _this3.addErr('商品ページへ移動できませんでした', link);
                             return _context10.abrupt('return');
 
-                          case 15:
+                          case 14:
                             _this3.writer.write(_this3.replceValues(_this3.getSrcConfig().replacer, jan));
-                            _context10.next = 22;
+                            _context10.next = 21;
                             break;
 
-                          case 18:
-                            _context10.prev = 18;
+                          case 17:
+                            _context10.prev = 17;
                             _context10.t0 = _context10['catch'](0);
 
                             _this3.addErr('商品ページへ移動できませんでした', link, _context10.t0);
                             return _context10.abrupt('return');
 
-                          case 22:
+                          case 21:
                           case 'end':
                             return _context10.stop();
                         }
                       }
-                    }, _callee10, _this3, [[0, 18]]);
+                    }, _callee10, _this3, [[0, 17]]);
                   }));
 
                   return function (_x6, _x7) {
@@ -837,10 +855,11 @@ var JanSearchBase = function () {
                 _context17.prev = 9;
                 _context17.t0 = _context17['catch'](3);
 
+                console.log(_context17.t0);
                 this.addErr('JANがページから取得できませんでした', url);
                 return _context17.abrupt('return', undefined);
 
-              case 13:
+              case 14:
               case 'end':
                 return _context17.stop();
             }
@@ -882,6 +901,7 @@ var JanSearchBase = function () {
                     return acc;
                   }, {});
                 }).catch(function (e) {
+                  _this5.addErr('JANがページから取得できませんでした', url);
                   return undefined;
                 });
 
@@ -906,36 +926,37 @@ var JanSearchBase = function () {
     key: 'getPageText',
     value: function () {
       var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(key) {
-        var sel, text;
+        var sel, getter, text;
         return regeneratorRuntime.wrap(function _callee19$(_context19) {
           while (1) {
             switch (_context19.prev = _context19.next) {
               case 0:
                 sel = this.getSrcConfig().productPageSelectors[key];
+                getter = (typeof sel === 'undefined' ? 'undefined' : _typeof(sel)) === 'object' ? sel : { sel: sel, method: function method(item) {
+                    return item.textContent;
+                  } };
                 text = '';
-                _context19.prev = 2;
-                _context19.next = 5;
-                return this.page.$eval(sel, function (item) {
-                  return item.textContent;
-                });
-
-              case 5:
-                return _context19.abrupt('return', text = _context19.sent);
+                _context19.prev = 3;
+                _context19.next = 6;
+                return this.page.$eval(getter.sel, getter.method);
 
               case 6:
-                _context19.prev = 6;
+                return _context19.abrupt('return', text = _context19.sent);
+
+              case 7:
+                _context19.prev = 7;
 
                 if (this.options['debug-pagetext']) {
                   console.log('getPageText[' + key + '][' + sel + '][' + text + ']');
                 }
-                return _context19.finish(6);
+                return _context19.finish(7);
 
-              case 9:
+              case 10:
               case 'end':
                 return _context19.stop();
             }
           }
-        }, _callee19, this, [[2,, 6, 9]]);
+        }, _callee19, this, [[3,, 7, 10]]);
       }));
 
       function getPageText(_x14) {
@@ -968,6 +989,15 @@ var REPLACERS = exports.REPLACERS = {
   },
   toHarfWidthSpace: {
     pattern: /　+/g,
+    value: ' '
+  },
+  trim: [{ pattern: /^\s+/, value: '' }, { pattern: /\s+$/, value: '' }],
+  toOneSpace: {
+    pattern: /\s\s+/g,
+    value: ' '
+  },
+  toOneLine: {
+    pattern: /\r?\n/g,
     value: ' '
   }
 };

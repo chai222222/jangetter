@@ -1,4 +1,4 @@
-import JanSearchBase from './JanSearchBase';
+import JanSearchBase, { REPLACERS } from './JanSearchBase';
 
 const KOKUBU_CONSTANTS = {
   searchConfig: {
@@ -16,32 +16,28 @@ const KOKUBU_CONSTANTS = {
       title: 'title',
     },
     replacer: {
-      title: [{
-        pattern: /.*問屋 *国分ネット卸 */g,
-        value: '',
-      }, {
-        pattern: /[ 　]+/g, // 全角空白半角空白を１つの空白に
-        value: ' ',
-      }, {
-        pattern: / *: .*/g, // 不要部分を削除
-        value: '',
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: (s) => {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
+      title: [
+        REPLACERS.toHarfWidthSpace,
+        REPLACERS.toHarfWidthAlnum,
+        REPLACERS.toOneSpace,
+        REPLACERS.trim, {
+          pattern: /.*問屋 *国分ネット卸 */g,
+          value: '',
+        }, {
+          pattern: / *: .*/g, // 不要部分を削除
+          value: '',
         },
-      }],
+      ],
       jan: [{
         pattern: /\D/g,
         value: '',
       }],
-      category: [{
-        pattern: /問屋 *国分ネット卸：トップ *> */g,
-        value: '',
-      }, {
-        pattern: /\s+/g,
-        value: ' ',
-      }],
+      category: [
+        REPLACERS.toOneSpace, {
+          pattern: /問屋 *国分ネット卸：トップ *> */g,
+          value: '',
+        },
+      ],
     },
   },
 };

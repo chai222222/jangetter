@@ -1,4 +1,4 @@
-import JanSearchBase from './JanSearchBase';
+import JanSearchBase, { REPLACERS } from './JanSearchBase';
 
 const TAJIMA_CONSTANTS = {
   searchConfig: {
@@ -16,26 +16,20 @@ const TAJIMA_CONSTANTS = {
       title: 'title',
     },
     replacer: {
-      title: [{
-        pattern: /.*株式会社タジマヤ *\/ */g,
-        value: '',
-      }, {
-        pattern: /　+/g,
-        value: ' ',
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: (s) => {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
+      title: [
+        REPLACERS.toHarfWidthSpace,
+        REPLACERS.toHarfWidthAlnum, {
+          pattern: /.*株式会社タジマヤ *\/ */g,
+          value: '',
         },
-      }],
+      ],
       jan: [{
         pattern: /\D/g,
         value: '',
       }],
-      category: [{
-        pattern: /\s+/g,
-        value: ' ',
-      }],
+      category: [
+        REPLACERS.toOneLine
+      ],
     },
   },
 };

@@ -38,14 +38,9 @@ var COOP_CONSTANTS = {
       title: 'title'
     },
     replacer: {
-      title: [{
+      title: [_JanSearchBase2.REPLACERS.toHarfWidthAlnum, {
         pattern: / < .*/g,
         value: ''
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: function value(s) {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        }
       }, {
         pattern: /^/g,
         value: 'コープ '
@@ -60,10 +55,7 @@ var COOP_CONSTANTS = {
         pattern: /\D/g,
         value: ''
       }],
-      category: [{
-        pattern: /\s+/g,
-        value: ' '
-      }]
+      category: [_JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim]
     }
   }
 };

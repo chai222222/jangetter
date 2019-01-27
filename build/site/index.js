@@ -36,6 +36,14 @@ var _KenkocomSearch = require('./KenkocomSearch');
 
 var _KenkocomSearch2 = _interopRequireDefault(_KenkocomSearch);
 
+var _CreateSdSearch = require('./CreateSdSearch');
+
+var _CreateSdSearch2 = _interopRequireDefault(_CreateSdSearch);
+
+var _MorinagaSearch = require('./MorinagaSearch');
+
+var _MorinagaSearch2 = _interopRequireDefault(_MorinagaSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -94,6 +102,20 @@ exports.default = {
     }
 
     return new (Function.prototype.bind.apply(_KenkocomSearch2.default, [null].concat(args)))();
+  },
+  createsd: function createsd() {
+    for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+      args[_key9] = arguments[_key9];
+    }
+
+    return new (Function.prototype.bind.apply(_CreateSdSearch2.default, [null].concat(args)))();
+  },
+  morinaga: function morinaga() {
+    for (var _len10 = arguments.length, args = Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+      args[_key10] = arguments[_key10];
+    }
+
+    return new (Function.prototype.bind.apply(_MorinagaSearch2.default, [null].concat(args)))();
   }
 };
 //# sourceMappingURL=index.js.map

@@ -53,7 +53,7 @@ function getSiteOpts() {
       c = [].concat(_toConsumableArray(name), _toConsumableArray('0123456789')).find(function (c, idx) {
         return idx > 0 && names.every(function (name) {
           return name.charAt(0) !== c;
-        });
+        }) && !flag.has(c);
       });
       if (!c) throw new Error('オプション設定できません');
     }

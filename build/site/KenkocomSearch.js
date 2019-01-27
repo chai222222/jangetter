@@ -35,13 +35,7 @@ var KENKOCOM_CONSTANTS = {
     },
     replacer: {
       title: [_JanSearchBase2.REPLACERS.toHarfWidth],
-      category: [_JanSearchBase2.REPLACERS.toHarfWidth, {
-        pattern: /\s+/g,
-        value: ' '
-      }, {
-        pattern: /\s+$/g,
-        value: ''
-      }]
+      category: [_JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim]
     }
   }
 };

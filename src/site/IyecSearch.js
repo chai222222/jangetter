@@ -1,4 +1,4 @@
-import JanSearchBase from './JanSearchBase';
+import JanSearchBase, { REPLACERS } from './JanSearchBase';
 
 const IYEC_CONSTANTS = {
   searchConfig: {
@@ -16,21 +16,18 @@ const IYEC_CONSTANTS = {
       title: 'title',
     },
     replacer: {
-      title: [{
-        pattern: /.*ネット通販./g,
-        value: '',
-      }, {
-        pattern: / +通販 *$/g,
-        value: '',
-      }, {
-        pattern: /　+/g,
-        value: ' ',
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: (s) => {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
+      title: [
+        REPLACERS.toHarfWidthAlnum, {
+          pattern: /.*ネット通販./g,
+          value: '',
+        }, {
+          pattern: / +通販 *$/g,
+          value: '',
+        }, {
+          pattern: /　+/g,
+          value: ' ',
         },
-      }],
+      ],
       jan: [{
         pattern: /\D/g,
         value: '',

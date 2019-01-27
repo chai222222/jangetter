@@ -34,7 +34,7 @@ var IYEC_CONSTANTS = {
       title: 'title'
     },
     replacer: {
-      title: [{
+      title: [_JanSearchBase2.REPLACERS.toHarfWidthAlnum, {
         pattern: /.*ネット通販./g,
         value: ''
       }, {
@@ -43,11 +43,6 @@ var IYEC_CONSTANTS = {
       }, {
         pattern: /　+/g,
         value: ' '
-      }, {
-        pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-        value: function value(s) {
-          return String.fromCharCode(s.charCodeAt(0) - 65248);
-        }
       }],
       jan: [{
         pattern: /\D/g,

@@ -16,26 +16,26 @@ const LOHACO_CONSTANTS = {
       title: 'title',
     },
     replacer: {
-      title: [ {
-        pattern: /.*LOHACO *\- */g,
-        value: '',
-      }, REPLACERS.toHarfWidthSpace,
-         REPLACERS.toHarfWidthAlnum
+      title: [
+        REPLACERS.toHarfWidthSpace,
+        REPLACERS.toOneSpace,
+        REPLACERS.toHarfWidthAlnum, {
+          pattern: /.*LOHACO *\- */g,
+          value: '',
+        },
       ],
-      jan: [{
-        pattern: /\r?\n/g,
-        value: '',
-      }, {
-        pattern: /.*JANコード\s*/,
-        value: '',
-      }, {
-        pattern: /\s+.*$/g,
-        value: '',
-      }],
-      category: [{
-        pattern: /\s+/g,
-        value: ' ',
-      }],
+      jan: [
+        REPLACERS.toOneLine, {
+          pattern: /.*JANコード\s*/,
+          value: '',
+        }, {
+          pattern: /\s+.*$/g,
+          value: '',
+        }
+      ],
+      category: [
+        REPLACERS.toOneSpace,
+      ],
     },
   },
 };
