@@ -439,7 +439,7 @@ var JanSearchBase = function () {
       var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
         var _this3 = this;
 
-        var links, skipCheerio, result;
+        var hasDupLinks, links, skipCheerio, result;
         return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
@@ -449,11 +449,12 @@ var JanSearchBase = function () {
                 return this.getAllJanUrls();
 
               case 3:
-                links = _context11.sent;
+                hasDupLinks = _context11.sent;
+                links = Array.from(new Set(hasDupLinks));
 
                 console.log('** LINKS', links);
                 skipCheerio = false;
-                _context11.next = 8;
+                _context11.next = 9;
                 return (0, _pIteration.mapSeries)(links, function () {
                   var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(link, idx) {
                     var jan;
@@ -524,10 +525,10 @@ var JanSearchBase = function () {
                   };
                 }());
 
-              case 8:
+              case 9:
                 result = _context11.sent;
 
-              case 9:
+              case 10:
               case 'end':
                 return _context11.stop();
             }

@@ -120,7 +120,8 @@ export default class JanSearchBase {
    */
   async eachItemFromSearchResult() {
     console.log('*** eachItemFromSearchResult ***');
-    const links = await this.getAllJanUrls();
+    const hasDupLinks = await this.getAllJanUrls();
+    const links = Array.from(new Set(hasDupLinks));
     console.log('** LINKS', links);
     let skipCheerio = false;
     const result = await mapSeries(links, async (link, idx) => {
@@ -207,7 +208,6 @@ export default class JanSearchBase {
       console.log(`ScrollHeight ${scrollHeight}`)
     }
   }
-
 
   /**
    * 商品ページからjan情報をかえします。
