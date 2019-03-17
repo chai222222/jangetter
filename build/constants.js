@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -11,6 +11,7 @@ exports.default = {
     width: 1600,
     height: 1200
   },
-  timeout: 30000
+  timeout: 30000,
+  rcfile: './.jangetterrc'
 };
 //# sourceMappingURL=constants.js.map

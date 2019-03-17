@@ -10,6 +10,8 @@ var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
 
+var _Replacer = require('../util/Replacer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34,9 +36,9 @@ var CREATESD_CONSTANTS = {
       title: 'div.common_h2_blue_ h2 span'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toHarfWidthSpace],
+      title: [_Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toHarfWidthSpace],
       jan: [],
-      category: [_JanSearchBase2.REPLACERS.toOneLine, _JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim, {
+      category: [_Replacer.REPLACERS.toOneLine, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, {
         pattern: /^\s*ホーム\s*/,
         value: ''
       }]

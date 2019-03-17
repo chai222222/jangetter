@@ -7,13 +7,11 @@ exports.REPLACERS = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _stream = require('stream');
+var _lodash = require('lodash');
 
-var _stream2 = _interopRequireDefault(_stream);
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _pIteration = require('p-iteration');
 
@@ -24,6 +22,10 @@ var _cheerioHttpcli2 = _interopRequireDefault(_cheerioHttpcli);
 var _WriterCreator = require('../util/WriterCreator');
 
 var _WriterCreator2 = _interopRequireDefault(_WriterCreator);
+
+var _Replacer = require('../util/Replacer');
+
+var _Replacer2 = _interopRequireDefault(_Replacer);
 
 var _constants = require('../constants');
 
@@ -45,7 +47,9 @@ var JanSearchBase = function () {
     // this.outputDir = outputDir;
     // this.page = page;
     // this.errors = errors;
+    // this.rc = rc;
     this.timeout = _constants2.default.timeout;
+    this.replacer = new _Replacer2.default(this.getSrcConfig().replacer, _lodash2.default.get(this, 'rc.replacer'));
   }
 
   /**
@@ -256,27 +260,6 @@ var JanSearchBase = function () {
       }
 
       this.errors.push(errs.join(','));
-    }
-
-    /**
-     * jan, title, categoryの値を定義にそって置き換えを行います。
-     */
-
-  }, {
-    key: 'replceValues',
-    value: function replceValues(replaceDef, obj) {
-      var nobj = _extends({}, obj);
-      Object.keys(replaceDef).filter(function (key) {
-        return key in nobj;
-      }).forEach(function (key) {
-        return nobj[key] = replaceDef[key].reduce(function (acc, def) {
-          (Array.isArray(def) ? def : [def]).forEach(function (nestDef) {
-            acc = acc.replace(nestDef.pattern, nestDef.value);
-          });
-          return acc;
-        }, nobj[key]);
-      });
-      return nobj;
     }
   }, {
     key: 'init',
@@ -517,7 +500,7 @@ var JanSearchBase = function () {
                             return _context10.abrupt('return');
 
                           case 14:
-                            _this3.writer.write(_this3.replceValues(_this3.getSrcConfig().replacer, jan));
+                            _this3.writer.write(_this3.replacer.replceValues(jan));
                             _context10.next = 21;
                             break;
 

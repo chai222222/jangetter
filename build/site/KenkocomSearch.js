@@ -10,6 +10,8 @@ var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
 
+var _Replacer = require('../util/Replacer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34,8 +36,8 @@ var KENKOCOM_CONSTANTS = {
       title: 'h2.itemTitle'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidth],
-      category: [_JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim]
+      title: [_Replacer.REPLACERS.toHarfWidth],
+      category: [_Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim]
     }
   }
 };

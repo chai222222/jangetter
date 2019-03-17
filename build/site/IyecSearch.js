@@ -10,6 +10,8 @@ var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
 
+var _Replacer = require('../util/Replacer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34,7 +36,7 @@ var IYEC_CONSTANTS = {
       title: 'title'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidthAlnum, {
+      title: [_Replacer.REPLACERS.toHarfWidthAlnum, {
         pattern: /.*ネット通販./g,
         value: ''
       }, {

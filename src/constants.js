@@ -7,4 +7,5 @@ export default {
     height: 1200,
   },
   timeout: 30000,
+  rcfile: './.jangetterrc',
 };

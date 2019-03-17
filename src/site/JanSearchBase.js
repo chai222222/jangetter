@@ -1,8 +1,9 @@
-import stream from 'stream';
+import _ from 'lodash';
 import { forEachSeries, map, mapSeries, every, reduce } from 'p-iteration';
 import cheerioClient from 'cheerio-httpcli';
 
 import WriterCreator from '../util/WriterCreator';
+import Replacer from '../util/Replacer';
 import Constants from '../constants';
 
 export default class JanSearchBase {
@@ -12,7 +13,9 @@ export default class JanSearchBase {
     // this.outputDir = outputDir;
     // this.page = page;
     // this.errors = errors;
+    // this.rc = rc;
     this.timeout = Constants.timeout;
+    this.replacer = new Replacer(this.getSrcConfig().replacer, _.get(this, 'rc.replacer'));
   }
 
   /**
@@ -60,21 +63,6 @@ export default class JanSearchBase {
 
   addErr(...errs) {
     this.errors.push(errs.join(','));
-  }
-
-  /**
-   * jan, title, categoryの値を定義にそって置き換えを行います。
-   */
-  replceValues(replaceDef, obj) {
-    const nobj = { ...obj };
-    Object.keys(replaceDef).filter(key => key in nobj)
-      .forEach(key => nobj[key] = replaceDef[key].reduce((acc, def) => {
-        (Array.isArray(def) ? def : [def]).forEach(nestDef => {
-          acc = acc.replace(nestDef.pattern, nestDef.value);
-        });
-        return acc;
-      }, nobj[key]));
-    return nobj;
   }
 
   async init() {
@@ -147,7 +135,7 @@ export default class JanSearchBase {
         if (!jan) {
           return;
         }
-       this.writer.write(this.replceValues(this.getSrcConfig().replacer, jan));
+       this.writer.write(this.replacer.replceValues(jan));
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
         return;

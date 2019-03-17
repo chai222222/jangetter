@@ -10,6 +10,8 @@ var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
 
+var _Replacer = require('../util/Replacer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34,7 +36,7 @@ var KOKUBU_CONSTANTS = {
       title: 'title'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidthAlnum, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim, {
+      title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthAlnum, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, {
         pattern: /.*問屋 *国分ネット卸 */g,
         value: ''
       }, {
@@ -45,7 +47,7 @@ var KOKUBU_CONSTANTS = {
         pattern: /\D/g,
         value: ''
       }],
-      category: [_JanSearchBase2.REPLACERS.toOneSpace, {
+      category: [_Replacer.REPLACERS.toOneSpace, {
         pattern: /問屋 *国分ネット卸：トップ *> */g,
         value: ''
       }]

@@ -12,6 +12,8 @@ var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
 
+var _Replacer = require('../util/Replacer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -38,9 +40,9 @@ var MORINAGA_CONSTANTS = {
       title: 'div.products-mainBox h2.headingType01__txt'
     },
     replacer: {
-      title: [_JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toHarfWidthSpace],
+      title: [_Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toHarfWidthSpace],
       jan: [],
-      category: [_JanSearchBase2.REPLACERS.toHarfWidthSpace, _JanSearchBase2.REPLACERS.toHarfWidth, _JanSearchBase2.REPLACERS.toOneSpace, _JanSearchBase2.REPLACERS.trim]
+      category: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim]
     }
   }
 };

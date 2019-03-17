@@ -1,4 +1,5 @@
-import JanSearchBase, { REPLACERS } from './JanSearchBase';
+import JanSearchBase from './JanSearchBase';
+import { REPLACERS } from '../util/Replacer';
 
 const CREATESD_CONSTANTS = {
   searchConfig: {

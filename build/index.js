@@ -113,7 +113,7 @@ var searchers = [];
 
 (function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(words) {
-    var browser, page, errors, _searchers;
+    var browser, page, rcPath, rc, errors, _searchers;
 
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
@@ -146,13 +146,22 @@ var searchers = [];
             return page.setViewport(_constants2.default.viewport);
 
           case 11:
+            // rcファイル読み込み
+            rcPath = _constants2.default.rcfile;
+            rc = undefined;
+
+            if (_fs2.default.existsSync(rcPath)) {
+              console.log('load rc file.');
+              rc = JSON.parse(_fs2.default.readFileSync(rcPath, 'utf8'));
+            }
+
             errors = [];
             _searchers = Object.keys(_site2.default).filter(function (name) {
               return args.options[name];
             }).map(function (name) {
-              return _site2.default[name]({ outputDir: outputDir, page: page, errors: errors, options: args.options });
+              return _site2.default[name]({ outputDir: outputDir, page: page, errors: errors, rc: rc, options: args.options });
             });
-            _context2.next = 15;
+            _context2.next = 18;
             return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -178,7 +187,7 @@ var searchers = [];
               };
             }());
 
-          case 15:
+          case 18:
 
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
@@ -188,28 +197,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 21;
+            _context2.next = 24;
             break;
 
-          case 18:
-            _context2.prev = 18;
+          case 21:
+            _context2.prev = 21;
             _context2.t0 = _context2['catch'](3);
 
             console.log(_context2.t0.stack);
 
-          case 21:
-            _context2.prev = 21;
+          case 24:
+            _context2.prev = 24;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(21);
+            return _context2.finish(24);
 
-          case 25:
+          case 28:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 18, 21, 25]]);
+    }, _callee2, undefined, [[3, 21, 24, 28]]);
   }));
 
   return function (_x) {

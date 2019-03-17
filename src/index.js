@@ -97,11 +97,18 @@ const searchers = [];
       }
     });
     await page.setViewport(Constants.viewport);
+    // rcファイル読み込み
+    const rcPath = Constants.rcfile;
+    let rc = undefined;
+    if (fs.existsSync(rcPath)) {
+      console.log('load rc file.');
+      rc = JSON.parse(fs.readFileSync(rcPath, 'utf8'));
+    }
 
     const errors = [];
     const searchers = Object.keys(Site)
       .filter(name => args.options[name])
-      .map(name => Site[name]({outputDir, page, errors, options: args.options}));
+      .map(name => Site[name]({outputDir, page, errors, rc, options: args.options}));
 
     await forEachSeries(searchers, async s => await s.search(...words));
 
