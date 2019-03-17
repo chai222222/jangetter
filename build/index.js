@@ -44,9 +44,9 @@ process.on('unhandledRejection', console.dir);
  * 名前の一文字目を大文字にしたものがオプションになるが、すでにある場合は、二文字目以降で使われない文字を使う。
  * @return {Array<Object>} オプションデータ
  */
-function getSiteOpts() {
+function getSiteOpts(knownFlags) {
   var names = Object.keys(_site2.default).sort();
-  var flag = new Set();
+  var flag = new Set(knownFlags);
   var n2up = names.reduce(function (acc, name) {
     var c = name.charAt(0);
     if (flag.has(c)) {
@@ -71,11 +71,16 @@ function getSiteOpts() {
   });
 }
 
-_argv2.default.option([{
+var fixedArgs = [{
   name: 'output',
   short: 'o',
   type: 'path',
   description: 'output csv directory path.'
+}, {
+  name: 'image',
+  short: 'g',
+  type: 'boolean',
+  description: 'output picture.'
 }, {
   name: 'error',
   short: 'e',
@@ -97,7 +102,13 @@ _argv2.default.option([{
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
   description: 'enable cheerio-httpcli.'
-}].concat(_toConsumableArray(getSiteOpts())));
+}];
+
+_argv2.default.option([].concat(fixedArgs, _toConsumableArray(getSiteOpts(fixedArgs.filter(function (o) {
+  return o.short && /^[A-Z]$/.test(o.short);
+}).map(function (o) {
+  return o.short;
+})))));
 var args = _argv2.default.run();
 
 if (args.targets.length < 1 || !Object.keys(_site2.default).some(function (name) {

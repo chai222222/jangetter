@@ -35,6 +35,9 @@ var CREATESD_CONSTANTS = {
       category: '#bread-crumb-list',
       title: 'div.common_h2_blue_ h2 span'
     },
+    productPageImageSelectors: {
+      picture: '#gallery img'
+    },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toHarfWidthSpace],
       jan: [],

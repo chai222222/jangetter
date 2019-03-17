@@ -17,6 +17,9 @@ const MOGUNAVI_CONSTANTS = {
       category: '#pInfo td.category a',
       title: 'h2.item span.fn span.food-name',
     },
+    productPageImageSelectors: {
+      picture: '#foodPhoto',
+    },
     replacer: {
       title: [
         REPLACERS.toHarfWidthAlnum,

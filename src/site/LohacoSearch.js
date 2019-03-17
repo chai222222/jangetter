@@ -16,6 +16,9 @@ const LOHACO_CONSTANTS = {
       category: 'div.blcCategoryNav div.blcCatNav',
       title: 'title',
     },
+    productPageImageSelectors: {
+      picture: '#elmMainPhoto img',
+    },
     replacer: {
       title: [
         REPLACERS.toHarfWidthSpace,

@@ -16,6 +16,9 @@ const MORINAGA_CONSTANTS = {
       category: 'div.products-detailContents div.headingType02 p.headingType02__txt',
       title: 'div.products-mainBox h2.headingType01__txt',
     },
+    productPageImageSelectors: {
+      picture: 'div.products-mainImg img',
+    },
     replacer: {
       title: [
         REPLACERS.toHarfWidth,

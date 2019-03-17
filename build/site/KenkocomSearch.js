@@ -35,6 +35,9 @@ var KENKOCOM_CONSTANTS = {
       category: 'ul.breadcrumbTypeA01',
       title: 'h2.itemTitle'
     },
+    productPageImageSelectors: {
+      picture: '#view img'
+    },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidth],
       category: [_Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim]

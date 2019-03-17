@@ -18,6 +18,9 @@ const AEON_CONSTANTS = {
       category: 'div.pc2015-main-block-body',
       title: 'title',
     },
+    productPageImageSelectors: {
+      picture: 'div.pc2015-center-image img',
+    },
     replacer: {
       title: [{
         pattern: /おうちでイオン イオンネットスーパー|: イオン本牧店/g,

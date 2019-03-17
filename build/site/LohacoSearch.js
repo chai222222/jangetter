@@ -37,6 +37,9 @@ var LOHACO_CONSTANTS = {
       category: 'div.blcCategoryNav div.blcCatNav',
       title: 'title'
     },
+    productPageImageSelectors: {
+      picture: '#elmMainPhoto img'
+    },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.toHarfWidthAlnum, {
         pattern: /.*LOHACO *\- */g,

@@ -7,11 +7,19 @@ exports.REPLACERS = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
 
 var _pIteration = require('p-iteration');
 
@@ -19,9 +27,17 @@ var _cheerioHttpcli = require('cheerio-httpcli');
 
 var _cheerioHttpcli2 = _interopRequireDefault(_cheerioHttpcli);
 
+var _mustache = require('mustache');
+
+var _mustache2 = _interopRequireDefault(_mustache);
+
 var _WriterCreator = require('../util/WriterCreator');
 
 var _WriterCreator2 = _interopRequireDefault(_WriterCreator);
+
+var _ImageDownload = require('../util/ImageDownload');
+
+var _ImageDownload2 = _interopRequireDefault(_ImageDownload);
 
 var _Replacer = require('../util/Replacer');
 
@@ -50,6 +66,7 @@ var JanSearchBase = function () {
     // this.rc = rc;
     this.timeout = _constants2.default.timeout;
     this.replacer = new _Replacer2.default(this.getSrcConfig().replacer, _lodash2.default.get(this, 'rc.replacer'));
+    this.imageInfo = {};
   }
 
   /**
@@ -381,40 +398,54 @@ var JanSearchBase = function () {
     key: 'searchWord',
     value: function () {
       var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(word) {
-        var config, outputFile;
+        var config, name, outputFile, tmpl, tmplBody, res;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
                 console.log('*** search[' + word + '] ***');
                 config = this.getSrcConfig();
-                outputFile = this.outputDir + '/' + config.prefix + '_' + word.replace(/ +/g, '_') + '.csv';
+                name = this.outputDir + '/' + config.prefix + '_' + word.replace(/ +/g, '_');
+                outputFile = name + '.csv';
 
+                if (this.options.image && !_fs2.default.existsSync(name)) {
+                  console.log('mkdir ' + name);
+                  _fs2.default.mkdirSync(name);
+                }
                 this.writer = _WriterCreator2.default.createCsvWriter(outputFile);
-                _context9.next = 6;
-                return this.page.type(config.searchPageSelectors.searchText, word);
-
-              case 6:
                 _context9.next = 8;
-                return this.page.click(config.searchPageSelectors.searchButton);
+                return this.page.type(config.searchPageSelectors.searchText, word);
 
               case 8:
                 _context9.next = 10;
-                return this.waitLoaded();
+                return this.page.click(config.searchPageSelectors.searchButton);
 
               case 10:
                 _context9.next = 12;
-                return this.xselectClick(config.searchPageSelectors.cushion);
+                return this.waitLoaded();
 
               case 12:
                 _context9.next = 14;
-                return this.eachItemFromSearchResult();
+                return this.xselectClick(config.searchPageSelectors.cushion);
 
               case 14:
-                this.writer.close();
-                console.log('Output done. [' + outputFile + ']');
+                _context9.next = 16;
+                return this.eachItemFromSearchResult(name);
 
               case 16:
+                this.writer.close();
+                console.log('Output done. [' + outputFile + ']');
+                if (!_lodash2.default.isEmpty(this.imageInfo)) {
+                  this.imageInfo.title = word;
+                  _fs2.default.writeFileSync(name + '/data.json', JSON.stringify(this.imageInfo, null, 2));
+                  tmpl = __dirname + '/../template.html';
+                  tmplBody = _fs2.default.readFileSync(tmpl, { encoding: "utf-8" });
+                  res = _mustache2.default.render(tmplBody, this.imageInfo);
+
+                  _fs2.default.writeFileSync(name + '/index.html', res, 'utf-8');
+                }
+
+              case 19:
               case 'end':
                 return _context9.stop();
             }
@@ -436,7 +467,7 @@ var JanSearchBase = function () {
   }, {
     key: 'eachItemFromSearchResult',
     value: function () {
-      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(dir) {
         var _this3 = this;
 
         var hasDupLinks, links, skipCheerio, result;
@@ -501,26 +532,30 @@ var JanSearchBase = function () {
                             return _context10.abrupt('return');
 
                           case 14:
+                            _context10.next = 16;
+                            return _this3.getImage(jan, dir);
+
+                          case 16:
                             _this3.writer.write(_this3.replacer.replceValues(jan));
-                            _context10.next = 21;
+                            _context10.next = 23;
                             break;
 
-                          case 17:
-                            _context10.prev = 17;
+                          case 19:
+                            _context10.prev = 19;
                             _context10.t0 = _context10['catch'](0);
 
                             _this3.addErr('商品ページへ移動できませんでした', link, _context10.t0);
                             return _context10.abrupt('return');
 
-                          case 21:
+                          case 23:
                           case 'end':
                             return _context10.stop();
                         }
                       }
-                    }, _callee10, _this3, [[0, 17]]);
+                    }, _callee10, _this3, [[0, 19]]);
                   }));
 
-                  return function (_x6, _x7) {
+                  return function (_x7, _x8) {
                     return _ref11.apply(this, arguments);
                   };
                 }());
@@ -536,7 +571,7 @@ var JanSearchBase = function () {
         }, _callee11, this);
       }));
 
-      function eachItemFromSearchResult() {
+      function eachItemFromSearchResult(_x6) {
         return _ref10.apply(this, arguments);
       }
 
@@ -778,7 +813,7 @@ var JanSearchBase = function () {
         }, _callee15, this);
       }));
 
-      function scrollToBottom(_x8, _x9) {
+      function scrollToBottom(_x9, _x10) {
         return _ref15.apply(this, arguments);
       }
 
@@ -795,6 +830,7 @@ var JanSearchBase = function () {
       var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(url) {
         var _this4 = this;
 
+        var result;
         return regeneratorRuntime.wrap(function _callee17$(_context17) {
           while (1) {
             switch (_context17.prev = _context17.next) {
@@ -827,56 +863,154 @@ var JanSearchBase = function () {
                     }, _callee16, _this4);
                   }));
 
-                  return function (_x11, _x12) {
+                  return function (_x12, _x13) {
                     return _ref17.apply(this, arguments);
                   };
                 }(), {});
 
               case 6:
-                return _context17.abrupt('return', _context17.sent);
+                result = _context17.sent;
+                return _context17.abrupt('return', result);
 
-              case 9:
-                _context17.prev = 9;
+              case 10:
+                _context17.prev = 10;
                 _context17.t0 = _context17['catch'](3);
 
                 console.log(_context17.t0);
                 this.addErr('JANがページから取得できませんでした', url);
                 return _context17.abrupt('return', undefined);
 
-              case 14:
+              case 15:
               case 'end':
                 return _context17.stop();
             }
           }
-        }, _callee17, this, [[3, 9]]);
+        }, _callee17, this, [[3, 10]]);
       }));
 
-      function getJan(_x10) {
+      function getJan(_x11) {
         return _ref16.apply(this, arguments);
       }
 
       return getJan;
     }()
   }, {
-    key: 'getJanByCheerioHttpcli',
+    key: 'getImage',
     value: function () {
-      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(url) {
+      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(jan, dir) {
         var _this5 = this;
 
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
+        var rows, imgs, row;
+        return regeneratorRuntime.wrap(function _callee19$(_context19) {
           while (1) {
-            switch (_context18.prev = _context18.next) {
+            switch (_context19.prev = _context19.next) {
+              case 0:
+                if (!(!dir || !this.options.image)) {
+                  _context19.next = 2;
+                  break;
+                }
+
+                return _context19.abrupt('return');
+
+              case 2:
+                rows = this.imageInfo.rows || (this.imageInfo.rows = []);
+                imgs = this.getSrcConfig().productPageImageSelectors;
+
+                if (imgs) {
+                  _context19.next = 6;
+                  break;
+                }
+
+                throw new Error('Not defined productPageImageSelectors!');
+
+              case 6:
+                row = _extends({}, jan);
+                _context19.next = 9;
+                return (0, _pIteration.forEachSeries)(_lodash2.default.toPairs(imgs), function () {
+                  var _ref19 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(_ref20) {
+                    var _ref21 = _slicedToArray(_ref20, 2),
+                        key = _ref21[0],
+                        selector = _ref21[1];
+
+                    var imageSrc;
+                    return regeneratorRuntime.wrap(function _callee18$(_context18) {
+                      while (1) {
+                        switch (_context18.prev = _context18.next) {
+                          case 0:
+                            _context18.next = 2;
+                            return _this5.page.evaluate(function (selector) {
+                              return document.querySelector(selector).src;
+                            }, selector);
+
+                          case 2:
+                            imageSrc = _context18.sent;
+
+                            if (!imageSrc) {
+                              _context18.next = 9;
+                              break;
+                            }
+
+                            _context18.next = 6;
+                            return (0, _ImageDownload2.default)(jan.title, imageSrc, dir + '/' + jan.jan + '_' + key);
+
+                          case 6:
+                            row[key] = _context18.sent;
+                            _context18.next = 10;
+                            break;
+
+                          case 9:
+                            console.log('Couldn\'t get image src ' + url + '.');
+
+                          case 10:
+                          case 'end':
+                            return _context18.stop();
+                        }
+                      }
+                    }, _callee18, _this5);
+                  }));
+
+                  return function (_x16) {
+                    return _ref19.apply(this, arguments);
+                  };
+                }());
+
+              case 9:
+                rows.push(row);
+
+              case 10:
+              case 'end':
+                return _context19.stop();
+            }
+          }
+        }, _callee19, this);
+      }));
+
+      function getImage(_x14, _x15) {
+        return _ref18.apply(this, arguments);
+      }
+
+      return getImage;
+    }()
+  }, {
+    key: 'getJanByCheerioHttpcli',
+    value: function () {
+      var _ref22 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(url) {
+        var _this6 = this;
+
+        return regeneratorRuntime.wrap(function _callee20$(_context20) {
+          while (1) {
+            switch (_context20.prev = _context20.next) {
               case 0:
                 console.log('*** getJanByCheerioHttpcli ***');
-                _context18.next = 3;
-                return _cheerioHttpcli2.default.fetch(url).then(function (_ref19) {
-                  var err = _ref19.err,
-                      $ = _ref19.$,
-                      res = _ref19.res,
-                      body = _ref19.body;
+                _context20.next = 3;
+                return _cheerioHttpcli2.default.fetch(url).then(function (_ref23) {
+                  var err = _ref23.err,
+                      $ = _ref23.$,
+                      res = _ref23.res,
+                      body = _ref23.body;
 
-                  return Object.keys(_this5.getSrcConfig().productPageSelectors).reduce(function (acc, key) {
-                    var txt = $(_this5.getSrcConfig().productPageSelectors[key]).text();
+                  return Object.keys(_this6.getSrcConfig().productPageSelectors).reduce(function (acc, key) {
+                    var txt = $(_this6.getSrcConfig().productPageSelectors[key]).text();
                     if (!acc || !txt) {
                       console.log('getJanByCheerioHttpcli failed');
                       return undefined;
@@ -885,23 +1019,23 @@ var JanSearchBase = function () {
                     return acc;
                   }, {});
                 }).catch(function (e) {
-                  _this5.addErr('JANがページから取得できませんでした', url);
+                  _this6.addErr('JANがページから取得できませんでした', url);
                   return undefined;
                 });
 
               case 3:
-                return _context18.abrupt('return', _context18.sent);
+                return _context20.abrupt('return', _context20.sent);
 
               case 4:
               case 'end':
-                return _context18.stop();
+                return _context20.stop();
             }
           }
-        }, _callee18, this);
+        }, _callee20, this);
       }));
 
-      function getJanByCheerioHttpcli(_x13) {
-        return _ref18.apply(this, arguments);
+      function getJanByCheerioHttpcli(_x17) {
+        return _ref22.apply(this, arguments);
       }
 
       return getJanByCheerioHttpcli;
@@ -909,42 +1043,42 @@ var JanSearchBase = function () {
   }, {
     key: 'getPageText',
     value: function () {
-      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(key) {
+      var _ref24 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(key) {
         var sel, getter, text;
-        return regeneratorRuntime.wrap(function _callee19$(_context19) {
+        return regeneratorRuntime.wrap(function _callee21$(_context21) {
           while (1) {
-            switch (_context19.prev = _context19.next) {
+            switch (_context21.prev = _context21.next) {
               case 0:
                 sel = this.getSrcConfig().productPageSelectors[key];
                 getter = (typeof sel === 'undefined' ? 'undefined' : _typeof(sel)) === 'object' ? sel : { sel: sel, method: function method(item) {
                     return item.textContent;
                   } };
                 text = '';
-                _context19.prev = 3;
-                _context19.next = 6;
+                _context21.prev = 3;
+                _context21.next = 6;
                 return this.page.$eval(getter.sel, getter.method);
 
               case 6:
-                return _context19.abrupt('return', text = _context19.sent);
+                return _context21.abrupt('return', text = _context21.sent);
 
               case 7:
-                _context19.prev = 7;
+                _context21.prev = 7;
 
                 if (this.options['debug-pagetext']) {
                   console.log('getPageText[' + key + '][' + sel + '][' + text + ']');
                 }
-                return _context19.finish(7);
+                return _context21.finish(7);
 
               case 10:
               case 'end':
-                return _context19.stop();
+                return _context21.stop();
             }
           }
-        }, _callee19, this, [[3,, 7, 10]]);
+        }, _callee21, this, [[3,, 7, 10]]);
       }));
 
-      function getPageText(_x14) {
-        return _ref20.apply(this, arguments);
+      function getPageText(_x18) {
+        return _ref24.apply(this, arguments);
       }
 
       return getPageText;

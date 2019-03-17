@@ -16,6 +16,9 @@ const KOKUBU_CONSTANTS = {
       category: 'div.navitopicpath_',
       title: 'title',
     },
+    productPageImageSelectors: {
+      picture: 'image_l_',
+    },
     replacer: {
       title: [
         REPLACERS.toHarfWidthSpace,

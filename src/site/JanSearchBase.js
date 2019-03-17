@@ -1,8 +1,11 @@
 import _ from 'lodash';
+import fs from 'fs';
 import { forEachSeries, map, mapSeries, every, reduce } from 'p-iteration';
 import cheerioClient from 'cheerio-httpcli';
+import Mustache from 'mustache';
 
 import WriterCreator from '../util/WriterCreator';
+import imageDownload from '../util/ImageDownload';
 import Replacer from '../util/Replacer';
 import Constants from '../constants';
 
@@ -16,6 +19,7 @@ export default class JanSearchBase {
     // this.rc = rc;
     this.timeout = Constants.timeout;
     this.replacer = new Replacer(this.getSrcConfig().replacer, _.get(this, 'rc.replacer'));
+    this.imageInfo = {};
   }
 
   /**
@@ -104,21 +108,34 @@ export default class JanSearchBase {
   async searchWord(word) {
     console.log(`*** search[${word}] ***`);
     const config = this.getSrcConfig();
-    const outputFile = `${this.outputDir}/${config.prefix}_${word.replace(/ +/g, '_')}.csv`;
+    const name = `${this.outputDir}/${config.prefix}_${word.replace(/ +/g, '_')}`;
+    const outputFile = `${name}.csv`;
+    if (this.options.image && !fs.existsSync(name)) {
+      console.log(`mkdir ${name}`);
+      fs.mkdirSync(name);
+    }
     this.writer = WriterCreator.createCsvWriter(outputFile)
     await this.page.type(config.searchPageSelectors.searchText, word);
     await this.page.click(config.searchPageSelectors.searchButton);
     await this.waitLoaded();
     await this.xselectClick(config.searchPageSelectors.cushion);
-    await this.eachItemFromSearchResult();
+    await this.eachItemFromSearchResult(name);
     this.writer.close();
     console.log(`Output done. [${outputFile}]`);
+    if (!_.isEmpty(this.imageInfo)) {
+      this.imageInfo.title = word;
+      fs.writeFileSync(`${name}/data.json`, JSON.stringify(this.imageInfo, null, 2));
+      const tmpl = `${__dirname}/../template.html`;
+      const tmplBody = fs.readFileSync(tmpl, {encoding: "utf-8"});
+      const res = Mustache.render(tmplBody, this.imageInfo);
+      fs.writeFileSync(`${name}/index.html`, res, 'utf-8');
+    }
   }
 
   /**
    * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。　
    */
-  async eachItemFromSearchResult() {
+  async eachItemFromSearchResult(dir) {
     console.log('*** eachItemFromSearchResult ***');
     const hasDupLinks = await this.getAllJanUrls();
     const links = Array.from(new Set(hasDupLinks));
@@ -136,6 +153,7 @@ export default class JanSearchBase {
         if (!jan) {
           return;
         }
+        await this.getImage(jan, dir);
        this.writer.write(this.replacer.replceValues(jan));
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
@@ -216,15 +234,35 @@ export default class JanSearchBase {
     console.log('*** getJan ***');
     await this.page.goto(url, {waitUntil: 'networkidle2'});
     try {
-      return await reduce(Object.keys(this.getSrcConfig().productPageSelectors), async (acc, key) => {
+      const result =  await reduce(Object.keys(this.getSrcConfig().productPageSelectors), async (acc, key) => {
         acc[key] = await this.getPageText(key);
         return acc;
       }, {});
+      return result;
     } catch (e) {
       console.log(e);
       this.addErr('JANがページから取得できませんでした', url);
       return undefined;
     }
+  }
+
+  async getImage(jan, dir) {
+    if (!dir || !this.options.image) return;
+    const rows = this.imageInfo.rows || (this.imageInfo.rows = []);
+    const imgs = this.getSrcConfig().productPageImageSelectors;
+    if (!imgs) throw new Error('Not defined productPageImageSelectors!');
+    const row = {...jan};
+    await forEachSeries(_.toPairs(imgs), async ([key, selector]) => {
+      const imageSrc = await this.page.evaluate((selector) => {
+        return document.querySelector(selector).src;
+      }, selector);
+      if (imageSrc) {
+        row[key] = await imageDownload(jan.title, imageSrc, `${dir}/${jan.jan}_${key}`);
+      } else {
+        console.log(`Couldn't get image src ${url}.`);
+      }
+    });
+    rows.push(row);
   }
 
   async getJanByCheerioHttpcli(url) {

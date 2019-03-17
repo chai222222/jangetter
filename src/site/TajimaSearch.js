@@ -16,6 +16,9 @@ const TAJIMA_CONSTANTS = {
       category: 'li.onmark > p > a',
       title: 'title',
     },
+    productPageImageSelectors: {
+      picture: 'img.picture',
+    },
     replacer: {
       title: [
         REPLACERS.toHarfWidthSpace,

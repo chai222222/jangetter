@@ -35,6 +35,9 @@ var KOKUBU_CONSTANTS = {
       category: 'div.navitopicpath_',
       title: 'title'
     },
+    productPageImageSelectors: {
+      picture: 'image_l_'
+    },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthAlnum, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, {
         pattern: /.*問屋 *国分ネット卸 */g,

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    <p>count : {{ rows.length }}</p>
+    {{# rows }}
+    <div style="float: right;">
+      <p>{{ title }}</p>
+      <p>{{ jan }}</p>
+      <p>{{ category }}</p>
+      <img src="{{ picture }}" />
+    </div>
+    {{/ rows }}
+  </body>
+</html>

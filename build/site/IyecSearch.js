@@ -35,6 +35,9 @@ var IYEC_CONSTANTS = {
       category: 'ol.breadcrumb',
       title: 'title'
     },
+    productPageImageSelectors: {
+      picture: 'li[data-large-image] img.slidersImg.u-img[src*="main_l"]' // 2つマッチする
+    },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthAlnum, {
         pattern: /.*ネット通販./g,

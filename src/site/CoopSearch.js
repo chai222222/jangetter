@@ -16,6 +16,9 @@ const COOP_CONSTANTS = {
       category: '#basicInfo tbody > tr:first-child td',
       title: 'title',
     },
+    productPageImageSelectors: {
+      picture: '#basicInfo .itemPhoto img',
+    },
     replacer: {
       title: [
         REPLACERS.toHarfWidthAlnum, {

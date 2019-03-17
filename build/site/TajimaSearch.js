@@ -35,6 +35,9 @@ var TAJIMA_CONSTANTS = {
       category: 'li.onmark > p > a',
       title: 'title'
     },
+    productPageImageSelectors: {
+      picture: 'img.picture'
+    },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthAlnum, {
         pattern: /.*株式会社タジマヤ *\/ */g,
