@@ -7,11 +7,13 @@
     <h1>{{ title }}</h1>
     <p>count : {{ rows.length }}</p>
     {{# rows }}
-    <div style="float: right;">
+    <div style="float: left;">
       <p>{{ title }}</p>
       <p>{{ jan }}</p>
       <p>{{ category }}</p>
-      <img src="{{ picture }}" />
+      <a href="{{ picture }}">
+        <img style="width: 100px; height: 100px;" src="{{ picture }}" />
+      </a>
     </div>
     {{/ rows }}
   </body>
