@@ -438,7 +438,7 @@ var JanSearchBase = function () {
                 if (!_lodash2.default.isEmpty(this.imageInfo)) {
                   this.imageInfo.title = word;
                   _fs2.default.writeFileSync(name + '/data.json', JSON.stringify(this.imageInfo, null, 2));
-                  tmpl = __dirname + '/../template.html';
+                  tmpl = __dirname + '/../../tmpl/template.html';
                   tmplBody = _fs2.default.readFileSync(tmpl, { encoding: "utf-8" });
                   res = _mustache2.default.render(tmplBody, this.imageInfo);
 
@@ -488,7 +488,7 @@ var JanSearchBase = function () {
                 _context11.next = 9;
                 return (0, _pIteration.mapSeries)(links, function () {
                   var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(link, idx) {
-                    var jan;
+                    var jan, replacedJan;
                     return regeneratorRuntime.wrap(function _callee10$(_context10) {
                       while (1) {
                         switch (_context10.prev = _context10.next) {
@@ -532,27 +532,28 @@ var JanSearchBase = function () {
                             return _context10.abrupt('return');
 
                           case 14:
-                            _context10.next = 16;
-                            return _this3.getImage(jan, dir);
+                            replacedJan = _this3.replacer.replceValues(jan);
+                            _context10.next = 17;
+                            return _this3.getImage(replacedJan, dir);
 
-                          case 16:
-                            _this3.writer.write(_this3.replacer.replceValues(jan));
-                            _context10.next = 23;
+                          case 17:
+                            _this3.writer.write(replacedJan);
+                            _context10.next = 24;
                             break;
 
-                          case 19:
-                            _context10.prev = 19;
+                          case 20:
+                            _context10.prev = 20;
                             _context10.t0 = _context10['catch'](0);
 
                             _this3.addErr('商品ページへ移動できませんでした', link, _context10.t0);
                             return _context10.abrupt('return');
 
-                          case 23:
+                          case 24:
                           case 'end':
                             return _context10.stop();
                         }
                       }
-                    }, _callee10, _this3, [[0, 19]]);
+                    }, _callee10, _this3, [[0, 20]]);
                   }));
 
                   return function (_x7, _x8) {

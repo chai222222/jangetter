@@ -125,7 +125,7 @@ export default class JanSearchBase {
     if (!_.isEmpty(this.imageInfo)) {
       this.imageInfo.title = word;
       fs.writeFileSync(`${name}/data.json`, JSON.stringify(this.imageInfo, null, 2));
-      const tmpl = `${__dirname}/../template.html`;
+      const tmpl = `${__dirname}/../../tmpl/template.html`;
       const tmplBody = fs.readFileSync(tmpl, {encoding: "utf-8"});
       const res = Mustache.render(tmplBody, this.imageInfo);
       fs.writeFileSync(`${name}/index.html`, res, 'utf-8');
@@ -153,8 +153,9 @@ export default class JanSearchBase {
         if (!jan) {
           return;
         }
-        await this.getImage(jan, dir);
-       this.writer.write(this.replacer.replceValues(jan));
+        const replacedJan = this.replacer.replceValues(jan);
+        await this.getImage(replacedJan, dir);
+       this.writer.write(replacedJan);
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
         return;
