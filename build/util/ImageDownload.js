@@ -18,7 +18,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 exports.default = function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(name, src, outputFileName) {
-    var res, ext, outName, lastSlash;
+    var res, ext, query, outName, lastSlash;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -30,25 +30,26 @@ exports.default = function () {
           case 3:
             res = _context.sent;
             ext = src.substr(src.lastIndexOf('.'));
-            outName = '' + outputFileName + ext;
+            query = ext.lastIndexOf('?');
+            outName = '' + outputFileName + (query < 0 ? ext : ext.substr(0, query));
 
             _fs2.default.writeFileSync(outName, new Buffer.from(res.data), 'binary');
             lastSlash = outName.lastIndexOf('/');
             return _context.abrupt('return', lastSlash >= 0 ? outName.substr(lastSlash + 1) : lastSlash);
 
-          case 11:
-            _context.prev = 11;
+          case 12:
+            _context.prev = 12;
             _context.t0 = _context['catch'](0);
 
             console.log('[Image] image [' + name + '] Couldn\'t get. ' + _context.t0);
             return _context.abrupt('return');
 
-          case 15:
+          case 16:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[0, 11]]);
+    }, _callee, undefined, [[0, 12]]);
   }));
 
   return function (_x, _x2, _x3) {
