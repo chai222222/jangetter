@@ -2,3 +2,14 @@ node_modules
 *.csv
 error.txt
 .jangetterrc
+
+Aeon_*
+Coop_*
+CreateSD_*
+Iyec_*
+Kenkocom_*
+Kokubu_*
+Lohaco_*
+Mogunavi_*
+Morinaga_*
+Tajima_*
