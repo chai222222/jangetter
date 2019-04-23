@@ -461,7 +461,7 @@ var JanSearchBase = function () {
     }()
 
     /**
-     * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。　
+     * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。
      */
 
   }, {
@@ -524,36 +524,51 @@ var JanSearchBase = function () {
                             jan = _context10.sent;
 
                           case 12:
-                            if (jan) {
-                              _context10.next = 14;
+                            if (!jan) {
+                              _context10.next = 18;
                               break;
                             }
 
+                            if (!(jan.jan !== undefined && /\D/.test('' + jan.jan))) {
+                              _context10.next = 16;
+                              break;
+                            }
+
+                            _this3.addErr('JANが数字のみになっていません', link);
                             return _context10.abrupt('return');
 
-                          case 14:
-                            replacedJan = _this3.replacer.replceValues(jan);
-                            _context10.next = 17;
-                            return _this3.getImage(replacedJan, dir);
-
-                          case 17:
-                            _this3.writer.write(replacedJan);
-                            _context10.next = 24;
+                          case 16:
+                            _context10.next = 19;
                             break;
 
-                          case 20:
-                            _context10.prev = 20;
+                          case 18:
+                            return _context10.abrupt('return');
+
+                          case 19:
+                            replacedJan = _this3.replacer.replaceValues(jan);
+
+                            console.log(JSON.stringify(jan), JSON.stringify(replacedJan));
+                            _context10.next = 23;
+                            return _this3.getImage(replacedJan, dir);
+
+                          case 23:
+                            _this3.writer.write(replacedJan);
+                            _context10.next = 30;
+                            break;
+
+                          case 26:
+                            _context10.prev = 26;
                             _context10.t0 = _context10['catch'](0);
 
                             _this3.addErr('商品ページへ移動できませんでした', link, _context10.t0);
                             return _context10.abrupt('return');
 
-                          case 24:
+                          case 30:
                           case 'end':
                             return _context10.stop();
                         }
                       }
-                    }, _callee10, _this3, [[0, 20]]);
+                    }, _callee10, _this3, [[0, 26]]);
                   }));
 
                   return function (_x7, _x8) {

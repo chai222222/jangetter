@@ -66,22 +66,9 @@ export default class Replacer {
   /**
    * 値を定義にそって置き換えを行います。
    */
-  replceValues(obj) {
-    return _.fromPairs(_.toPairs(this.repDefs).filter(([key]) => key in obj).map(([key, defArr]) => [
-      key, this._replaceValue(obj[key], defArr)
-    ]));
-
-    // Object.keys(replaceDef).filter(key => key in nobj)
-    //   .forEach(key => nobj[key] = replaceDef[key].reduce((acc, def) => {
-    //     const rcDef = _.get(this.rc, `replacer.${key}`, []);
-    //     (Array.isArray(def) ? [...def, ...rcDef] : [def, ...rcDef]).forEach(nestDef => {
-    //       const pat = Array.isArray(nestDef.pattern)
-    //         ? new RegExp(...nestDef.pattern)
-    //         : nestDef.pattern;
-    //       acc = acc.replace(pat, nestDef.value);
-    //     });
-    //     return acc;
-    //   }, nobj[key]));
-    // return nobj;
+  replaceValues(obj) {
+    return _.fromPairs(_.toPairs(obj).map(([key, value]) => (
+      [ key, key in this.repDefs ? this._replaceValue(value, this.repDefs[key]) : value ]
+    )));
   }
 }

@@ -111,35 +111,17 @@ var Replacer = function () {
      */
 
   }, {
-    key: 'replceValues',
-    value: function replceValues(obj) {
+    key: 'replaceValues',
+    value: function replaceValues(obj) {
       var _this4 = this;
 
-      return _lodash2.default.fromPairs(_lodash2.default.toPairs(this.repDefs).filter(function (_ref3) {
-        var _ref4 = _slicedToArray(_ref3, 1),
-            key = _ref4[0];
+      return _lodash2.default.fromPairs(_lodash2.default.toPairs(obj).map(function (_ref3) {
+        var _ref4 = _slicedToArray(_ref3, 2),
+            key = _ref4[0],
+            value = _ref4[1];
 
-        return key in obj;
-      }).map(function (_ref5) {
-        var _ref6 = _slicedToArray(_ref5, 2),
-            key = _ref6[0],
-            defArr = _ref6[1];
-
-        return [key, _this4._replaceValue(obj[key], defArr)];
+        return [key, key in _this4.repDefs ? _this4._replaceValue(value, _this4.repDefs[key]) : value];
       }));
-
-      // Object.keys(replaceDef).filter(key => key in nobj)
-      //   .forEach(key => nobj[key] = replaceDef[key].reduce((acc, def) => {
-      //     const rcDef = _.get(this.rc, `replacer.${key}`, []);
-      //     (Array.isArray(def) ? [...def, ...rcDef] : [def, ...rcDef]).forEach(nestDef => {
-      //       const pat = Array.isArray(nestDef.pattern)
-      //         ? new RegExp(...nestDef.pattern)
-      //         : nestDef.pattern;
-      //       acc = acc.replace(pat, nestDef.value);
-      //     });
-      //     return acc;
-      //   }, nobj[key]));
-      // return nobj;
     }
   }]);
 

@@ -133,7 +133,7 @@ export default class JanSearchBase {
   }
 
   /**
-   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。　
+   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。
    */
   async eachItemFromSearchResult(dir) {
     console.log('*** eachItemFromSearchResult ***');
@@ -150,10 +150,16 @@ export default class JanSearchBase {
           skipCheerio = jan === undefined;
         }
         if (!jan) jan = await this.getJan(link);
-        if (!jan) {
+        if (jan) {
+          if (jan.jan !== undefined && /\D/.test(`${jan.jan}`)) {
+            this.addErr('JANが数字のみになっていません', link);
+            return;
+          }
+        } else {
           return;
         }
-        const replacedJan = this.replacer.replceValues(jan);
+        const replacedJan = this.replacer.replaceValues(jan);
+        console.log(JSON.stringify(jan), JSON.stringify(replacedJan));
         await this.getImage(replacedJan, dir);
        this.writer.write(replacedJan);
       } catch (e) {
