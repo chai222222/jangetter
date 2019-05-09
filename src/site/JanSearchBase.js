@@ -150,16 +150,13 @@ export default class JanSearchBase {
           skipCheerio = jan === undefined;
         }
         if (!jan) jan = await this.getJan(link);
-        if (jan) {
-          if (jan.jan !== undefined && /\D/.test(`${jan.jan}`)) {
-            this.addErr('JANが数字のみになっていません', link);
-            return;
-          }
-        } else {
+        if (!jan) return;
+        const replacedJan = this.replacer.replaceValues(jan);
+        // console.log(JSON.stringify(jan), JSON.stringify(replacedJan));
+        if (replacedJan.jan !== undefined && /\D/.test(`${replacedJan.jan}`)) {
+          this.addErr('JANが数字のみになっていません', link);
           return;
         }
-        const replacedJan = this.replacer.replaceValues(jan);
-        console.log(JSON.stringify(jan), JSON.stringify(replacedJan));
         await this.getImage(replacedJan, dir);
        this.writer.write(replacedJan);
       } catch (e) {
