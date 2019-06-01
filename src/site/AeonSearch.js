@@ -63,6 +63,11 @@ export default class AeonSearch extends JanSearchBase {
       // await this.page.waitFor(10000);
       await this.waitLoaded();
     }
+    const fairDialogClose = await this.existsAll('a.pc2015-close');
+    if (fairDialogClose) {
+      this.page.click('a.pc2015-close');
+      await this.waitLoaded();
+    }
     // const banner = await this.existsAll('#pc2015-popup-ad-banner a.pc2015-close');
     // if (banner) {
     //   await this.page.click('#pc2015-popup-ad-banner a.pc2015-close');

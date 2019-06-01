@@ -86,7 +86,7 @@ var AeonSearch = function (_JanSearchBase) {
      */
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var needInputShop;
+        var needInputShop, fairDialogClose;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -121,6 +121,22 @@ var AeonSearch = function (_JanSearchBase) {
                 return this.waitLoaded();
 
               case 14:
+                _context.next = 16;
+                return this.existsAll('a.pc2015-close');
+
+              case 16:
+                fairDialogClose = _context.sent;
+
+                if (!fairDialogClose) {
+                  _context.next = 21;
+                  break;
+                }
+
+                this.page.click('a.pc2015-close');
+                _context.next = 21;
+                return this.waitLoaded();
+
+              case 21:
               case 'end':
                 return _context.stop();
             }
