@@ -27,6 +27,7 @@ const SUNYO_CONSTANTS = {
         REPLACERS.toOneLine,
         REPLACERS.toHarfWidthSpace,
         REPLACERS.toOneSpace,
+        REPLACERS.trim,
         REPLACERS.toHarfWidth, {
         pattern: /.*SUNYO製品>/g,
         value: '',

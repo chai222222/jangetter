@@ -46,6 +46,10 @@ var REPLACERS = exports.REPLACERS = {
     pattern: /\s\s+/g,
     value: ' '
   },
+  toNoSpace: {
+    pattern: /\s/g,
+    value: ''
+  },
   toOneLine: {
     pattern: /\r?\n/g,
     value: ' '

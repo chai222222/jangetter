@@ -20,59 +20,59 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SUNYO_CONSTANTS = {
+var HOUSE_CONSTANTS = {
   searchConfig: {
-    prefix: 'Sunyo',
-    top: 'http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi',
+    prefix: 'House',
+    top: 'https://housefoods.jp/products/index.html',
     searchPageSelectors: {
-      productsLink: 'dl.search dt a',
-      nextLink: 'dl.search + p > b + a',
-      searchText: 'form.find input[name="q"]',
-      searchButton: 'form.find input[type="submit"]'
+      productsLink: 'p.mf_url a',
+      nextLink: 'li.mf_nextpage a',
+      searchText: '#MF_form_phrase_pro',
+      searchButton: 'dl.searchArea dd button'
     },
     productPageSelectors: {
-      jan: '//th[contains(text(), "JANｺｰﾄﾞ")]/../td',
-      category: 'p.breadcrumb',
-      title: '//th[contains(text(), "品名")]/../td'
+      jan: '//th/span[contains(text(), "JAN")]/../../td/span',
+      category: 'p.breadcrumbs',
+      title: 'h1.ttlType1'
     },
     productPageImageSelectors: {
-      picture: 'p.canimg > a'
+      picture: 'figure#detail_package img'
     },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthAlnum],
       category: [_Replacer.REPLACERS.toOneLine, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidth, {
-        pattern: /.*SUNYO製品>/g,
+        pattern: /.* 商品カタログ\s*>\s*/g,
         value: ''
       }]
     }
   }
 };
 
-var SunyoSearch = function (_JanSearchBase) {
-  _inherits(SunyoSearch, _JanSearchBase);
+var HouseSearch = function (_JanSearchBase) {
+  _inherits(HouseSearch, _JanSearchBase);
 
-  function SunyoSearch() {
-    _classCallCheck(this, SunyoSearch);
+  function HouseSearch() {
+    _classCallCheck(this, HouseSearch);
 
-    return _possibleConstructorReturn(this, (SunyoSearch.__proto__ || Object.getPrototypeOf(SunyoSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (HouseSearch.__proto__ || Object.getPrototypeOf(HouseSearch)).apply(this, arguments));
   }
 
-  _createClass(SunyoSearch, [{
+  _createClass(HouseSearch, [{
     key: 'filterJanUrl',
     value: function filterJanUrl(links) {
       return links.filter(function (url) {
-        return url.indexOf('products/data') > 0;
+        return url.indexOf('products/catalog/cd') > 0;
       });
     }
   }, {
     key: 'getSrcConfig',
     value: function getSrcConfig() {
-      return SUNYO_CONSTANTS.searchConfig;
+      return HOUSE_CONSTANTS.searchConfig;
     }
   }]);
 
-  return SunyoSearch;
+  return HouseSearch;
 }(_JanSearchBase3.default);
 
-exports.default = SunyoSearch;
-//# sourceMappingURL=SunyoSearch.js.map
+exports.default = HouseSearch;
+//# sourceMappingURL=HouseSearch.js.map

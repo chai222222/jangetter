@@ -9,6 +9,9 @@ import KenkocomSearch from './KenkocomSearch';
 import CreateSdSearch from './CreateSdSearch';
 import MorinagaSearch from './MorinagaSearch';
 import SunyoSearch from './SunyoSearch';
+import HouseSearch from './HouseSearch';
+import GyoumuSuperSearch from './GyoumuSuperSearch';
+import NissuiSearch from './NissuiSearch';
 
 export default {
   iyec: (...args) => new IyecSearch(...args),
@@ -22,4 +25,7 @@ export default {
   createsd: (...args) => new CreateSdSearch(...args),
   morinaga: (...args) => new MorinagaSearch(...args),
   sunyo: (...args) => new SunyoSearch(...args),
+  house: (...args) => new HouseSearch(...args),
+  gyoumusuper: (...args) => new GyoumuSuperSearch(...args),
+  nissui: (...args) => new NissuiSearch(...args),
 };

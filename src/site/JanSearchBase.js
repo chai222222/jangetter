@@ -175,11 +175,28 @@ export default class JanSearchBase {
       return this.getAllJanUrlsScrollToBottom();
     } else if (config.searchPageSelectors.nextLink) {
       return this.getAllJanUrlsPageTransition();
+    } else if (config.searchPageSelectors.onlyCurrentPage) {
+      return this.getAllJanUrlsOnlyCurrentPage();
     }
     this.addErr('JANリンク取得方法が定義されていません。');
     return [];
   }
 
+  /**
+   * 商品ページをカレントページないからのみ取得します。
+   * @return {String[]} URL文字列の配列
+   */
+  async getAllJanUrlsOnlyCurrentPage() {
+    console.log('*** getAllJanUrlsOnlyCurrentPage ***');
+    let page = 1;
+    const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+    return await this.page.$$eval(productsSel, list => list.map(item => item.href));
+  }
+
+  /**
+   * 商品ページを次ページボタンの遷移で取得します。
+   * @return {String[]} URL文字列の配列
+   */
   async getAllJanUrlsPageTransition() {
     console.log('*** getAllJanUrlsPageTransition ***');
     let page = 1;
@@ -196,6 +213,10 @@ export default class JanSearchBase {
     return links;
   }
 
+  /**
+   * 商品ページをカレントページを下に移動してAjaxで画面を更新し最後までスクロールして取得します。
+   * @return {String[]} URL文字列の配列
+   */
   async getAllJanUrlsScrollToBottom() {
     console.log('*** getAllJanUrlsScrollToBottom ***');
     await this.scrollToBottom(this.page, Constants.viewport.height);

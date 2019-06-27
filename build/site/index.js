@@ -48,6 +48,18 @@ var _SunyoSearch = require('./SunyoSearch');
 
 var _SunyoSearch2 = _interopRequireDefault(_SunyoSearch);
 
+var _HouseSearch = require('./HouseSearch');
+
+var _HouseSearch2 = _interopRequireDefault(_HouseSearch);
+
+var _GyoumuSuperSearch = require('./GyoumuSuperSearch');
+
+var _GyoumuSuperSearch2 = _interopRequireDefault(_GyoumuSuperSearch);
+
+var _NissuiSearch = require('./NissuiSearch');
+
+var _NissuiSearch2 = _interopRequireDefault(_NissuiSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -127,6 +139,27 @@ exports.default = {
     }
 
     return new (Function.prototype.bind.apply(_SunyoSearch2.default, [null].concat(args)))();
+  },
+  house: function house() {
+    for (var _len12 = arguments.length, args = Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
+      args[_key12] = arguments[_key12];
+    }
+
+    return new (Function.prototype.bind.apply(_HouseSearch2.default, [null].concat(args)))();
+  },
+  gyoumusuper: function gyoumusuper() {
+    for (var _len13 = arguments.length, args = Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
+      args[_key13] = arguments[_key13];
+    }
+
+    return new (Function.prototype.bind.apply(_GyoumuSuperSearch2.default, [null].concat(args)))();
+  },
+  nissui: function nissui() {
+    for (var _len14 = arguments.length, args = Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
+      args[_key14] = arguments[_key14];
+    }
+
+    return new (Function.prototype.bind.apply(_NissuiSearch2.default, [null].concat(args)))();
   }
 };
 //# sourceMappingURL=index.js.map

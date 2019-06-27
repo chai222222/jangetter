@@ -20,59 +20,55 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SUNYO_CONSTANTS = {
+var GYOUMUSUPER_CONSTANTS = {
   searchConfig: {
-    prefix: 'Sunyo',
-    top: 'http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi',
+    prefix: 'GyoumuSuper',
+    top: 'https://www.gyomusuper.jp/item/search.php',
     searchPageSelectors: {
-      productsLink: 'dl.search dt a',
-      nextLink: 'dl.search + p > b + a',
-      searchText: 'form.find input[name="q"]',
-      searchButton: 'form.find input[type="submit"]'
+      productsLink: 'div.list_img a',
+      onlyCurrentPage: true,
+      searchText: 'input.ipt_txt',
+      searchButton: 'input.ipt_submit'
     },
     productPageSelectors: {
-      jan: '//th[contains(text(), "JANｺｰﾄﾞ")]/../td',
-      category: 'p.breadcrumb',
-      title: '//th[contains(text(), "品名")]/../td'
+      jan: '//dt[contains(text(), "JAN")]/../dd',
+      title: 'div.detail_info_box h3'
+      //categoryがとれないのでなし
     },
     productPageImageSelectors: {
-      picture: 'p.canimg > a'
+      picture: 'div.detail_img_box img'
     },
     replacer: {
-      title: [_Replacer.REPLACERS.toHarfWidthAlnum],
-      category: [_Replacer.REPLACERS.toOneLine, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidth, {
-        pattern: /.*SUNYO製品>/g,
-        value: ''
-      }]
+      title: [_Replacer.REPLACERS.toHarfWidthAlnum]
     }
   }
 };
 
-var SunyoSearch = function (_JanSearchBase) {
-  _inherits(SunyoSearch, _JanSearchBase);
+var GyoumuSuperSearch = function (_JanSearchBase) {
+  _inherits(GyoumuSuperSearch, _JanSearchBase);
 
-  function SunyoSearch() {
-    _classCallCheck(this, SunyoSearch);
+  function GyoumuSuperSearch() {
+    _classCallCheck(this, GyoumuSuperSearch);
 
-    return _possibleConstructorReturn(this, (SunyoSearch.__proto__ || Object.getPrototypeOf(SunyoSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (GyoumuSuperSearch.__proto__ || Object.getPrototypeOf(GyoumuSuperSearch)).apply(this, arguments));
   }
 
-  _createClass(SunyoSearch, [{
+  _createClass(GyoumuSuperSearch, [{
     key: 'filterJanUrl',
     value: function filterJanUrl(links) {
       return links.filter(function (url) {
-        return url.indexOf('products/data') > 0;
+        return url.indexOf('item/detail') > 0;
       });
     }
   }, {
     key: 'getSrcConfig',
     value: function getSrcConfig() {
-      return SUNYO_CONSTANTS.searchConfig;
+      return GYOUMUSUPER_CONSTANTS.searchConfig;
     }
   }]);
 
-  return SunyoSearch;
+  return GyoumuSuperSearch;
 }(_JanSearchBase3.default);
 
-exports.default = SunyoSearch;
-//# sourceMappingURL=SunyoSearch.js.map
+exports.default = GyoumuSuperSearch;
+//# sourceMappingURL=GyoumuSuperSearch.js.map

@@ -20,59 +20,53 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SUNYO_CONSTANTS = {
+var NISSUI_CONSTANTS = {
   searchConfig: {
-    prefix: 'Sunyo',
-    top: 'http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi',
+    prefix: 'Nissui',
+    top: 'http://www.nissui.co.jp/product/index.html',
     searchPageSelectors: {
-      productsLink: 'dl.search dt a',
-      nextLink: 'dl.search + p > b + a',
-      searchText: 'form.find input[name="q"]',
-      searchButton: 'form.find input[type="submit"]'
+      productsLink: 'div.productSnippet > a',
+      nextLink: 'div.resultTitle li.pageNext a',
+      searchText: 'input#keyword',
+      searchButton: 'form[name=frm] input.submit'
     },
     productPageSelectors: {
-      jan: '//th[contains(text(), "JANｺｰﾄﾞ")]/../td',
-      category: 'p.breadcrumb',
-      title: '//th[contains(text(), "品名")]/../td'
+      jan: '//th[contains(text(), "JANコード")]/../td',
+      category: 'ul#pathBody',
+      title: 'div.twoLineInner'
     },
     productPageImageSelectors: {
-      picture: 'p.canimg > a'
+      picture: 'div.productPic > img[alt*=商品写真]'
     },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthAlnum],
+      jan: [_Replacer.REPLACERS.toNoSpace],
       category: [_Replacer.REPLACERS.toOneLine, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidth, {
-        pattern: /.*SUNYO製品>/g,
+        pattern: /.* 商品紹介\s*>?\s*/g,
         value: ''
       }]
     }
   }
 };
 
-var SunyoSearch = function (_JanSearchBase) {
-  _inherits(SunyoSearch, _JanSearchBase);
+var NissuiSearch = function (_JanSearchBase) {
+  _inherits(NissuiSearch, _JanSearchBase);
 
-  function SunyoSearch() {
-    _classCallCheck(this, SunyoSearch);
+  function NissuiSearch() {
+    _classCallCheck(this, NissuiSearch);
 
-    return _possibleConstructorReturn(this, (SunyoSearch.__proto__ || Object.getPrototypeOf(SunyoSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (NissuiSearch.__proto__ || Object.getPrototypeOf(NissuiSearch)).apply(this, arguments));
   }
 
-  _createClass(SunyoSearch, [{
-    key: 'filterJanUrl',
-    value: function filterJanUrl(links) {
-      return links.filter(function (url) {
-        return url.indexOf('products/data') > 0;
-      });
-    }
-  }, {
+  _createClass(NissuiSearch, [{
     key: 'getSrcConfig',
     value: function getSrcConfig() {
-      return SUNYO_CONSTANTS.searchConfig;
+      return NISSUI_CONSTANTS.searchConfig;
     }
   }]);
 
-  return SunyoSearch;
+  return NissuiSearch;
 }(_JanSearchBase3.default);
 
-exports.default = SunyoSearch;
-//# sourceMappingURL=SunyoSearch.js.map
+exports.default = NissuiSearch;
+//# sourceMappingURL=NissuiSearch.js.map
