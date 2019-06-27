@@ -12,6 +12,9 @@ Usage: jangetter [options]
 	--output, -o
 		output csv directory path.
 
+	--image, -g
+		output picture.
+
 	--error, -e
 		output error file path.
 
@@ -36,6 +39,12 @@ Usage: jangetter [options]
 	--createsd, -R
 		search from createsd
 
+	--gyoumusuper, -G
+		search from gyoumusuper
+
+	--house, -H
+		search from house
+
 	--iyec, -I
 		search from iyec
 
@@ -51,8 +60,14 @@ Usage: jangetter [options]
 	--mogunavi, -M
 		search from mogunavi
 
-	--morinaga, -N
+	--morinaga, -0
 		search from morinaga
+
+	--nissui, -N
+		search from nissui
+
+	--sunyo, -S
+		search from sunyo
 
 	--tajima, -T
 		search from tajima
