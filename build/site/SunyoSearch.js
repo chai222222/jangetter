@@ -20,57 +20,59 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var MORINAGA_CONSTANTS = {
+var SUNYO_CONSTANTS = {
   searchConfig: {
-    prefix: 'Morinaga',
-    top: 'https://www.morinaga.co.jp/products/',
+    prefix: 'Sunyo',
+    top: 'http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi',
     searchPageSelectors: {
-      searchText: '#SS_searchQuery3',
-      searchButton: '#SS_searchQuery3 + input',
-      productsLink: 'div.SS_item > div.SS_image > a',
-      nextLink: 'span.SS_nextPage > a'
+      productsLink: 'dl.search dt a',
+      nextLink: 'dl.search + p > b + a',
+      searchText: 'form.find input[name="q"]',
+      searchButton: 'form.find input[type="submit"]'
     },
     productPageSelectors: {
-      jan: 'div.products-detailBox__inner dl.products-detailBox__list dd:last-child',
-      category: 'div.products-detailContents div.headingType02 p.headingType02__txt',
-      title: 'div.products-mainBox h2.headingType01__txt'
+      jan: '//th[contains(text(), "JANｺｰﾄﾞ")]/../td',
+      category: 'p.breadcrumb',
+      title: '//th[contains(text(), "品名")]/../td'
     },
     productPageImageSelectors: {
-      picture: 'div.products-mainImg img'
+      picture: 'p.canimg > a'
     },
     replacer: {
-      title: [_Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toHarfWidthSpace],
-      jan: [],
-      category: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidth, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim]
+      title: [_Replacer.REPLACERS.toHarfWidthAlnum],
+      category: [_Replacer.REPLACERS.toOneLine, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.toHarfWidth, {
+        pattern: /.*SUNYO製品>/g,
+        value: ''
+      }]
     }
   }
 };
 
-var MorinagaSearch = function (_JanSearchBase) {
-  _inherits(MorinagaSearch, _JanSearchBase);
+var SunyoSearch = function (_JanSearchBase) {
+  _inherits(SunyoSearch, _JanSearchBase);
 
-  function MorinagaSearch() {
-    _classCallCheck(this, MorinagaSearch);
+  function SunyoSearch() {
+    _classCallCheck(this, SunyoSearch);
 
-    return _possibleConstructorReturn(this, (MorinagaSearch.__proto__ || Object.getPrototypeOf(MorinagaSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (SunyoSearch.__proto__ || Object.getPrototypeOf(SunyoSearch)).apply(this, arguments));
   }
 
-  _createClass(MorinagaSearch, [{
+  _createClass(SunyoSearch, [{
     key: 'filterJanUrl',
     value: function filterJanUrl(links) {
       return links.filter(function (url) {
-        return url.indexOf('detail') > 0;
+        return url.indexOf('products/data') > 0;
       });
     }
   }, {
     key: 'getSrcConfig',
     value: function getSrcConfig() {
-      return MORINAGA_CONSTANTS.searchConfig;
+      return SUNYO_CONSTANTS.searchConfig;
     }
   }]);
 
-  return MorinagaSearch;
+  return SunyoSearch;
 }(_JanSearchBase3.default);
 
-exports.default = MorinagaSearch;
-//# sourceMappingURL=MorinagaSearch.js.map
+exports.default = SunyoSearch;
+//# sourceMappingURL=SunyoSearch.js.map

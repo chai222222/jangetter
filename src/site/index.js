@@ -8,6 +8,7 @@ import MogunaviSearch from './MogunaviSearch';
 import KenkocomSearch from './KenkocomSearch';
 import CreateSdSearch from './CreateSdSearch';
 import MorinagaSearch from './MorinagaSearch';
+import SunyoSearch from './SunyoSearch';
 
 export default {
   iyec: (...args) => new IyecSearch(...args),
@@ -20,4 +21,5 @@ export default {
   kenkocom: (...args) => new KenkocomSearch(...args),
   createsd: (...args) => new CreateSdSearch(...args),
   morinaga: (...args) => new MorinagaSearch(...args),
+  sunyo: (...args) => new SunyoSearch(...args),
 };

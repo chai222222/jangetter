@@ -138,7 +138,7 @@ export default class JanSearchBase {
   async eachItemFromSearchResult(dir) {
     console.log('*** eachItemFromSearchResult ***');
     const hasDupLinks = await this.getAllJanUrls();
-    const links = Array.from(new Set(hasDupLinks));
+    const links = Array.from(new Set(this.filterJanUrl(hasDupLinks)));
     console.log('** LINKS', links);
     let skipCheerio = false;
     const result = await mapSeries(links, async (link, idx) => {
@@ -152,8 +152,7 @@ export default class JanSearchBase {
         if (!jan) jan = await this.getJan(link);
         if (!jan) return;
         const replacedJan = this.replacer.replaceValues(jan);
-        // console.log(JSON.stringify(jan), JSON.stringify(replacedJan));
-        if (replacedJan.jan !== undefined && /\D/.test(`${replacedJan.jan}`)) {
+        if (typeof replacedJan.jan !== 'string' || !replacedJan.jan || /\D/.test(`${replacedJan.jan}`)) {
           this.addErr('JANが数字のみになっていません', link);
           return;
         }
@@ -258,12 +257,14 @@ export default class JanSearchBase {
     const row = {...jan};
     await forEachSeries(_.toPairs(imgs), async ([key, selector]) => {
       const imageSrc = await this.page.evaluate((selector) => {
-        return document.querySelector(selector).src;
+        const node = document.querySelector(selector);
+        // img.src or a tag
+        return node.src || node.href;
       }, selector);
       if (imageSrc) {
         row[key] = await imageDownload(jan.title, imageSrc, `${dir}/${jan.jan}_${key}`);
       } else {
-        console.log(`Couldn't get image src ${url}.`);
+        console.log(`Couldn't get image src ${imageSrc}.`);
       }
     });
     rows.push(row);
@@ -287,18 +288,29 @@ export default class JanSearchBase {
     });
   }
 
-
+  /**
+   * プロダクトページから productPageSelectors に定義されているテキストを取得します。
+   * @param {String} key データ取得キー
+   * @return {String} 取得できたテキスト
+   */
   async getPageText(key) {
     const sel = this.getSrcConfig().productPageSelectors[key];
-    const getter = (typeof sel === 'object') ? sel : { sel, method: item => item.textContent };
     let text = '';
     try {
-      return text = await this.page.$eval(getter.sel, getter.method);
+      const targets = await this.xselectLink(sel);
+      if (targets.length > 0) {
+        text = await (await targets[0].getProperty('textContent')).jsonValue();
+      }
+      return text;
     } finally {
       if (this.options['debug-pagetext']) {
         console.log(`getPageText[${key}][${sel}][${text}]`);
       }
     }
+  }
+
+  filterJanUrl(links) {
+    return links;
   }
 }
 

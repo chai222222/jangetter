@@ -44,6 +44,10 @@ var _MorinagaSearch = require('./MorinagaSearch');
 
 var _MorinagaSearch2 = _interopRequireDefault(_MorinagaSearch);
 
+var _SunyoSearch = require('./SunyoSearch');
+
+var _SunyoSearch2 = _interopRequireDefault(_SunyoSearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -116,6 +120,13 @@ exports.default = {
     }
 
     return new (Function.prototype.bind.apply(_MorinagaSearch2.default, [null].concat(args)))();
+  },
+  sunyo: function sunyo() {
+    for (var _len11 = arguments.length, args = Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
+      args[_key11] = arguments[_key11];
+    }
+
+    return new (Function.prototype.bind.apply(_SunyoSearch2.default, [null].concat(args)))();
   }
 };
 //# sourceMappingURL=index.js.map

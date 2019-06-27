@@ -37,8 +37,7 @@ const MORINAGA_CONSTANTS = {
 
 export default class MorinagaSearch extends JanSearchBase {
 
-  async getAllJanUrls() {
-    const links = await super.getAllJanUrls();
+  filterJanUrl(links) {
     return links.filter(url => url.indexOf('detail') > 0);
   }
 

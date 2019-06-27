@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.REPLACERS = undefined;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -481,7 +479,7 @@ var JanSearchBase = function () {
 
               case 3:
                 hasDupLinks = _context11.sent;
-                links = Array.from(new Set(hasDupLinks));
+                links = Array.from(new Set(this.filterJanUrl(hasDupLinks)));
 
                 console.log('** LINKS', links);
                 skipCheerio = false;
@@ -533,9 +531,8 @@ var JanSearchBase = function () {
 
                           case 14:
                             replacedJan = _this3.replacer.replaceValues(jan);
-                            // console.log(JSON.stringify(jan), JSON.stringify(replacedJan));
 
-                            if (!(replacedJan.jan !== undefined && /\D/.test('' + replacedJan.jan))) {
+                            if (!(typeof replacedJan.jan !== 'string' || !replacedJan.jan || /\D/.test('' + replacedJan.jan))) {
                               _context10.next = 18;
                               break;
                             }
@@ -951,7 +948,9 @@ var JanSearchBase = function () {
                           case 0:
                             _context18.next = 2;
                             return _this5.page.evaluate(function (selector) {
-                              return document.querySelector(selector).src;
+                              var node = document.querySelector(selector);
+                              // img.src or a tag
+                              return node.src || node.href;
                             }, selector);
 
                           case 2:
@@ -971,7 +970,7 @@ var JanSearchBase = function () {
                             break;
 
                           case 9:
-                            console.log('Couldn\'t get image src ' + url + '.');
+                            console.log('Couldn\'t get image src ' + imageSrc + '.');
 
                           case 10:
                           case 'end':
@@ -1052,41 +1051,63 @@ var JanSearchBase = function () {
 
       return getJanByCheerioHttpcli;
     }()
+
+    /**
+     * プロダクトページから productPageSelectors に定義されているテキストを取得します。
+     * @param {String} key データ取得キー
+     * @return {String} 取得できたテキスト
+     */
+
   }, {
     key: 'getPageText',
     value: function () {
       var _ref24 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(key) {
-        var sel, getter, text;
+        var sel, text, targets;
         return regeneratorRuntime.wrap(function _callee21$(_context21) {
           while (1) {
             switch (_context21.prev = _context21.next) {
               case 0:
                 sel = this.getSrcConfig().productPageSelectors[key];
-                getter = (typeof sel === 'undefined' ? 'undefined' : _typeof(sel)) === 'object' ? sel : { sel: sel, method: function method(item) {
-                    return item.textContent;
-                  } };
                 text = '';
-                _context21.prev = 3;
-                _context21.next = 6;
-                return this.page.$eval(getter.sel, getter.method);
+                _context21.prev = 2;
+                _context21.next = 5;
+                return this.xselectLink(sel);
 
-              case 6:
-                return _context21.abrupt('return', text = _context21.sent);
+              case 5:
+                targets = _context21.sent;
 
-              case 7:
-                _context21.prev = 7;
+                if (!(targets.length > 0)) {
+                  _context21.next = 12;
+                  break;
+                }
+
+                _context21.next = 9;
+                return targets[0].getProperty('textContent');
+
+              case 9:
+                _context21.next = 11;
+                return _context21.sent.jsonValue();
+
+              case 11:
+                text = _context21.sent;
+
+              case 12:
+                return _context21.abrupt('return', text);
+
+              case 13:
+                _context21.prev = 13;
 
                 if (this.options['debug-pagetext']) {
                   console.log('getPageText[' + key + '][' + sel + '][' + text + ']');
                 }
-                return _context21.finish(7);
+                return _context21.finish(13);
 
-              case 10:
+              case 16:
               case 'end':
                 return _context21.stop();
             }
           }
-        }, _callee21, this, [[3,, 7, 10]]);
+        }, _callee21, this, [[2,, 13, 16]]);
       }));
 
       function getPageText(_x18) {
@@ -1095,6 +1116,11 @@ var JanSearchBase = function () {
 
       return getPageText;
     }()
+  }, {
+    key: 'filterJanUrl',
+    value: function filterJanUrl(links) {
+      return links;
+    }
   }]);
 
   return JanSearchBase;
