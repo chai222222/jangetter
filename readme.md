@@ -84,3 +84,43 @@ Usage: jangetter [options]
 実験的に」 ```--enable-cheerio-httpcli``` を追加。
 各商品コードのページが取得できたときに pupetteer(ブラウザ)経由ではない方法で取りに行くので速いけども、
 ブラウザ使用時と若干結果が違うときがあるため、オプションにしてみる。    
+
+---
+
+## .jangetterrc
+
+- 実行ディレクトリに ```.jangetterrc``` を JSON ファイルで用意する。共通の置き換え定義ができるようになる。
+
+```
+{
+  "replacer": {
+    "title": [ {
+      "pattern": [ "正規表現", "正規表現オプション" ],
+      "value": "置き換える値"
+    }]
+  }
+}
+```
+
+例： 「S＆B」→「エスビー」、「【萬】」→「キッコーマン」
+
+```
+{
+  "replacer": {
+    "title": [ {
+      "pattern": [ "[sＳｓ][&＆][bＢｂ]", "gi" ],
+      "value": "エスビー"
+    }, {
+      "pattern": [ "【萬】", "g" ],
+      "value": "キッコーマン"
+    }]
+  }
+}
+```
+
+- gオプションは複数あった場合全てを置き換える。ない場合には最初の１つのみ置き換える
+- iオプションは半角英字の場合、大文字小文字を無視してマッチさせる
+
+その他の正規表現については
+https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Regular_Expressions
+を参照。
