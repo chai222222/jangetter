@@ -24,7 +24,7 @@
     "cheerio-httpcli": "^0.7.4",
     "iconv-lite": "^0.5.0",
     "json2csv": "^4.5.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "mustache": "^3.0.1",
     "p-iteration": "^1.1.8",
     "puppeteer": "^1.18.1"
