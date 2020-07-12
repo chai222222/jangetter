@@ -406,6 +406,10 @@ var JanSearchBase = function () {
               case 0:
                 console.log('*** search[' + word + '] ***');
                 config = this.getSrcConfig();
+                _context9.next = 4;
+                return this.page.waitForSelector(config.searchPageSelectors.searchText);
+
+              case 4:
                 name = this.outputDir + '/' + config.prefix + '_' + word.replace(/ +/g, '_');
                 outputFile = name + '.csv';
 
@@ -414,26 +418,26 @@ var JanSearchBase = function () {
                   _fs2.default.mkdirSync(name);
                 }
                 this.writer = _WriterCreator2.default.createCsvWriter(outputFile);
-                _context9.next = 8;
-                return this.page.type(config.searchPageSelectors.searchText, word);
-
-              case 8:
                 _context9.next = 10;
-                return this.page.click(config.searchPageSelectors.searchButton);
+                return this.page.type(config.searchPageSelectors.searchText, word);
 
               case 10:
                 _context9.next = 12;
-                return this.waitLoaded();
+                return this.page.click(config.searchPageSelectors.searchButton);
 
               case 12:
                 _context9.next = 14;
-                return this.xselectClick(config.searchPageSelectors.cushion);
+                return this.waitLoaded();
 
               case 14:
                 _context9.next = 16;
-                return this.eachItemFromSearchResult(name);
+                return this.xselectClick(config.searchPageSelectors.cushion);
 
               case 16:
+                _context9.next = 18;
+                return this.eachItemFromSearchResult(name);
+
+              case 18:
                 this.writer.close();
                 console.log('Output done. [' + outputFile + ']');
                 if (!_lodash2.default.isEmpty(this.imageInfo)) {
@@ -446,7 +450,7 @@ var JanSearchBase = function () {
                   _fs2.default.writeFileSync(name + '/index.html', res, 'utf-8');
                 }
 
-              case 19:
+              case 21:
               case 'end':
                 return _context9.stop();
             }

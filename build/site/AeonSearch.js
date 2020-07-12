@@ -12,6 +12,8 @@ var _JanSearchBase2 = require('./JanSearchBase');
 
 var _JanSearchBase3 = _interopRequireDefault(_JanSearchBase2);
 
+var _Replacer = require('../util/Replacer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -29,41 +31,26 @@ var AEON_CONSTANTS = {
     prefix: 'Aeon',
     top: 'https://www.aeonnetshop.com/',
     searchPageSelectors: {
-      productsLink: 'ul.pc2015-item-list-selectable li > a:first-child',
-      nextLink: 'div.pc2015-item-list-header a[rel=next]',
-      searchText: '#keyword',
-      searchButton: 'input[name=search]'
+      productsLink: 'div.search.results ol li > a',
+      nextLink: '//div[@class="column main"]/div[last()]//a[@tabindex=0]/span[contains(text(), "次")]',
+      searchText: '#search',
+      searchButton: '#cx-search-button'
     },
     productPageSelectors: {
-      jan: 'div.pc2015-item-other',
-      category: 'div.pc2015-main-block-body',
-      title: 'title'
+      jan: 'p.jan-code',
+      category: '#recently_category ul',
+      title: 'div.product-info-main H2.section-title-text'
     },
     productPageImageSelectors: {
-      picture: 'div.pc2015-center-image img'
+      picture: 'img.fotorama__img'
     },
     replacer: {
-      title: [{
-        pattern: /おうちでイオン イオンネットスーパー|: イオン本牧店/g,
-        value: ''
-      }],
+      title: [_Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthSpace],
       jan: [{
         pattern: /\D/g,
         value: ''
       }],
-      category: [{
-        pattern: /\t/g,
-        value: ''
-      }, {
-        pattern: /^\n+/,
-        value: ''
-      }, {
-        pattern: /\n+$/,
-        value: ''
-      }, {
-        pattern: /\n/g,
-        value: ';'
-      }]
+      category: [_Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim]
     }
   }
 };
@@ -115,7 +102,7 @@ var AeonSearch = function (_JanSearchBase) {
                 return this.page.waitFor(1000);
 
               case 11:
-                this.page.click('div.pc2015-main div.pc2015-select-menu-result a');
+                this.page.click('#shop_search_result_list_area .result-list-area a');
                 // await this.page.waitFor(10000);
                 _context.next = 14;
                 return this.waitLoaded();

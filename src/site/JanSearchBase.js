@@ -99,6 +99,7 @@ export default class JanSearchBase {
     console.log(`*** janSearch[${config.prefix}] ***`);
     await this.page.goto(config.top, {waitUntil: 'networkidle2'});
     await this.init(); // 検索できる画面までの画面処理をする。
+    // await this.page.screenshot( { path: './top.png' });
     await forEachSeries(keywords, async keyword => await this.searchWord(keyword));
   }
 
@@ -109,6 +110,7 @@ export default class JanSearchBase {
   async searchWord(word) {
     console.log(`*** search[${word}] ***`);
     const config = this.getSrcConfig();
+    await this.page.waitForSelector(config.searchPageSelectors.searchText);
     const name = `${this.outputDir}/${config.prefix}_${word.replace(/ +/g, '_')}`;
     const outputFile = `${name}.csv`;
     if (this.options.image && !fs.existsSync(name)) {
@@ -119,7 +121,7 @@ export default class JanSearchBase {
     await this.page.type(config.searchPageSelectors.searchText, word);
     await this.page.click(config.searchPageSelectors.searchButton);
     await this.waitLoaded();
-    await this.xselectClick(config.searchPageSelectors.cushion);
+    await this.xselectClick(config.searchPageSelectors.cushion); // 検索結果がすぐに出ない画面の場合、リンクをクリックする
     await this.eachItemFromSearchResult(name);
     this.writer.close();
     console.log(`Output done. [${outputFile}]`);

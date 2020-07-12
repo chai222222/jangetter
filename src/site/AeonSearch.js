@@ -1,5 +1,6 @@
 import { map, mapSeries } from 'p-iteration';
 import JanSearchBase from './JanSearchBase';
+import { REPLACERS } from '../util/Replacer';
 
 const AEON_CONSTANTS = {
   zip1: '214',
@@ -8,41 +9,33 @@ const AEON_CONSTANTS = {
     prefix: 'Aeon',
     top: 'https://www.aeonnetshop.com/',
     searchPageSelectors: {
-      productsLink: 'ul.pc2015-item-list-selectable li > a:first-child',
-      nextLink: 'div.pc2015-item-list-header a[rel=next]',
-      searchText: '#keyword',
-      searchButton: 'input[name=search]',
+      productsLink: 'div.search.results ol li > a',
+      nextLink: '//div[@class="column main"]/div[last()]//a[@tabindex=0]/span[contains(text(), "次")]',
+      searchText: '#search',
+      searchButton: '#cx-search-button',
     },
     productPageSelectors: {
-      jan: 'div.pc2015-item-other',
-      category: 'div.pc2015-main-block-body',
-      title: 'title',
+      jan: 'p.jan-code',
+      category: '#recently_category ul',
+      title: 'div.product-info-main H2.section-title-text',
     },
     productPageImageSelectors: {
-      picture: 'div.pc2015-center-image img',
+      picture: 'img.fotorama__img',
     },
     replacer: {
-      title: [{
-        pattern: /おうちでイオン イオンネットスーパー|: イオン本牧店/g,
-        value: '',
-      }],
+      title: [
+        REPLACERS.trim,
+        REPLACERS.toHarfWidthSpace,
+        REPLACERS.toHarfWidthSpace,
+      ],
       jan: [{
         pattern: /\D/g,
         value: '',
       }],
-      category: [{
-        pattern: /\t/g,
-        value: '',
-      }, {
-        pattern: /^\n+/,
-        value: '',
-      }, {
-        pattern: /\n+$/,
-        value: '',
-      }, {
-        pattern: /\n/g,
-        value: ';',
-      }],
+      category: [
+        REPLACERS.toOneSpace,
+        REPLACERS.trim,
+      ],
     },
   },
 };
@@ -59,7 +52,7 @@ export default class AeonSearch extends JanSearchBase {
       await this.page.type('#zip2', AEON_CONSTANTS.zip2) ;
       this.page.click('#shop_search_1')
       await this.page.waitFor(1000);
-      this.page.click('div.pc2015-main div.pc2015-select-menu-result a');
+      this.page.click('#shop_search_result_list_area .result-list-area a');
       // await this.page.waitFor(10000);
       await this.waitLoaded();
     }
