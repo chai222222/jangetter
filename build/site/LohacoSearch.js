@@ -57,16 +57,16 @@ var LOHACO_CONSTANTS = {
   }
 };
 
-var TajimaSearch = function (_JanSearchBase) {
-  _inherits(TajimaSearch, _JanSearchBase);
+var LohacoSearch = function (_JanSearchBase) {
+  _inherits(LohacoSearch, _JanSearchBase);
 
-  function TajimaSearch() {
-    _classCallCheck(this, TajimaSearch);
+  function LohacoSearch() {
+    _classCallCheck(this, LohacoSearch);
 
-    return _possibleConstructorReturn(this, (TajimaSearch.__proto__ || Object.getPrototypeOf(TajimaSearch)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (LohacoSearch.__proto__ || Object.getPrototypeOf(LohacoSearch)).apply(this, arguments));
   }
 
-  _createClass(TajimaSearch, [{
+  _createClass(LohacoSearch, [{
     key: 'init',
 
 
@@ -116,8 +116,8 @@ var TajimaSearch = function (_JanSearchBase) {
     }
   }]);
 
-  return TajimaSearch;
+  return LohacoSearch;
 }(_JanSearchBase3.default);
 
-exports.default = TajimaSearch;
+exports.default = LohacoSearch;
 //# sourceMappingURL=LohacoSearch.js.map

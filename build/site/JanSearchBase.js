@@ -333,20 +333,23 @@ var JanSearchBase = function () {
           keywords[_key3] = arguments[_key3];
         }
 
+        var config;
         return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                console.log('*** janSearch ***');
-                _context8.next = 3;
-                return this.page.goto(this.getSrcConfig().top, { waitUntil: 'networkidle2' });
+                config = this.getSrcConfig();
 
-              case 3:
-                _context8.next = 5;
+                console.log('*** janSearch[' + config.prefix + '] ***');
+                _context8.next = 4;
+                return this.page.goto(config.top, { waitUntil: 'networkidle2' });
+
+              case 4:
+                _context8.next = 6;
                 return this.init();
 
-              case 5:
-                _context8.next = 7;
+              case 6:
+                _context8.next = 8;
                 return (0, _pIteration.forEachSeries)(keywords, function () {
                   var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(keyword) {
                     return regeneratorRuntime.wrap(function _callee7$(_context7) {
@@ -372,7 +375,7 @@ var JanSearchBase = function () {
                   };
                 }());
 
-              case 7:
+              case 8:
               case 'end':
                 return _context8.stop();
             }

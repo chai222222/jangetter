@@ -95,8 +95,9 @@ export default class JanSearchBase {
    * 引数で渡された検索ワードを検索して jan 情報を返します。
    */
   async search(...keywords) {
-    console.log('*** janSearch ***');
-    await this.page.goto(this.getSrcConfig().top, {waitUntil: 'networkidle2'});
+    const config = this.getSrcConfig();
+    console.log(`*** janSearch[${config.prefix}] ***`);
+    await this.page.goto(config.top, {waitUntil: 'networkidle2'});
     await this.init(); // 検索できる画面までの画面処理をする。
     await forEachSeries(keywords, async keyword => await this.searchWord(keyword));
   }

@@ -154,9 +154,13 @@ var searchers = [];
 
           case 9:
             _context2.next = 11;
-            return page.setViewport(_constants2.default.viewport);
+            return page.setUserAgent(_constants2.default.userAgent);
 
           case 11:
+            _context2.next = 13;
+            return page.setViewport(_constants2.default.viewport);
+
+          case 13:
             // rcファイル読み込み
             rcPath = _constants2.default.rcfile;
             rc = undefined;
@@ -172,7 +176,7 @@ var searchers = [];
             }).map(function (name) {
               return _site2.default[name]({ outputDir: outputDir, page: page, errors: errors, rc: rc, options: args.options });
             });
-            _context2.next = 18;
+            _context2.next = 20;
             return (0, _pIteration.forEachSeries)(_searchers, function () {
               var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(s) {
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -198,7 +202,7 @@ var searchers = [];
               };
             }());
 
-          case 18:
+          case 20:
 
             if (errors.length) {
               console.log('\u30A8\u30E9\u30FC\u304C\u767A\u751F\u3057\u307E\u3057\u305F\u3002' + errorTxt + ' \u3078\u51FA\u529B\u3057\u307E\u3059\u3002');
@@ -208,28 +212,28 @@ var searchers = [];
                 }
               });
             }
-            _context2.next = 24;
+            _context2.next = 26;
             break;
 
-          case 21:
-            _context2.prev = 21;
+          case 23:
+            _context2.prev = 23;
             _context2.t0 = _context2['catch'](3);
 
             console.log(_context2.t0.stack);
 
-          case 24:
-            _context2.prev = 24;
+          case 26:
+            _context2.prev = 26;
 
             console.log('finally');
             browser.close();
-            return _context2.finish(24);
+            return _context2.finish(26);
 
-          case 28:
+          case 30:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[3, 21, 24, 28]]);
+    }, _callee2, undefined, [[3, 23, 26, 30]]);
   }));
 
   return function (_x) {

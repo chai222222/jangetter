@@ -103,6 +103,7 @@ const searchers = [];
         console.log("### URL ", frm.url());
       }
     });
+    await page.setUserAgent(Constants.userAgent);
     await page.setViewport(Constants.viewport);
     // rcファイル読み込み
     const rcPath = Constants.rcfile;

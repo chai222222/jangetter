@@ -44,7 +44,7 @@ const LOHACO_CONSTANTS = {
   },
 };
 
-export default class TajimaSearch extends JanSearchBase {
+export default class LohacoSearch extends JanSearchBase {
 
   /**
    * 検索可能画面になるまで遷移する。
