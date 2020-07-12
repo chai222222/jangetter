@@ -31,11 +31,12 @@ function getSiteOpts(knownFlags) {
     acc[name] = c.toLocaleUpperCase();
     return acc;
   }, {})
+  const arg = {};
   return names.map(name => ({
     name,
     short: n2up[name],
     type: 'boolean',
-    description: `search from ${name}`,
+    description: `search from ${name}(${Site[name](arg).getSrcConfig().top}))`,
   }));
 }
 
@@ -65,7 +66,7 @@ const fixedArgs = [ {
 }, {
   name: 'debug-pagetext',
   type: 'boolean',
-  description: 'enable log url',
+  description: 'enable page text',
 }, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',

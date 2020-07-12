@@ -61,12 +61,13 @@ function getSiteOpts(knownFlags) {
     acc[name] = c.toLocaleUpperCase();
     return acc;
   }, {});
+  var arg = {};
   return names.map(function (name) {
     return {
       name: name,
       short: n2up[name],
       type: 'boolean',
-      description: 'search from ' + name
+      description: 'search from ' + name + '(' + _site2.default[name](arg).getSrcConfig().top + '))'
     };
   });
 }
@@ -97,7 +98,7 @@ var fixedArgs = [{
 }, {
   name: 'debug-pagetext',
   type: 'boolean',
-  description: 'enable log url'
+  description: 'enable page text'
 }, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
