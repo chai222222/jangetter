@@ -17,7 +17,7 @@ const KOKUBU_CONSTANTS = {
       title: 'title',
     },
     productPageImageSelectors: {
-      picture: 'image_l_',
+      picture: '#image_l_',
     },
     replacer: {
       title: [

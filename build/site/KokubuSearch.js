@@ -36,7 +36,7 @@ var KOKUBU_CONSTANTS = {
       title: 'title'
     },
     productPageImageSelectors: {
-      picture: 'image_l_'
+      picture: '#image_l_'
     },
     replacer: {
       title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthAlnum, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, {
