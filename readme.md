@@ -10,74 +10,72 @@ Usage: jangetter [options]
 		'index.js -h' or 'index.js --help'
 
 	--output, -o
-		output csv directory path.
+		CSVファイル出力先パス
 
 	--image, -g
-		output picture.
+		フォルダを作成いし画像をダウンロードします
 
 	--error, -e
-		output error file path.
+		エラー出力先パス
 
 	--debug-window
-		enable window
+		デバッグウィンドウ表示を有効にします
 
 	--debug-url
-		enable log url
+		デバッグURL出力を有効にします
 
 	--debug-pagetext
-		enable log url
+		デバッグpage textを有効にします
 
 	--enable-cheerio-httpcli
-		enable cheerio-httpcli.
+		【実験】cheerio-httpcliを有効にして実行します
 
 	--aeon, -A
-		search from aeon
+		検索元[aeon](https://www.aeonnetshop.com/),
 
 	--coop, -C
-		search from coop
+		検索元[coop](https://mdinfo.jccu.coop/bb/),
 
 	--createsd, -R
-		search from createsd
+		検索元[createsd](http://netshop.create-sd.co.jp/shop/default.aspx),
 
 	--gyoumusuper, -G
-		search from gyoumusuper
+		検索元[gyoumusuper](https://www.gyomusuper.jp/item/search.php),
 
 	--house, -H
-		search from house
+		検索元[house](https://housefoods.jp/products/index.html),
 
 	--iyec, -I
-		search from iyec
+		検索元[iyec](https://iyec.omni7.jp),
 
 	--kenkocom, -K
-		search from kenkocom
+		検索元[kenkocom](https://www.kenko.com/),
 
 	--kokubu, -O
-		search from kokubu
+		検索元[kokubu](http://netton.kokubu.jp/shop/default.aspx),
 
 	--lohaco, -L
-		search from lohaco
+		検索元[lohaco](https://lohaco.jp/),
 
 	--mogunavi, -M
-		search from mogunavi
+		検索元[mogunavi](https://mognavi.jp/),
 
 	--morinaga, -0
-		search from morinaga
+		検索元[morinaga](https://www.morinaga.co.jp/products/),
 
 	--nissui, -N
-		search from nissui
+		検索元[nissui](http://www.nissui.co.jp/product/index.html),
 
 	--sunyo, -S
-		search from sunyo
+		検索元[sunyo](http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi),
 
 	--tajima, -T
-		search from tajima
-
-
+		検索元[tajima](http://www.tajimaya-cc.net/), 最終対応日時[2022/03/16: 00:00:00]
 
 ```
 
 
-最低限、 ```search from``` のオプションは何か指定しないとエラーになる。
+最低限、 検索元のオプションは何か指定しないとエラーになる。
 
 ## 実験
 
