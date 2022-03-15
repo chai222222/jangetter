@@ -19,7 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "argv": "0.0.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "babel-polyfill": "^6.26.0",
     "cheerio-httpcli": "^0.8.1",
     "iconv-lite": "^0.6.2",
