@@ -62,12 +62,20 @@ function getSiteOpts(knownFlags) {
     return acc;
   }, {});
   var arg = {};
+  var mkDescription = function mkDescription(name, config) {
+    var top = config.top,
+        lastSupportedDate = config.lastSupportedDate;
+
+    var lastDateStr = lastSupportedDate ? ' \u6700\u7D42\u5BFE\u5FDC\u65E5\u6642[' + lastSupportedDate + ']' : '';
+    // return `検索元[${name}](${top})${lastDateStr}`;
+    return ['\u691C\u7D22\u5143[' + name + '](' + top + ')', lastDateStr];
+  };
   return names.map(function (name) {
     return {
       name: name,
       short: n2up[name],
       type: 'boolean',
-      description: 'search from ' + name + '(' + _site2.default[name](arg).getSrcConfig().top + '))'
+      description: mkDescription(name, _site2.default[name](arg).getSrcConfig())
     };
   });
 }
@@ -76,33 +84,33 @@ var fixedArgs = [{
   name: 'output',
   short: 'o',
   type: 'path',
-  description: 'output csv directory path.'
+  description: 'CSVファイル出力先パス'
 }, {
   name: 'image',
   short: 'g',
   type: 'boolean',
-  description: 'output picture.'
+  description: 'フォルダを作成いし画像をダウンロードします'
 }, {
   name: 'error',
   short: 'e',
   type: 'path',
-  description: 'output error file path.'
+  description: 'エラー出力先パス'
 }, {
   name: 'debug-window',
   type: 'boolean',
-  description: 'enable window'
+  description: 'デバッグウィンドウ表示を有効にします'
 }, {
   name: 'debug-url',
   type: 'boolean',
-  description: 'enable log url'
+  description: 'デバッグURL出力を有効にします'
 }, {
   name: 'debug-pagetext',
   type: 'boolean',
-  description: 'enable page text'
+  description: 'デバッグpage textを有効にします'
 }, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
-  description: 'enable cheerio-httpcli.'
+  description: '【実験】cheerio-httpcliを有効にして実行します'
 }];
 
 _argv2.default.option([].concat(fixedArgs, _toConsumableArray(getSiteOpts(fixedArgs.filter(function (o) {

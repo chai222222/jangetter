@@ -13,7 +13,7 @@ const CREATESD_CONSTANTS = {
     },
     productPageSelectors: {
       jan: 'div.goodsdetail_.top_ + div + div > p.txt_',
-      category: '#bread-crumb-list',
+      // category: '#bread-crumb-list',
       title: 'div.common_h2_blue_ h2 span',
     },
     productPageImageSelectors: {

@@ -14,7 +14,7 @@ const MOGUNAVI_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '#pInfo > p + table tbody',
-      category: '#pInfo td.category a',
+      // category: '#pInfo td.category a',
       title: 'h2.item span.fn span.food-name',
     },
     productPageImageSelectors: {

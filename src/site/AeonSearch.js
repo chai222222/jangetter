@@ -16,7 +16,7 @@ const AEON_CONSTANTS = {
     },
     productPageSelectors: {
       jan: 'p.jan-code',
-      category: '#recently_category ul',
+      // category: '#recently_category ul',
       title: 'div.product-info-main H2.section-title-text',
     },
     productPageImageSelectors: {

@@ -32,7 +32,7 @@ var KOKUBU_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '#spec_item_code',
-      category: 'div.navitopicpath_',
+      // category: 'div.navitopicpath_',
       title: 'title'
     },
     productPageImageSelectors: {

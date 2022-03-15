@@ -13,7 +13,7 @@ const HOUSE_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '//th/span[contains(text(), "JAN")]/../../td/span',
-      category: 'p.breadcrumbs',
+      // category: 'p.breadcrumbs',
       title: 'h1.ttlType1',
     },
     productPageImageSelectors: {

@@ -13,7 +13,7 @@ const COOP_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '#basicInfo tbody > tr:nth-child(2) td img',
-      category: '#basicInfo tbody > tr:first-child td',
+      // category: '#basicInfo tbody > tr:first-child td',
       title: 'title',
     },
     productPageImageSelectors: {

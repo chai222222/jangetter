@@ -32,7 +32,7 @@ var SUNYO_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '//th[contains(text(), "JANｺｰﾄﾞ")]/../td',
-      category: 'p.breadcrumb',
+      // category: 'p.breadcrumb',
       title: '//th[contains(text(), "品名")]/../td'
     },
     productPageImageSelectors: {

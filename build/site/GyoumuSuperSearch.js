@@ -33,7 +33,7 @@ var GYOUMUSUPER_CONSTANTS = {
     productPageSelectors: {
       jan: '//dt[contains(text(), "JAN")]/../dd',
       title: 'div.detail_info_box h3'
-      //categoryがとれないのでなし
+      // categoryがとれないのでなし
     },
     productPageImageSelectors: {
       picture: 'div.detail_img_box img'

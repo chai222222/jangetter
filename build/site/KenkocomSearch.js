@@ -32,7 +32,7 @@ var KENKOCOM_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '#janCode',
-      category: 'ul.breadcrumbTypeA01',
+      // category: 'ul.breadcrumbTypeA01',
       title: 'h2.itemTitle'
     },
     productPageImageSelectors: {

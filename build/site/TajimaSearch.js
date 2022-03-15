@@ -24,30 +24,20 @@ var TAJIMA_CONSTANTS = {
   searchConfig: {
     prefix: 'Tajima',
     top: 'http://www.tajimaya-cc.net/',
+    lastSupportedDate: '2022/03/16: 00:00:00',
     searchPageSelectors: {
-      productsLink: 'div.boxProduct > a',
-      nextLink: '#page_navi_top div.navi > a:last-child',
-      searchText: 'p.searchftxt input',
-      searchButton: '#search_form p.btn input'
+      productsLink: 'ul.prod_list a',
+      nextLink: '#contents > div > div > main > div.prod_list_case > div > a.nextpostslink',
+      searchText: '#search3',
+      searchButton: '#product_search2 > button'
     },
     productPageSelectors: {
-      jan: '#product_code_default',
-      category: 'li.onmark > p > a',
-      title: 'title'
+      jan: '//dt[contains(text(), "JANコード")]/../dd',
+      // category: 'li.onmark > p > a',
+      title: 'h3.tit_txt'
     },
     productPageImageSelectors: {
-      picture: 'img.picture'
-    },
-    replacer: {
-      title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthAlnum, {
-        pattern: /.*株式会社タジマヤ *\/ */g,
-        value: ''
-      }],
-      jan: [{
-        pattern: /\D/g,
-        value: ''
-      }],
-      category: [_Replacer.REPLACERS.toOneLine]
+      picture: 'div.img_main_wrap img'
     }
   }
 };

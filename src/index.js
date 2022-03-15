@@ -32,11 +32,17 @@ function getSiteOpts(knownFlags) {
     return acc;
   }, {})
   const arg = {};
+  const mkDescription = (name, config) => {
+    const { top, lastSupportedDate }  = config;
+    const lastDateStr = lastSupportedDate ? ` 最終対応日時[${lastSupportedDate}]` : '';
+    // return `検索元[${name}](${top})${lastDateStr}`;
+    return [`検索元[${name}](${top})`, lastDateStr];
+  }
   return names.map(name => ({
     name,
     short: n2up[name],
     type: 'boolean',
-    description: `search from ${name}(${Site[name](arg).getSrcConfig().top}))`,
+    description: mkDescription(name, Site[name](arg).getSrcConfig()),
   }));
 }
 
@@ -44,33 +50,33 @@ const fixedArgs = [ {
   name: 'output',
   short: 'o',
   type: 'path',
-  description: 'output csv directory path.',
+  description: 'CSVファイル出力先パス',
 }, {
   name: 'image',
   short: 'g',
   type: 'boolean',
-  description: 'output picture.',
+  description: 'フォルダを作成いし画像をダウンロードします',
 }, {
   name: 'error',
   short: 'e',
   type: 'path',
-  description: 'output error file path.',
+  description: 'エラー出力先パス',
 }, {
   name: 'debug-window',
   type: 'boolean',
-  description: 'enable window',
+  description: 'デバッグウィンドウ表示を有効にします',
 }, {
   name: 'debug-url',
   type: 'boolean',
-  description: 'enable log url',
+  description: 'デバッグURL出力を有効にします',
 }, {
   name: 'debug-pagetext',
   type: 'boolean',
-  description: 'enable page text',
+  description: 'デバッグpage textを有効にします',
 }, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
-  description: 'enable cheerio-httpcli.',
+  description: '【実験】cheerio-httpcliを有効にして実行します',
 } ];
 
 argv.option([ ...fixedArgs, ...getSiteOpts(fixedArgs.filter(o => o.short && /^[A-Z]$/.test(o.short)).map(o => o.short)) ]);

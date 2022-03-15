@@ -32,7 +32,7 @@ var IYEC_CONSTANTS = {
     },
     productPageSelectors: {
       jan: 'div.mod-table2col_22 tbody > tr:first-child td',
-      category: 'ol.breadcrumb',
+      // category: 'ol.breadcrumb',
       title: 'title'
     },
     productPageImageSelectors: {

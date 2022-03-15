@@ -32,7 +32,7 @@ var MORINAGA_CONSTANTS = {
     },
     productPageSelectors: {
       jan: 'div.products-detailBox__inner dl.products-detailBox__list dd:last-child',
-      category: 'div.products-detailContents div.headingType02 p.headingType02__txt',
+      // category: 'div.products-detailContents div.headingType02 p.headingType02__txt',
       title: 'div.products-mainBox h2.headingType01__txt'
     },
     productPageImageSelectors: {

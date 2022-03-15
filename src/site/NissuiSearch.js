@@ -13,7 +13,7 @@ const NISSUI_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '//th[contains(text(), "JANコード")]/../td',
-      category: 'ul#pathBody',
+      // category: 'ul#pathBody',
       title: 'div.twoLineInner',
     },
     productPageImageSelectors: {

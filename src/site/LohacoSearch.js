@@ -13,7 +13,7 @@ const LOHACO_CONSTANTS = {
     },
     productPageSelectors: {
       jan: 'table.prodSpecTable > tbody',
-      category: 'div.blcCategoryNav div.blcCatNav',
+      // category: 'div.blcCategoryNav div.blcCatNav',
       title: 'title',
     },
     productPageImageSelectors: {

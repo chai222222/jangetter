@@ -1,20 +1,19 @@
 import JanSearchBase from './JanSearchBase';
 import { REPLACERS } from '../util/Replacer';
 
-const MORINAGA_CONSTANTS = {
+const POKKASAPPORO_CONSTANTS = {
   searchConfig: {
-    prefix: 'Morinaga',
-    top: 'https://www.morinaga.co.jp/products/',
+    prefix: 'PokkaSapporo',
+    top: 'https://www.pokkasapporo-fb.jp/products/',
     searchPageSelectors: {
-      searchText: '#SS_searchQuery3',
-      searchButton: '#SS_searchQuery3 + input',
-      productsLink: 'div.SS_item > div.SS_image > a',
-      nextLink: 'span.SS_nextPage > a',
+      searchText: 'input.c-form__search',
+      searchButton: 'input.c-button',
+      productsLink: 'p.mf_url > a',
+      nextLink: 'li.mf_nextpage > a',
     },
     productPageSelectors: {
-      jan: 'div.products-detailBox__inner dl.products-detailBox__list dd:last-child',
-      // category: 'div.products-detailContents div.headingType02 p.headingType02__txt',
-      title: 'div.products-mainBox h2.headingType01__txt',
+      jan: 'td.v_jan_code',
+      title: 'h1',
     },
     productPageImageSelectors: {
       picture: 'div.products-mainImg img',
@@ -23,6 +22,7 @@ const MORINAGA_CONSTANTS = {
       title: [
         REPLACERS.toHarfWidth,
         REPLACERS.toHarfWidthSpace,
+        REPLACERS.trim,
       ],
       jan: [],
       category: [
@@ -42,6 +42,6 @@ export default class MorinagaSearch extends JanSearchBase {
   }
 
   getSrcConfig() {
-    return MORINAGA_CONSTANTS.searchConfig;
+    return POKKASAPPORO_CONSTANTS.searchConfig;
   }
 }
