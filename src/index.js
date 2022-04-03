@@ -1,4 +1,3 @@
-import 'babel-polyfill';  // eslint-disable-line import/no-extraneous-dependencies
 import fs from 'fs';
 import argv from 'argv';
 import puppeteer from 'puppeteer';

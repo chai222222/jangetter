@@ -1,59 +1,34 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _axios = require('axios');
+var _axios = _interopRequireDefault(require("axios"));
 
-var _axios2 = _interopRequireDefault(_axios);
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
+var _fs = _interopRequireDefault(require("fs"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+var _default = async (name, src, outputFileName) => {
+  try {
+    const res = await _axios.default.get(src, {
+      responseType: 'arraybuffer'
+    });
+    const ext = src.substr(src.lastIndexOf('.'));
+    const query = ext.lastIndexOf('?');
+    const outName = `${outputFileName}${query < 0 ? ext : ext.substr(0, query)}`;
 
-exports.default = function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(name, src, outputFileName) {
-    var res, ext, query, outName, lastSlash;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            _context.next = 3;
-            return _axios2.default.get(src, { responseType: 'arraybuffer' });
+    _fs.default.writeFileSync(outName, new Buffer.from(res.data), 'binary');
 
-          case 3:
-            res = _context.sent;
-            ext = src.substr(src.lastIndexOf('.'));
-            query = ext.lastIndexOf('?');
-            outName = '' + outputFileName + (query < 0 ? ext : ext.substr(0, query));
+    const lastSlash = outName.lastIndexOf('/');
+    return lastSlash >= 0 ? outName.substr(lastSlash + 1) : lastSlash;
+  } catch (error) {
+    console.log(`[Image] image [${name}] Couldn't get. ${error}`);
+    return;
+  }
+};
 
-            _fs2.default.writeFileSync(outName, new Buffer.from(res.data), 'binary');
-            lastSlash = outName.lastIndexOf('/');
-            return _context.abrupt('return', lastSlash >= 0 ? outName.substr(lastSlash + 1) : lastSlash);
-
-          case 12:
-            _context.prev = 12;
-            _context.t0 = _context['catch'](0);
-
-            console.log('[Image] image [' + name + '] Couldn\'t get. ' + _context.t0);
-            return _context.abrupt('return');
-
-          case 16:
-          case 'end':
-            return _context.stop();
-        }
-      }
-    }, _callee, undefined, [[0, 12]]);
-  }));
-
-  return function (_x, _x2, _x3) {
-    return _ref.apply(this, arguments);
-  };
-}();
+exports.default = _default;
 //# sourceMappingURL=ImageDownload.js.map
