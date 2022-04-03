@@ -3,16 +3,4 @@ node_modules
 error.txt
 .jangetterrc
 
-Aeon_*
-Coop_*
-CreateSD_*
-Iyec_*
-Kenkocom_*
-Kokubu_*
-Lohaco_*
-Mogunavi_*
-Morinaga_*
-Tajima_*
-Sunyo_*
-GyoumuSuper_*
-Nissui_*
+[A-Z]*_*/
