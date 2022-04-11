@@ -8,7 +8,7 @@ const TAJIMA_CONSTANTS = {
     lastSupportedDate: '2022/03/16: 00:00:00',
     searchPageSelectors: {
       productsLink: 'ul.prod_list a',
-      nextLink: '#contents > div > div > main > div.prod_list_case > div > a.nextpostslink',
+      nextLink: 'a.next',
       searchText: '#search3',
       searchButton: '#product_search2 > button',
     },
