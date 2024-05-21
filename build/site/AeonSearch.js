@@ -19,9 +19,10 @@ const AEON_CONSTANTS = {
   searchConfig: {
     prefix: 'Aeon',
     top: 'https://www.aeonnetshop.com/',
+    lastSupportedDate: '2024/05/21: 17:00:00',
     searchPageSelectors: {
       productsLink: 'div.search.results ol li > a',
-      nextLink: '//div[@class="column main"]/div[last()]//a[@tabindex=0]/span[contains(text(), "次")]',
+      nextLink: '//div[contains(concat(" ", normalize-space(@class), " "), " main ")]/div[last()]//a[@tabindex=0]/span[contains(text(), "次")]',
       searchText: '#search',
       searchButton: '#cx-search-button'
     },
