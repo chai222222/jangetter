@@ -15,7 +15,7 @@ const TAJIMA_CONSTANTS = {
   searchConfig: {
     prefix: 'Tajima',
     top: 'http://www.tajimaya-cc.net/',
-    lastSupportedDate: '2022/03/16: 00:00:00',
+    lastSupportedDate: '2022/05/24: 18:00:00',
     searchPageSelectors: {
       productsLink: 'ul.prod_list a',
       nextLink: 'a.next',
