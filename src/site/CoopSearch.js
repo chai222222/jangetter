@@ -5,9 +5,10 @@ const COOP_CONSTANTS = {
   searchConfig: {
     prefix: 'Coop',
     top: 'https://mdinfo.jccu.coop/bb/',
+    lastSupportedDate: '2022/05/24: 20:00:00',
     searchPageSelectors: {
       productsLink: '#bubble_tooltip + table td:nth-child(2) a[href*="/bb/"]',
-      nextLink: 'a.next:first-child',
+      nextLink: 'td.detail span.next a',
       searchText: '#shohin',
       searchButton: '#shohin + input',
     },
@@ -30,14 +31,8 @@ const COOP_CONSTANTS = {
         }
       ],
       jan: [{
-        pattern: /^.*shohindetail\//,
-        value: '',
-      }, {
-        pattern: /\/psspu.*$/,
-        value: '',
-      }, {
-        pattern: /\D/g,
-        value: '',
+        pattern: /^.*shohindetail\/(\d+)\/?.*/,
+        value: '$1',
       }],
       category: [
         REPLACERS.toOneSpace,

@@ -5,7 +5,7 @@ const TAJIMA_CONSTANTS = {
   searchConfig: {
     prefix: 'Tajima',
     top: 'http://www.tajimaya-cc.net/',
-    lastSupportedDate: '2022/03/16: 00:00:00',
+    lastSupportedDate: '2022/05/24: 18:00:00',
     searchPageSelectors: {
       productsLink: 'ul.prod_list a',
       nextLink: 'a.next',
@@ -15,7 +15,7 @@ const TAJIMA_CONSTANTS = {
     productPageSelectors: {
       jan: '//dt[contains(text(), "JANコード")]/../dd',
       // category: 'li.onmark > p > a',
-      title: 'h3.tit_txt',
+      title: 'h1.tit_txt',
     },
     productPageImageSelectors: {
       picture: 'div.img_main_wrap img',
