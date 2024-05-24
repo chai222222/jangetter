@@ -32,7 +32,7 @@ function getSiteOpts(knownFlags) {
     let c = name.charAt(0);
 
     if (flag.has(c)) {
-      c = [...name, ...'0123456789'].find((c, idx) => idx > 0 && names.every(name => name.charAt(0) !== c) && !flag.has(c));
+      c = [...name, ...'0123456789'].find((c, idx) => idx > 0 && names.every(nm => nm.charAt(0) !== c) && !flag.has(c));
       if (!c) throw new Error('オプション設定できません');
     }
 
@@ -52,11 +52,11 @@ function getSiteOpts(knownFlags) {
     return [`検索元[${name}](${top})`, lastDateStr];
   };
 
-  return names.map(name => ({
-    name,
-    short: n2up[name],
+  return names.map(nm => ({
+    name: nm,
+    short: n2up[nm],
     type: 'boolean',
-    description: mkDescription(name, _site.default[name](arg).getSrcConfig())
+    description: mkDescription(nm, _site.default[nm](arg).getSrcConfig())
   }));
 }
 
@@ -97,7 +97,7 @@ _argv.default.option([...fixedArgs, ...getSiteOpts(fixedArgs.filter(o => o.short
 
 const args = _argv.default.run();
 
-if (args.targets.length < 1 || !Object.keys(_site.default).some(name => args.options[name])) {
+if (args.targets.length < 1 || !Object.keys(_site.default).some(nm => args.options[nm])) {
   _argv.default.help();
 
   process.exit(0);
@@ -105,7 +105,6 @@ if (args.targets.length < 1 || !Object.keys(_site.default).some(name => args.opt
 
 const outputDir = args.options.output || '.';
 const errorTxt = args.options.error || 'error.txt';
-const searchers = [];
 
 (async words => {
   const browser = await _puppeteer.default.launch({
@@ -134,7 +133,7 @@ const searchers = [];
     }
 
     const errors = [];
-    const searchers = Object.keys(_site.default).filter(name => args.options[name]).map(name => _site.default[name]({
+    const searchers = Object.keys(_site.default).filter(nm => args.options[nm]).map(nm => _site.default[nm]({
       outputDir,
       page,
       errors,
@@ -146,7 +145,7 @@ const searchers = [];
     if (errors.length) {
       console.log(`エラーが発生しました。${errorTxt} へ出力します。`);
 
-      _fs.default.writeFile(errorTxt, errors.join('\n'), err => {
+      _fs.default.writeFile(errorTxt, `${errors.join('\n')}\n`, err => {
         if (err) {
           throw err;
         }

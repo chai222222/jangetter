@@ -21,31 +21,31 @@ function getSiteOpts(knownFlags) {
   const n2up = names.reduce((acc, name) => {
     let c = name.charAt(0);
     if (flag.has(c)) {
-      c = [ ...name, ...'0123456789'].find((c, idx) => idx > 0
-        && names.every(name => name.charAt(0) !== c)
+      c = [...name, ...'0123456789'].find((c, idx) => idx > 0
+        && names.every(nm => nm.charAt(0) !== c)
         && !flag.has(c));
       if (!c) throw new Error('オプション設定できません');
     }
     flag.add(c);
     acc[name] = c.toLocaleUpperCase();
     return acc;
-  }, {})
+  }, {});
   const arg = {};
   const mkDescription = (name, config) => {
-    const { top, lastSupportedDate }  = config;
+    const { top, lastSupportedDate } = config;
     const lastDateStr = lastSupportedDate ? ` 最終対応日時[${lastSupportedDate}]` : '';
     // return `検索元[${name}](${top})${lastDateStr}`;
     return [`検索元[${name}](${top})`, lastDateStr];
-  }
-  return names.map(name => ({
-    name,
-    short: n2up[name],
+  };
+  return names.map(nm => ({
+    name: nm,
+    short: n2up[nm],
     type: 'boolean',
-    description: mkDescription(name, Site[name](arg).getSrcConfig()),
+    description: mkDescription(nm, Site[nm](arg).getSrcConfig()),
   }));
 }
 
-const fixedArgs = [ {
+const fixedArgs = [{
   name: 'output',
   short: 'o',
   type: 'path',
@@ -76,19 +76,18 @@ const fixedArgs = [ {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
   description: '【実験】cheerio-httpcliを有効にして実行します',
-} ];
+}];
 
-argv.option([ ...fixedArgs, ...getSiteOpts(fixedArgs.filter(o => o.short && /^[A-Z]$/.test(o.short)).map(o => o.short)) ]);
+argv.option([...fixedArgs, ...getSiteOpts(fixedArgs.filter(o => o.short && /^[A-Z]$/.test(o.short)).map(o => o.short))]);
 const args = argv.run();
 
-if (args.targets.length < 1 || !Object.keys(Site).some(name => args.options[name])) {
+if (args.targets.length < 1 || !Object.keys(Site).some(nm => args.options[nm])) {
   argv.help();
   process.exit(0);
 }
 
 const outputDir = args.options.output || '.';
 const errorTxt = args.options.error || 'error.txt';
-const searchers = [];
 
 (async (words) => {
   const browser = await puppeteer.launch({
@@ -121,14 +120,14 @@ const searchers = [];
 
     const errors = [];
     const searchers = Object.keys(Site)
-      .filter(name => args.options[name])
-      .map(name => Site[name]({outputDir, page, errors, rc, options: args.options}));
+      .filter(nm => args.options[nm])
+      .map(nm => Site[nm]({ outputDir, page, errors, rc, options: args.options }));
 
     await forEachSeries(searchers, async s => await s.search(...words));
 
     if (errors.length) {
       console.log(`エラーが発生しました。${errorTxt} へ出力します。`);
-      fs.writeFile(errorTxt, errors.join('\n'), (err) => {
+      fs.writeFile(errorTxt, `${errors.join('\n')}\n`, (err) => {
         if (err) {
             throw err;
         }

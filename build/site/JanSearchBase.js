@@ -31,6 +31,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+const DEFAULT_PRODUCT_TEXTS_CHECK_DEF = {
+  jan: {
+    regexp: '^\\d+$',
+    option: '',
+    error: 'JANが数字のみになっていません'
+  }
+};
+
 class JanSearchBase {
   constructor(args) {
     Object.assign(this, args); // this.outputDir = outputDir;
@@ -38,8 +46,9 @@ class JanSearchBase {
     // this.errors = errors;
     // this.rc = rc;
 
+    this.srcConfig = this.getSrcConfig();
     this.timeout = _constants.default.timeout;
-    this.replacer = new _Replacer.default(this.getSrcConfig().replacer, _lodash.default.get(this, 'rc.replacer'));
+    this.replacer = new _Replacer.default(this.srcConfig.replacer, _lodash.default.get(this, 'rc.replacer'));
     this.imageInfo = {};
   }
   /**
@@ -120,7 +129,7 @@ class JanSearchBase {
 
 
   async search(...keywords) {
-    const config = this.getSrcConfig();
+    const config = this.srcConfig;
     console.log(`*** janSearch[${config.prefix}] ***`);
     await this.page.goto(config.top, {
       waitUntil: 'networkidle2'
@@ -138,7 +147,7 @@ class JanSearchBase {
 
   async searchWord(word) {
     console.log(`*** search[${word}] ***`);
-    const config = this.getSrcConfig();
+    const config = this.srcConfig;
     await this.page.waitForSelector(config.searchPageSelectors.searchText);
     const name = `${this.outputDir}/${config.prefix}_${word.replace(/ +/g, '_')}`;
     const outputFile = `${name}.csv`;
@@ -192,24 +201,38 @@ class JanSearchBase {
         let jan;
 
         if (this.options['enable-cheerio-httpcli'] && !skipCheerio) {
-          jan = await this.getJanByCheerioHttpcli(link);
+          jan = await this.getProductTextsByCheerioHttpcli(link);
           skipCheerio = jan === undefined;
         }
 
-        if (!jan) jan = await this.getJan(link);
+        if (!jan) jan = await this.getPproductTexts(link);
         if (!jan) return;
         const replacedJan = this.replacer.replaceValues(jan);
+        const nullables = Object.assign({}, this.srcConfig.nullables || {});
+        const checkers = Object.assign({}, DEFAULT_PRODUCT_TEXTS_CHECK_DEF, this.srcConfig.checkers || {}); // 必須項目のチェック
 
-        if (typeof replacedJan.jan !== 'string' || !replacedJan.jan || /\D/.test(`${replacedJan.jan}`)) {
-          this.addErr('JANが数字のみになっていません', link);
-          return;
-        }
+        const allOk = Object.keys(this.srcConfig.productPageSelectors).filter(key => !_lodash.default.isString(nullables[key])).every(key => {
+          const chk = checkers[key];
 
+          if (chk) {
+            const reg = new RegExp(chk.regexp, chk.option);
+
+            if (!reg.test(replacedJan[key])) {
+              this.addErr(chk.error, link);
+              return false;
+            }
+          } else if (!_lodash.default.isString(replacedJan[key]) || replacedJan[key].length === 0) {
+            this.addErr(`キー[${key}] の値が取得できず空文字列になっています。`, link);
+            return false;
+          }
+
+          return true;
+        });
+        if (!allOk) return;
         await this.getImage(replacedJan, dir);
         this.writer.write(replacedJan);
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
-        return;
       }
     });
   }
@@ -220,7 +243,7 @@ class JanSearchBase {
 
   async getAllJanUrls() {
     console.log('*** getAllJanUrls ***');
-    const config = this.getSrcConfig();
+    const config = this.srcConfig;
 
     if (config.searchPageSelectors.scrollToBottom) {
       return this.getAllJanUrlsScrollToBottom();
@@ -242,7 +265,7 @@ class JanSearchBase {
   async getAllJanUrlsOnlyCurrentPage() {
     console.log('*** getAllJanUrlsOnlyCurrentPage ***');
     let page = 1;
-    const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+    const productsSel = this.srcConfig.searchPageSelectors.productsLink;
     return await this.page.$$eval(productsSel, list => list.map(item => item.href));
   }
   /**
@@ -254,8 +277,8 @@ class JanSearchBase {
   async getAllJanUrlsPageTransition() {
     console.log('*** getAllJanUrlsPageTransition ***');
     let page = 1;
-    const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
-    const nextSel = this.getSrcConfig().searchPageSelectors.nextLink;
+    const productsSel = this.srcConfig.searchPageSelectors.productsLink;
+    const nextSel = this.srcConfig.searchPageSelectors.nextLink;
     const links = await this.page.$$eval(productsSel, list => list.map(item => item.href));
     let nexts;
 
@@ -278,7 +301,7 @@ class JanSearchBase {
   async getAllJanUrlsScrollToBottom() {
     console.log('*** getAllJanUrlsScrollToBottom ***');
     await this.scrollToBottom(this.page, _constants.default.viewport.height);
-    const productsSel = this.getSrcConfig().searchPageSelectors.productsLink;
+    const productsSel = this.srcConfig.searchPageSelectors.productsLink;
     return await this.page.$$eval(productsSel, list => list.map(item => item.href));
   }
 
@@ -310,18 +333,18 @@ class JanSearchBase {
     }
   }
   /**
-   * 商品ページからjan情報をかえします。
+   * 商品ページからproductPageSelectorsに定義された情報を取得します。
    */
 
 
-  async getJan(url) {
-    console.log('*** getJan ***');
+  async getPproductTexts(url) {
+    console.log('*** getPproductTexts ***');
     await this.page.goto(url, {
       waitUntil: 'networkidle2'
     });
 
     try {
-      const result = await (0, _pIteration.reduce)(Object.keys(this.getSrcConfig().productPageSelectors), async (acc, key) => {
+      const result = await (0, _pIteration.reduce)(Object.keys(this.srcConfig.productPageSelectors), async (acc, key) => {
         acc[key] = await this.getPageText(key);
         return acc;
       }, {});
@@ -336,7 +359,7 @@ class JanSearchBase {
   async getImage(jan, dir) {
     if (!dir || !this.options.image) return;
     const rows = this.imageInfo.rows || (this.imageInfo.rows = []);
-    const imgs = this.getSrcConfig().productPageImageSelectors;
+    const imgs = this.srcConfig.productPageImageSelectors;
     if (!imgs) throw new Error('Not defined productPageImageSelectors!');
 
     const row = _objectSpread({}, jan);
@@ -357,16 +380,16 @@ class JanSearchBase {
     rows.push(row);
   }
 
-  async getJanByCheerioHttpcli(url) {
-    console.log('*** getJanByCheerioHttpcli ***');
+  async getProductTextsByCheerioHttpcli(url) {
+    console.log('*** getProductTextsByCheerioHttpcli ***');
     return await _cheerioHttpcli.default.fetch(url).then(({
       err,
       $,
       res,
       body
     }) => {
-      return Object.keys(this.getSrcConfig().productPageSelectors).reduce((acc, key) => {
-        const txt = $(this.getSrcConfig().productPageSelectors[key]).text();
+      return Object.keys(this.srcConfig.productPageSelectors).reduce((acc, key) => {
+        const txt = $(this.srcConfig.productPageSelectors[key]).text();
 
         if (!acc || !txt) {
           console.log('getJanByCheerioHttpcli failed');
@@ -389,7 +412,7 @@ class JanSearchBase {
 
 
   async getPageText(key) {
-    const sel = this.getSrcConfig().productPageSelectors[key];
+    const sel = this.srcConfig.productPageSelectors[key];
     let text = '';
 
     try {

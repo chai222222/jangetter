@@ -15,7 +15,7 @@ const TAJIMA_CONSTANTS = {
     productPageSelectors: {
       jan: '//dt[contains(text(), "JANコード")]/../dd',
       // category: 'li.onmark > p > a',
-      title: 'h3.tit_txt',
+      title: 'h1.tit_txt',
     },
     productPageImageSelectors: {
       picture: 'div.img_main_wrap img',
