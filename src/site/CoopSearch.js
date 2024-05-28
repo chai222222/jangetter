@@ -5,7 +5,7 @@ const COOP_CONSTANTS = {
   searchConfig: {
     prefix: 'Coop',
     top: 'https://mdinfo.jccu.coop/bb/',
-    lastSupportedDate: '2022/05/24: 20:00:00',
+    lastSupportedDate: '2022/05/28: 11:00:00',
     searchPageSelectors: {
       productsLink: '#bubble_tooltip + table td:nth-child(2) a[href*="/bb/"]',
       nextLink: 'td.detail span.next a',
@@ -16,6 +16,11 @@ const COOP_CONSTANTS = {
       jan: '#basicInfo tbody > tr:nth-child(2) td img',
       // category: '#basicInfo tbody > tr:first-child td',
       title: 'title',
+      name: '//span[contains(text(), "名称")]/../../td',
+      allergy: {
+        selector: '//th[contains(text(), "物質名")]/..//img',
+        attr: 'alt',
+      },
     },
     productPageImageSelectors: {
       picture: '#basicInfo .itemPhoto img',

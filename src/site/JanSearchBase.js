@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import fs from 'fs';
-import { forEachSeries, map, mapSeries, every, reduce } from 'p-iteration';
+import { forEachSeries, mapSeries, every, reduce } from 'p-iteration';
 import cheerioClient from 'cheerio-httpcli';
 import Mustache from 'mustache';
 
@@ -160,7 +160,7 @@ export default class JanSearchBase {
           jan = await this.getProductTextsByCheerioHttpcli(link);
           skipCheerio = jan === undefined;
         }
-        if (!jan) jan = await this.getPproductTexts(link);
+        if (!jan) jan = await this.getProductTexts(link);
         if (!jan) return;
         const replacedJan = this.replacer.replaceValues(jan);
         const nullables = Object.assign({}, this.srcConfig.nullables || {});
@@ -280,8 +280,8 @@ export default class JanSearchBase {
   /**
    * 商品ページからproductPageSelectorsに定義された情報を取得します。
    */
-  async getPproductTexts(url) {
-    console.log('*** getPproductTexts ***');
+  async getProductTexts(url) {
+    console.log('*** getProductTexts ***');
     await this.page.goto(url, {waitUntil: 'networkidle2'});
     try {
       const result =  await reduce(Object.keys(this.srcConfig.productPageSelectors), async (acc, key) => {
@@ -337,6 +337,9 @@ export default class JanSearchBase {
 
   /**
    * プロダクトページから productPageSelectors に定義されているテキストを取得します。
+   * 定義がテキストの場合には、単純セレクタで単純文字列の取得を行います。
+   * 定義がオブジェクトの場合には、path がセレクタで、複数ヒット・配列定義が可能。
+   * また、attr がある場合にはnodeの属性から値を取得します。
    * @param {String} key データ取得キー
    * @return {String} 取得できたテキスト
    */
@@ -344,11 +347,28 @@ export default class JanSearchBase {
     const sel = this.srcConfig.productPageSelectors[key];
     let text = '';
     try {
-      const targets = await this.xselectLink(sel);
-      if (targets.length > 0) {
-        text = await (await targets[0].getProperty('textContent')).jsonValue();
+      if (_.isString(sel)) {
+        const targets = await this.xselectLink(sel);
+        if (targets.length > 0) {
+          text = await (await targets[0].getProperty('textContent')).jsonValue();
+        }
+        return text;
       }
-      return text;
+      if (_.isObject(sel)) {
+        const paths = _.isArray(sel.selector) ? sel.selector : [sel.selector];
+        const texts = await reduce(paths, async (arr, path) => {
+          const targets = await this.xselectLink(path);
+          return [ ...arr, ...await mapSeries(targets, async (target) => (
+            await (sel.attr
+              ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, sel.attr)
+              : await (target.getProperty('textContent')).jsonValue()
+          )))];
+          return arr;
+        }, []);
+        return texts.filter(v => !!v).join(sel.separator || '・');
+      }
+      this.addErr('productPageSelectorsの定義が不正です', key);
+      return undefined;
     } finally {
       if (this.options['debug-pagetext']) {
         console.log(`getPageText[${key}][${sel}][${text}]`);
