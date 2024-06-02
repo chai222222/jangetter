@@ -52,7 +52,7 @@ export default class LohacoSearch extends JanSearchBase {
   async init() {
     const popupedModal = await this.existsAll('div.campaignModal > p.close');
     if (popupedModal) {
-      this.page.click('div.campaignModal > p.close')
+      await this.page.click('div.campaignModal > p.close')
       await this.waitLoaded();
     }
   }

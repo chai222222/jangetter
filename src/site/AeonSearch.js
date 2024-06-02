@@ -51,15 +51,15 @@ export default class AeonSearch extends JanSearchBase {
     if (needInputShop) {
       await this.page.type('#zip1', AEON_CONSTANTS.zip1);
       await this.page.type('#zip2', AEON_CONSTANTS.zip2) ;
-      this.page.click('#shop_search_1')
+      await this.page.click('#shop_search_1')
       await this.page.waitFor(1000);
-      this.page.click('#shop_search_result_list_area .result-list-area a');
+      await this.page.click('#shop_search_result_list_area .result-list-area a');
       // await this.page.waitFor(10000);
       await this.waitLoaded();
     }
     const fairDialogClose = await this.existsAll('a.pc2015-close');
     if (fairDialogClose) {
-      this.page.click('a.pc2015-close');
+      await this.page.click('a.pc2015-close');
       await this.waitLoaded();
     }
     // const banner = await this.existsAll('#pc2015-popup-ad-banner a.pc2015-close');

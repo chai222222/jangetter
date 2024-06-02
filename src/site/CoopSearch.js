@@ -13,7 +13,8 @@ const COOP_CONSTANTS = {
       searchButton: '#shohin + input',
     },
     productPageSelectors: {
-      jan: '#basicInfo tbody > tr:nth-child(2) td img',
+      // jan: '#basicInfo tbody > tr:nth-child(2) td img',
+      jan: 'url',
       // category: '#basicInfo tbody > tr:first-child td',
       title: 'title',
       name: '//span[contains(text(), "名称")]/../../td',
@@ -51,14 +52,5 @@ export default class CoopSearch extends JanSearchBase {
 
   getSrcConfig() {
     return COOP_CONSTANTS.searchConfig;
-  }
-
-  async getPageText(key) {
-    if (key === 'jan') {
-      console.log(this.getSrcConfig().productPageSelectors[key]);
-      return await this.page.$eval(this.getSrcConfig().productPageSelectors[key], item => item.baseURI);
-    } else {
-      return super.getPageText(key);
-    }
   }
 }

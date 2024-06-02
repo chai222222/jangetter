@@ -12,6 +12,7 @@ import SunyoSearch from './SunyoSearch';
 import HouseSearch from './HouseSearch';
 import GyoumuSuperSearch from './GyoumuSuperSearch';
 import NissuiSearch from './NissuiSearch';
+import MyojoSearch from './MyojpSearch';
 
 export default {
   iyec: (...args) => new IyecSearch(...args),
@@ -28,4 +29,5 @@ export default {
   house: (...args) => new HouseSearch(...args),
   gyoumusuper: (...args) => new GyoumuSuperSearch(...args),
   nissui: (...args) => new NissuiSearch(...args),
+  myojo: (...args) => new MyojoSearch(...args),
 };

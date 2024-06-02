@@ -7,6 +7,8 @@ exports.default = exports.REPLACERS = void 0;
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
 var _fs = _interopRequireDefault(require("fs"));
 
 var _pIteration = require("p-iteration");
@@ -16,8 +18,6 @@ var _cheerioHttpcli = _interopRequireDefault(require("cheerio-httpcli"));
 var _mustache = _interopRequireDefault(require("mustache"));
 
 var _WriterCreator = _interopRequireDefault(require("../util/WriterCreator"));
-
-var _ImageDownload = _interopRequireDefault(require("../util/ImageDownload"));
 
 var _Replacer = _interopRequireDefault(require("../util/Replacer"));
 
@@ -82,6 +82,16 @@ class JanSearchBase {
         await this.waitLoaded();
       }
     }
+  }
+
+  async xselectText(selector) {
+    const targets = await this.xselectLink(selector);
+
+    if (targets.length > 0) {
+      return await (await targets[0].getProperty('textContent')).jsonValue();
+    }
+
+    return '';
   }
   /**
    * ページロードを待ちます。
@@ -229,7 +239,7 @@ class JanSearchBase {
           return true;
         });
         if (!allOk) return;
-        await this.getImage(replacedJan, dir);
+        await this.getImages(replacedJan, dir);
         this.writer.write(replacedJan);
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
@@ -247,10 +257,10 @@ class JanSearchBase {
 
     if (config.searchPageSelectors.scrollToBottom) {
       return this.getAllJanUrlsScrollToBottom();
-    } else if (config.searchPageSelectors.nextLink) {
-      return this.getAllJanUrlsPageTransition();
     } else if (config.searchPageSelectors.onlyCurrentPage) {
       return this.getAllJanUrlsOnlyCurrentPage();
+    } else if (config.searchPageSelectors.nextLink) {
+      return this.getAllJanUrlsPageTransition();
     }
 
     this.addErr('JANリンク取得方法が定義されていません。');
@@ -264,7 +274,21 @@ class JanSearchBase {
 
   async getAllJanUrlsOnlyCurrentPage() {
     console.log('*** getAllJanUrlsOnlyCurrentPage ***');
-    let page = 1;
+    const nextSel = this.srcConfig.searchPageSelectors.nextLink;
+
+    if (nextSel) {
+      let page = 1;
+      let nexts; // カレントページのボタンをクリックし対象を増やす
+
+      while ((nexts = await this.xselectLink(nextSel)).length > 0) {
+        // →ボタンがある
+        console.log(`PAGE ${++page}`);
+        await nexts[0].click();
+        await this.waitLoaded();
+        await this.page.waitFor(20000);
+      }
+    }
+
     const productsSel = this.srcConfig.searchPageSelectors.productsLink;
     return await this.page.$$eval(productsSel, list => list.map(item => item.href));
   }
@@ -279,18 +303,55 @@ class JanSearchBase {
     let page = 1;
     const productsSel = this.srcConfig.searchPageSelectors.productsLink;
     const nextSel = this.srcConfig.searchPageSelectors.nextLink;
-    const links = await this.page.$$eval(productsSel, list => list.map(item => item.href));
+    const waitSel = this.srcConfig.searchPageSelectors.productsPageWaiter; // ページ遷移後、セレクタが出るまで待つ
+
+    const pageCntSel = this.srcConfig.searchPageSelectors.productsPageCounter; // ページ遷移結果チェックを行う
+
+    const links = await this.waitAndGetProductsLink(waitSel, productsSel);
+    let pageObj = await this.getPageCntInfo({}, pageCntSel);
     let nexts;
 
     while ((nexts = await this.xselectLink(nextSel)).length > 0) {
       // →ボタンがある
-      console.log(`PAGE ${++page}`);
       await nexts[0].click();
       await this.waitLoaded();
-      links.push(...(await this.page.$$eval(productsSel, list => list.map(item => item.href))));
+      pageObj = await this.getPageCntInfo(pageObj, pageCntSel);
+
+      if (pageObj.isSame) {
+        break; // ページ遷移結果チェックがある場合、ページ遷移が行われなかった場合にそこで終わりとする
+      }
+
+      console.log(`PAGE ${++page}`);
+      links.push(...(await this.waitAndGetProductsLink(waitSel, productsSel)));
     }
 
     return links;
+  }
+
+  async waitAndGetProductsLink(waitSel, productsSel) {
+    await this.waitProductsPage(waitSel);
+    return await this.page.$$eval(productsSel, list => list.map(item => item.href));
+  }
+
+  async waitProductsPage(selectArgs) {
+    if (_lodash.default.isArray(selectArgs)) {
+      console.log('*** waitProductsPage ***');
+      await this.page.waitForSelector(...selectArgs);
+    }
+  }
+
+  async getPageCntInfo(lastPageObj, pageSel) {
+    const curPageObj = {};
+
+    if (pageSel) {
+      curPageObj.pageText = await this.xselectText(pageSel);
+      curPageObj.isSame = _lodash.default.eq(lastPageObj.pageText, curPageObj.pageText);
+      console.log('*** getPageCntInfo: page check ***', curPageObj);
+    } else {
+      curPageObj.isSame = false;
+    }
+
+    return curPageObj;
   }
   /**
    * 商品ページをカレントページを下に移動してAjaxで画面を更新し最後までスクロールして取得します。
@@ -354,30 +415,70 @@ class JanSearchBase {
       this.addErr('JANがページから取得できませんでした', url);
       return undefined;
     }
-  }
+  } // TODO: puppeteerダウンロードモード追加
+  // https://www.webtomoblg.net/web/puppeteer-practice/#toc2
 
-  async getImage(jan, dir) {
+
+  async getImages(jan, dir) {
     if (!dir || !this.options.image) return;
     const rows = this.imageInfo.rows || (this.imageInfo.rows = []);
+
+    const downloader = _lodash.default.get(this.srcConfig, 'productPageImages.downloader');
+
+    const suffix = _lodash.default.get(this.srcConfig, 'productPageImages.suffix');
+
     const imgs = this.srcConfig.productPageImageSelectors;
     if (!imgs) throw new Error('Not defined productPageImageSelectors!');
 
     const row = _objectSpread({}, jan);
 
     await (0, _pIteration.forEachSeries)(_lodash.default.toPairs(imgs), async ([key, selector]) => {
-      const imageSrc = await this.page.evaluate(selector => {
-        const node = document.querySelector(selector); // img.src or a tag
+      const imageSrc = await this.page.evaluate(sel => {
+        const node = document.querySelector(sel); // img.src or a tag
 
         return node.src || node.href;
       }, selector);
 
       if (imageSrc) {
-        row[key] = await (0, _ImageDownload.default)(jan.title, imageSrc, `${dir}/${jan.jan}_${key}`);
-      } else {
-        console.log(`Couldn't get image src ${imageSrc}.`);
+        const name = await this.saveImage(dir, jan, key, downloader, imageSrc, suffix);
+
+        if (name) {
+          row[key] = name;
+          return;
+        }
       }
+
+      console.log(`Couldn't get image src ${imageSrc}.`);
     });
     rows.push(row);
+  }
+
+  async saveImage(dir, jan, key, downloader, imageSrc, suffix) {
+    const ext = imageSrc.substr(imageSrc.lastIndexOf('.'));
+    const query = ext.lastIndexOf('?');
+    const suf = suffix || (query < 0 ? ext : ext.substr(0, query));
+    const saveFile = `${dir}/${jan.jan}_${key}${suf}`; // 保存ファイルフルパス
+
+    try {
+      if (downloader === 'puppeteer') {
+        const viewSource = await this.page.goto(imageSrc);
+
+        _fs.default.writeFileSync(saveFile, await viewSource.buffer(), 'binary');
+      } else {
+        const res = await _axios.default.get(imageSrc, {
+          responseType: 'arraybuffer'
+        });
+
+        _fs.default.writeFileSync(saveFile, new Buffer.from(res.data), 'binary');
+      }
+
+      const lastSlash = saveFile.lastIndexOf('/');
+      return lastSlash >= 0 ? saveFile.substr(lastSlash + 1) : lastSlash;
+    } catch (error) {
+      console.log(`[Image] image [${jan.title}] Couldn't get from ${imageSrc}. ${error}`);
+    }
+
+    return '';
   }
 
   async getProductTextsByCheerioHttpcli(url) {
@@ -420,20 +521,19 @@ class JanSearchBase {
 
     try {
       if (_lodash.default.isString(sel)) {
-        const targets = await this.xselectLink(sel);
-
-        if (targets.length > 0) {
-          text = await (await targets[0].getProperty('textContent')).jsonValue();
+        if (sel === 'url') {
+          // url文字列の場合、url値を使う
+          return this.page.url();
         }
 
-        return text;
+        return this.xselectText(sel);
       }
 
       if (_lodash.default.isObject(sel)) {
         const paths = _lodash.default.isArray(sel.selector) ? sel.selector : [sel.selector];
         const texts = await (0, _pIteration.reduce)(paths, async (arr, path) => {
           const targets = await this.xselectLink(path);
-          return [...arr, ...(await (0, _pIteration.mapSeries)(targets, async target => await (sel.attr ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, sel.attr) : await target.getProperty('textContent').jsonValue())))];
+          return [...arr, ...(await (0, _pIteration.mapSeries)(targets, async target => await (sel.attr ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, sel.attr) : await (await target.getProperty('textContent')).jsonValue())))];
           return arr;
         }, []);
         return texts.filter(v => !!v).join(sel.separator || '・');
