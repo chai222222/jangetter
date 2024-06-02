@@ -3,12 +3,20 @@
   <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
+    <style type="text/css">
+    div.product {
+      float: left;
+      border: solid 1px;
+      margin: 1px;
+      padding: 1px;
+    }
+    </style>
   </head>
   <body>
     <h1>{{ title }}</h1>
     <p>count : {{ rows.length }}</p>
     {{# rows }}
-    <div style="float: left;">
+    <div class="product">
       <p>{{ title }}</p>
       <p>{{ jan }}</p>
       <p>{{ category }}</p>

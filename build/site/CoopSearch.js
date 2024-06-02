@@ -15,7 +15,7 @@ const COOP_CONSTANTS = {
   searchConfig: {
     prefix: 'Coop',
     top: 'https://mdinfo.jccu.coop/bb/',
-    lastSupportedDate: '2022/05/24: 20:00:00',
+    lastSupportedDate: '2022/05/28: 11:00:00',
     searchPageSelectors: {
       productsLink: '#bubble_tooltip + table td:nth-child(2) a[href*="/bb/"]',
       nextLink: 'td.detail span.next a',
@@ -23,9 +23,15 @@ const COOP_CONSTANTS = {
       searchButton: '#shohin + input'
     },
     productPageSelectors: {
-      jan: '#basicInfo tbody > tr:nth-child(2) td img',
+      // jan: '#basicInfo tbody > tr:nth-child(2) td img',
+      jan: 'url',
       // category: '#basicInfo tbody > tr:first-child td',
-      title: 'title'
+      title: 'title',
+      name: '//span[contains(text(), "名称")]/../../td',
+      allergy: {
+        selector: '//th[contains(text(), "物質名")]/..//img',
+        attr: 'alt'
+      }
     },
     productPageImageSelectors: {
       picture: '#basicInfo .itemPhoto img'
@@ -50,15 +56,6 @@ const COOP_CONSTANTS = {
 class CoopSearch extends _JanSearchBase.default {
   getSrcConfig() {
     return COOP_CONSTANTS.searchConfig;
-  }
-
-  async getPageText(key) {
-    if (key === 'jan') {
-      console.log(this.getSrcConfig().productPageSelectors[key]);
-      return await this.page.$eval(this.getSrcConfig().productPageSelectors[key], item => item.baseURI);
-    } else {
-      return super.getPageText(key);
-    }
   }
 
 }

@@ -37,11 +37,11 @@ function getSiteOpts(knownFlags) {
     // return `検索元[${name}](${top})${lastDateStr}`;
     return [`検索元[${name}](${top})`, lastDateStr];
   };
-  return names.map(nm => ({
-    name: nm,
-    short: n2up[nm],
+  return names.map((name) => ({
+    name,
+    short: n2up[name],
     type: 'boolean',
-    description: mkDescription(nm, Site[nm](arg).getSrcConfig()),
+    description: mkDescription(name, Site[name](arg).getSrcConfig()),
   }));
 }
 
@@ -102,7 +102,8 @@ const errorTxt = args.options.error || 'error.txt';
     ],
   });
   try {
-    const page = await browser.newPage();
+    const context = await browser.createIncognitoBrowserContext();
+    const page = await context.newPage();
     await page.on('framenavigated', frm => {
       if (args.options['debug-url']) {
         console.log("### URL ", frm.url());
