@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const TAJIMA_CONSTANTS = {
   searchConfig: {
+    name: '但馬屋',
     prefix: 'Tajima',
     top: 'http://www.tajimaya-cc.net/',
     lastSupportedDate: '2022/05/24: 18:00:00',

@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const GYOUMUSUPER_CONSTANTS = {
   searchConfig: {
+    name: '業務スーパー',
     prefix: 'GyoumuSuper',
     top: 'https://www.gyomusuper.jp/item/search.php',
     searchPageSelectors: {

@@ -12,6 +12,7 @@ import SunyoSearch from './SunyoSearch';
 import HouseSearch from './HouseSearch';
 import GyoumuSuperSearch from './GyoumuSuperSearch';
 import NissuiSearch from './NissuiSearch';
+import PokkaSearch from './PokkaSapporo';
 import MyojoSearch from './MyojpSearch';
 
 export default {
@@ -29,5 +30,6 @@ export default {
   house: (...args) => new HouseSearch(...args),
   gyoumusuper: (...args) => new GyoumuSuperSearch(...args),
   nissui: (...args) => new NissuiSearch(...args),
+  pokka: (...args) => new PokkaSearch(...args),
   myojo: (...args) => new MyojoSearch(...args),
 };

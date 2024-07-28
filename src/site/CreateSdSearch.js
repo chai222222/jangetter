@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const CREATESD_CONSTANTS = {
   searchConfig: {
+    name: 'クリエイトSD',
     prefix: 'CreateSD',
     top: 'http://netshop.create-sd.co.jp/shop/default.aspx',
     searchPageSelectors: {

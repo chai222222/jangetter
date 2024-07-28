@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const HOUSE_CONSTANTS = {
   searchConfig: {
+    name: 'ハウス',
     prefix: 'House',
     top: 'https://housefoods.jp/products/index.html',
     searchPageSelectors: {

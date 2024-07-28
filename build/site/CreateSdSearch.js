@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const CREATESD_CONSTANTS = {
   searchConfig: {
+    name: 'クリエイトSD',
     prefix: 'CreateSD',
     top: 'http://netshop.create-sd.co.jp/shop/default.aspx',
     searchPageSelectors: {

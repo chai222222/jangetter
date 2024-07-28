@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const MYOJO_CONSTANTS = {
   searchConfig: {
+    name: '明星食品',
     prefix: 'Myojo',
     top: 'https://www.myojofoods.co.jp/search/',
     lastSupportedDate: '2022/06/02: 19:00:00',

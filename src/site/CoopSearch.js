@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const COOP_CONSTANTS = {
   searchConfig: {
+    name: 'コープ',
     prefix: 'Coop',
     top: 'https://mdinfo.jccu.coop/bb/',
     lastSupportedDate: '2022/05/28: 11:00:00',

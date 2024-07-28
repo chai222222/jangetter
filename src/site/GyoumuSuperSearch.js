@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const GYOUMUSUPER_CONSTANTS = {
   searchConfig: {
+    name: '業務スーパー',
     prefix: 'GyoumuSuper',
     top: 'https://www.gyomusuper.jp/item/search.php',
     searchPageSelectors: {

@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const SUNYO_CONSTANTS = {
   searchConfig: {
+    name: 'SUNYO',
     prefix: 'Sunyo',
     top: 'http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi',
     searchPageSelectors: {

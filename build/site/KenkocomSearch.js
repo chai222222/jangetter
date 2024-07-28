@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const KENKOCOM_CONSTANTS = {
   searchConfig: {
+    name: 'ケンコーコム',
     prefix: 'Kenkocom',
     top: 'https://www.kenko.com/',
     searchPageSelectors: {

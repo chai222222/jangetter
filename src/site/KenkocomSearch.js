@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const KENKOCOM_CONSTANTS = {
   searchConfig: {
+    name: 'ケンコーコム',
     prefix: 'Kenkocom',
     top: 'https://www.kenko.com/',
     searchPageSelectors: {

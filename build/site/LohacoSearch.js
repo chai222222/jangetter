@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const LOHACO_CONSTANTS = {
   searchConfig: {
+    name: 'ロハコ',
     prefix: 'Lohaco',
     top: 'https://lohaco.jp/',
     searchPageSelectors: {

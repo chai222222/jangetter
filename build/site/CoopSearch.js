@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const COOP_CONSTANTS = {
   searchConfig: {
+    name: 'コープ',
     prefix: 'Coop',
     top: 'https://mdinfo.jccu.coop/bb/',
     lastSupportedDate: '2022/05/28: 11:00:00',

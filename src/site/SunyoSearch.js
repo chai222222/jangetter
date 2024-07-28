@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const SUNYO_CONSTANTS = {
   searchConfig: {
+    name: 'SUNYO',
     prefix: 'Sunyo',
     top: 'http://www.sunyo-do.co.jp/cgi-bin/ksearch/ksearch.cgi',
     searchPageSelectors: {

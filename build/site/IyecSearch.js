@@ -16,6 +16,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const IYEC_CONSTANTS = {
   zip: '2140038',
   searchConfig: {
+    name: 'イトーヨーカドー',
     prefix: 'Iyec',
     top: 'https://www.iy-net.jp/',
     lastSupportedDate: '2022/06/02: 17:00:00(暫定 --debug-window 必須)',

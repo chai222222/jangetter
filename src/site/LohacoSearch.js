@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const LOHACO_CONSTANTS = {
   searchConfig: {
+    name: 'ロハコ',
     prefix: 'Lohaco',
     top: 'https://lohaco.jp/',
     searchPageSelectors: {

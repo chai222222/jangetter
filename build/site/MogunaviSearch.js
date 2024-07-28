@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const MOGUNAVI_CONSTANTS = {
   searchConfig: {
+    name: 'もぐナビ',
     prefix: 'Mogunavi',
     top: 'https://mognavi.jp/',
     searchPageSelectors: {

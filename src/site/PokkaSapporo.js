@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const POKKASAPPORO_CONSTANTS = {
   searchConfig: {
+    name: 'ポッカ',
     prefix: 'PokkaSapporo',
     top: 'https://www.pokkasapporo-fb.jp/products/',
     searchPageSelectors: {
