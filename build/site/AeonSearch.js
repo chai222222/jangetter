@@ -36,7 +36,7 @@ const AEON_CONSTANTS = {
       picture: 'img.fotorama__img'
     },
     replacer: {
-      title: [_Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthSpace],
+      title: [_Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidthSpace],
       jan: [{
         pattern: /\D/g,
         value: ''

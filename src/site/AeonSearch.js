@@ -28,7 +28,6 @@ const AEON_CONSTANTS = {
       title: [
         REPLACERS.trim,
         REPLACERS.toHarfWidthSpace,
-        REPLACERS.toHarfWidthSpace,
       ],
       jan: [{
         pattern: /\D/g,
