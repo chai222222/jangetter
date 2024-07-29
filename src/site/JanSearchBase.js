@@ -26,8 +26,20 @@ export default class JanSearchBase {
     // this.rc = rc;
     this.srcConfig = this.getSrcConfig();
     this.timeout = Constants.timeout;
-    this.replacer = new Replacer(this.srcConfig.replacer, _.get(this, 'rc.replacer'));
     this.imageInfo = {};
+    this.updateSiteInformation();
+    this.replacer = new Replacer(this.srcConfig.replacer, _.get(this, 'rc.replacer'));
+  }
+
+  updateSiteInformation() {
+    if (this.siteKey && this.rc.site[this.siteKey]) {
+      const custom = this.rc.site[this.siteKey];
+      if (_.isObject(custom)) {
+        _.toPairs(custom).forEach(([path, value]) => _.set(this.srcConfig, path, value));
+      } else {
+        throw new Error(`rc file site[${this.siteKey}] is not Object.`);
+      }
+    }
   }
 
   /**

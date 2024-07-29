@@ -48,8 +48,21 @@ class JanSearchBase {
 
     this.srcConfig = this.getSrcConfig();
     this.timeout = _constants.default.timeout;
-    this.replacer = new _Replacer.default(this.srcConfig.replacer, _lodash.default.get(this, 'rc.replacer'));
     this.imageInfo = {};
+    this.updateSiteInformation();
+    this.replacer = new _Replacer.default(this.srcConfig.replacer, _lodash.default.get(this, 'rc.replacer'));
+  }
+
+  updateSiteInformation() {
+    if (this.siteKey && this.rc.site[this.siteKey]) {
+      const custom = this.rc.site[this.siteKey];
+
+      if (_lodash.default.isObject(custom)) {
+        _lodash.default.toPairs(custom).forEach(([path, value]) => _lodash.default.set(this.srcConfig, path, value));
+      } else {
+        throw new Error(`rc file site[${this.siteKey}] is not Object.`);
+      }
+    }
   }
   /**
    * セレクタが全て存在するかチェックします。

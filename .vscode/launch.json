@@ -8,6 +8,43 @@
 
 
 
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "引数なし",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\src\\index.js",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
+            "args": [ ],
+        
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "情報表示全体",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\src\\index.js",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
+            "args": [ "--info" ],
+        
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "情報表示(単一：イオン)",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\src\\index.js",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
+            "args": [ "--info", "--aeon" ],
+        
+        },
         {
             "type": "node",
             "request": "launch",
