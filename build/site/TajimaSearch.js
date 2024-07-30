@@ -40,6 +40,7 @@ const TAJIMA_CONSTANTS = {
     productPageImageSelectors: {
       picture: 'div.img_main_wrap img'
     },
+    productPageSkipSelectors: ['//th[contains(text(), "カテゴリー")]/../td/a[contains(text(), "冷凍食品")]'],
     replacer: {
       title: [{
         pattern: /[０-９]+\w+$/,

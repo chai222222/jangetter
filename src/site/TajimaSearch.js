@@ -33,6 +33,9 @@ const TAJIMA_CONSTANTS = {
     productPageImageSelectors: {
       picture: 'div.img_main_wrap img',
     },
+    productPageSkipSelectors: [
+      '//th[contains(text(), "カテゴリー")]/../td/a[contains(text(), "冷凍食品")]',
+    ],
     replacer: {
       title: [
         { pattern: /[０-９]+\w+$/, value: REPLACER_FUNCTIONS.toHarfWidthDigitOnly }, // 連結した内容量が全角数値＋半角単位である場合に半角にする

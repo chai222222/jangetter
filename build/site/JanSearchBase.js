@@ -208,7 +208,7 @@ class JanSearchBase {
     }
   }
   /**
-   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。
+   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報を返します。
    */
 
 
@@ -230,7 +230,18 @@ class JanSearchBase {
 
         if (!jan) jan = await this.getProductTexts(link);
         if (!jan) return;
-        const replacedJan = this.replacer.replaceValues(jan);
+        const replacedJan = this.replacer.replaceValues(jan); // ページをスキップする判断をする
+
+        const skipInfo = _lodash.default.isArray(this.srcConfig.productPageSkipSelectors) ? this.srcConfig.productPageSkipSelectors : undefined;
+
+        if (skipInfo) {
+          // skipセレクタの要素を検索して存在を確認する
+          if (await (0, _pIteration.some)(skipInfo, async sel => (await this.xselectLink(sel)).length > 0)) {
+            console.log('対象外になるためスキップします。', link);
+            return;
+          }
+        }
+
         const nullables = Object.assign({}, this.srcConfig.nullables || {});
         const checkers = Object.assign({}, DEFAULT_PRODUCT_TEXTS_CHECK_DEF, this.srcConfig.checkers || {}); // 必須項目のチェック
 

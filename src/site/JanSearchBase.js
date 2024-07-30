@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import axios from 'axios';
 import fs from 'fs';
-import { forEachSeries, mapSeries, every, reduce } from 'p-iteration';
+import { forEachSeries, mapSeries, every, reduce, some } from 'p-iteration';
 import cheerioClient from 'cheerio-httpcli';
 import Mustache from 'mustache';
 
@@ -164,7 +164,7 @@ export default class JanSearchBase {
   }
 
   /**
-   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。
+   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報を返します。
    */
   async eachItemFromSearchResult(dir) {
     console.log('*** eachItemFromSearchResult ***');
@@ -183,6 +183,15 @@ export default class JanSearchBase {
         if (!jan) jan = await this.getProductTexts(link);
         if (!jan) return;
         const replacedJan = this.replacer.replaceValues(jan);
+        // ページをスキップする判断をする
+        const skipInfo = _.isArray(this.srcConfig.productPageSkipSelectors) ?  this.srcConfig.productPageSkipSelectors : undefined;
+        if (skipInfo) {
+          // skipセレクタの要素を検索して存在を確認する
+          if (await some(skipInfo, async (sel) => (await this.xselectLink(sel)).length > 0)) {
+            console.log('対象外になるためスキップします。', link);
+            return;
+          }
+        }
         const nullables = Object.assign({}, this.srcConfig.nullables || {});
         const checkers = Object.assign({}, DEFAULT_PRODUCT_TEXTS_CHECK_DEF, this.srcConfig.checkers || {});
         // 必須項目のチェック
