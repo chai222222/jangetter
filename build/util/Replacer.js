@@ -3,25 +3,28 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.REPLACERS = void 0;
+exports.default = exports.REPLACER_FUNCTIONS = exports.REPLACERS = void 0;
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/** 共通置き換え関数定義 */
+const REPLACER_FUNCTIONS = {
+  toHarfWidth: s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0),
+  toHarfWidthDigitOnly: s => s.replace(/[０-９]/g, REPLACER_FUNCTIONS.toHarfWidth)
+};
 /** 共通リプレーサ定義 */
+
+exports.REPLACER_FUNCTIONS = REPLACER_FUNCTIONS;
 const REPLACERS = {
   toHarfWidth: {
     pattern: /[！-～]/g,
-    value: s => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    }
+    value: REPLACER_FUNCTIONS.toHarfWidth
   },
   toHarfWidthAlnum: {
     pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-    value: s => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    }
+    value: REPLACER_FUNCTIONS.toHarfWidth
   },
   toHarfWidthSpace: {
     pattern: /　+/g,
@@ -45,6 +48,10 @@ const REPLACERS = {
   toOneLine: {
     pattern: /\r?\n/g,
     value: ' '
+  },
+  lastWideParenthesesToHarfWidth: {
+    pattern: /（[０-９]） *$/g,
+    value: REPLACER_FUNCTIONS.toHarfWidth
   }
 };
 exports.REPLACERS = REPLACERS;

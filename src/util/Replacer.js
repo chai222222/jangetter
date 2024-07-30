@@ -1,18 +1,20 @@
 import _ from 'lodash';
 
+/** 共通置き換え関数定義 */
+export const REPLACER_FUNCTIONS = {
+  toHarfWidth: (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0),
+  toHarfWidthDigitOnly: (s) => s.replace(/[０-９]/g, REPLACER_FUNCTIONS.toHarfWidth),
+};
+
 /** 共通リプレーサ定義 */
 export const REPLACERS = {
   toHarfWidth: {
     pattern: /[！-～]/g,
-    value: (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    },
+    value: REPLACER_FUNCTIONS.toHarfWidth,
   },
   toHarfWidthAlnum: {
     pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-    value: (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    },
+    value: REPLACER_FUNCTIONS.toHarfWidth,
   },
   toHarfWidthSpace: {
     pattern: /　+/g,
@@ -31,8 +33,12 @@ export const REPLACERS = {
   toOneLine: {
     pattern: /\r?\n/g,
     value: ' ',
-  }
-}
+  },
+  lastWideParenthesesToHarfWidth: {
+    pattern: /（[０-９]） *$/g,
+    value: REPLACER_FUNCTIONS.toHarfWidth,
+  },
+};
 
 export default class Replacer {
   /**

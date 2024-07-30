@@ -519,6 +519,24 @@ class JanSearchBase {
     });
   }
   /**
+   * 特定キーワードの文字列からデータに変換して返します。
+   * 特定キーワードは現在以下の通り。
+   * url: ページURL
+   *
+   * @param {String} sel 特定キーワード
+   * @return {String} 取得した値(取得できない場合には空文字列)
+   */
+
+
+  async specialPageText(sel) {
+    if (sel === 'url') {
+      // url文字列の場合、url値を使う
+      return await this.page.url();
+    }
+
+    return undefined;
+  }
+  /**
    * プロダクトページから productPageSelectors に定義されているテキストを取得します。
    * 定義がテキストの場合には、単純セレクタで単純文字列の取得を行います。
    * 定義がオブジェクトの場合には、path がセレクタで、複数ヒット・配列定義が可能。
@@ -534,22 +552,21 @@ class JanSearchBase {
 
     try {
       if (_lodash.default.isString(sel)) {
-        if (sel === 'url') {
-          // url文字列の場合、url値を使う
-          return this.page.url();
-        }
-
-        return this.xselectText(sel);
+        return (await this.specialPageText(sel)) || (await this.xselectText(sel));
       }
 
-      if (_lodash.default.isObject(sel)) {
+      if (_lodash.default.isObject(sel) && (_lodash.default.isArray(sel.selector) || _lodash.default.isString(sel.selector))) {
+        const attribute = sel.attr;
+        const separator = sel.separator || '・';
         const paths = _lodash.default.isArray(sel.selector) ? sel.selector : [sel.selector];
         const texts = await (0, _pIteration.reduce)(paths, async (arr, path) => {
+          const spVal = await this.specialPageText(path);
+          if (spVal) return [...arr, spVal];
           const targets = await this.xselectLink(path);
-          return [...arr, ...(await (0, _pIteration.mapSeries)(targets, async target => await (sel.attr ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, sel.attr) : await (await target.getProperty('textContent')).jsonValue())))];
+          return [...arr, ...(await (0, _pIteration.mapSeries)(targets, async target => await (attribute ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, attribute) : await (await target.getProperty('textContent')).jsonValue())))];
           return arr;
         }, []);
-        return texts.filter(v => !!v).join(sel.separator || '・');
+        return texts.filter(v => !!v).join(separator);
       }
 
       this.addErr('productPageSelectorsの定義が不正です', key);

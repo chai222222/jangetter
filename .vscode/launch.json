@@ -9,6 +9,7 @@
 
 
 
+
         {
             "type": "node",
             "request": "launch",
@@ -54,7 +55,7 @@
             ],
             "program": "${workspaceFolder}\\src\\index.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
-            "args": [ "-g", "-Y", "塩"],
+            "args": [ "-g", "--myojo", "青森スタミナ源たれ"],
         }
     ]
 }
