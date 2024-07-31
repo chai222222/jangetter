@@ -95,7 +95,7 @@ const fixedArgs = [{
 }, {
   name: 'info',
   type: 'boolean',
-  description: '情報表示',
+  description: '全体のサイト情報、リプレーサー情報の表示、もしくは個別サイトの検索設定を表示します',
 }];
 
 argv.option([...fixedArgs, ...getSiteOpts(fixedArgs.filter(o => o.short && /^[A-Z]$/.test(o.short)).map(o => o.short))]);
