@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const NISSUI_CONSTANTS = {
   searchConfig: {
+    name: 'NISSUI',
     prefix: 'Nissui',
     top: 'http://www.nissui.co.jp/product/index.html',
     searchPageSelectors: {

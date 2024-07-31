@@ -17,8 +17,9 @@ const AEON_CONSTANTS = {
   zip1: '214',
   zip2: '0038',
   searchConfig: {
+    name: 'イオン',
     prefix: 'Aeon',
-    top: 'https://www.aeonnetshop.com/',
+    top: 'https://shop.aeon.com/netsuper/',
     lastSupportedDate: '2024/05/21: 17:00:00',
     searchPageSelectors: {
       productsLink: 'div.search.results ol li > a',
@@ -35,7 +36,7 @@ const AEON_CONSTANTS = {
       picture: 'img.fotorama__img'
     },
     replacer: {
-      title: [_Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toHarfWidthSpace],
+      title: [_Replacer.REPLACERS.trim, _Replacer.REPLACERS.toHarfWidthSpace],
       jan: [{
         pattern: /\D/g,
         value: ''

@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const HOUSE_CONSTANTS = {
   searchConfig: {
+    name: 'ハウス',
     prefix: 'House',
     top: 'https://housefoods.jp/products/index.html',
     searchPageSelectors: {

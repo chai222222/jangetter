@@ -1,18 +1,19 @@
+import _ from 'lodash';
 import fs from 'fs';
 import argv from 'argv';
 import puppeteer from 'puppeteer';
-import iconv from 'iconv-lite';
 import { forEachSeries } from 'p-iteration';
-import { Parser as Json2csvParser } from 'json2csv';
 
 import Constants from './constants';
 import Site from './site';
+import Replacer, { REPLACERS } from './util/Replacer';
 
 process.on('unhandledRejection', console.dir);
 
 /**
  * サイト名からオプションデータを作成する。
  * 名前の一文字目を大文字にしたものがオプションになるが、すでにある場合は、二文字目以降で使われない文字を使う。
+ * @param {Array<String>} knownFlags 使用済みのショートオプション
  * @return {Array<Object>} オプションデータ
  */
 function getSiteOpts(knownFlags) {
@@ -21,9 +22,9 @@ function getSiteOpts(knownFlags) {
   const n2up = names.reduce((acc, name) => {
     let c = name.charAt(0);
     if (flag.has(c)) {
-      c = [...name, ...'0123456789'].find((c, idx) => idx > 0
-        && names.every(nm => nm.charAt(0) !== c)
-        && !flag.has(c));
+      c = [...name, ...'0123456789'].find((cc, idx) => idx > 0
+        && names.every(nm => nm.charAt(0) !== cc)
+        && !flag.has(cc));
       if (!c) throw new Error('オプション設定できません');
     }
     flag.add(c);
@@ -43,6 +44,21 @@ function getSiteOpts(knownFlags) {
     type: 'boolean',
     description: mkDescription(name, Site[name](arg).getSrcConfig()),
   }));
+}
+
+/**
+ * .jangetterrcファイルを読み込みます。
+ * 存在しない場合には何も行いません。
+ * @return {Object} rcファイルのJSON
+ */
+function loadRc() {
+  // rcファイル読み込み
+  const rcPath = Constants.rcfile;
+  if (fs.existsSync(rcPath)) {
+    console.log('load rc file.');
+    return JSON.parse(fs.readFileSync(rcPath, 'utf8'));
+  }
+  return {};
 }
 
 const fixedArgs = [{
@@ -75,19 +91,59 @@ const fixedArgs = [{
 }, {
   name: 'enable-cheerio-httpcli',
   type: 'boolean',
-  description: '【実験】cheerio-httpcliを有効にして実行します',
+  description: '【実験】cheerio-httpcliを有効にして実行します(非推奨：puppeteerでの取得と完全互換がないため)',
+}, {
+  name: 'info',
+  type: 'boolean',
+  description: '情報表示',
 }];
 
 argv.option([...fixedArgs, ...getSiteOpts(fixedArgs.filter(o => o.short && /^[A-Z]$/.test(o.short)).map(o => o.short))]);
+// argv#run にて、optionsオブジェクトにオプション、targetsにパラメータが設定される
 const args = argv.run();
 
+const outputDir = args.options.output || '.';
+const errorTxt = args.options.error || 'error.txt';
+const rc = loadRc();
+const errors = [];
+
+/**
+ * サイト検索用クラスの作成を行います。
+ * @param {Function} filterFunc Siteオブジェクトのキーをフィルタする関数です。
+ * @param {*} page puppeteerのページオブジェクト（実行しない場合には不要）。
+ * @returns {Array<Site>} 対象のSite配列
+ */
+function createSeachers(filterFunc, page) {
+  return Object.keys(Site)
+    .filter(filterFunc)
+    .map((site) => Site[site]({ siteKey: site, outputDir, page, errors, rc, options: args.options }));
+}
+
+if (args.options.info) {
+  let searchers = createSeachers((site) => args.options[site], null);
+  if (!searchers.length) {
+    // 対象オプションがない場合は全体の name, siteOpt, top を出力(mdでの日本語桁揃えがうまくいかないためcsv)
+    searchers = createSeachers(() => true, null);
+    const cols = 'name,siteOpt,top';
+    const toLine = (searcher) => [searcher.srcConfig.name, searcher.siteKey, searcher.srcConfig.top].join(',');
+    console.log(cols);
+    searchers.forEach(searcher => console.log(toLine(searcher)));
+    Replacer.showReplacers();
+  } else {
+    const outSite = (site, info) => {
+      console.log(`**** ${site.siteKey} ****`)
+      console.log(JSON.stringify(Replacer.toSpecialString(info), '', 2));
+    }
+    // 対象オプションがある場合、対象設定を出力
+    searchers.forEach(site => outSite(site, site.srcConfig));
+    searchers.forEach(site => outSite(site, site.replacer.repDefs));
+  }
+  process.exit(0);
+}
 if (args.targets.length < 1 || !Object.keys(Site).some(nm => args.options[nm])) {
   argv.help();
   process.exit(0);
 }
-
-const outputDir = args.options.output || '.';
-const errorTxt = args.options.error || 'error.txt';
 
 (async (words) => {
   const browser = await puppeteer.launch({
@@ -111,18 +167,8 @@ const errorTxt = args.options.error || 'error.txt';
     });
     await page.setUserAgent(Constants.userAgent);
     await page.setViewport(Constants.viewport);
-    // rcファイル読み込み
-    const rcPath = Constants.rcfile;
-    let rc = undefined;
-    if (fs.existsSync(rcPath)) {
-      console.log('load rc file.');
-      rc = JSON.parse(fs.readFileSync(rcPath, 'utf8'));
-    }
 
-    const errors = [];
-    const searchers = Object.keys(Site)
-      .filter(nm => args.options[nm])
-      .map(nm => Site[nm]({ outputDir, page, errors, rc, options: args.options }));
+    const searchers = createSeachers((site) => args.options[site], page);
 
     await forEachSeries(searchers, async s => await s.search(...words));
 
@@ -130,14 +176,13 @@ const errorTxt = args.options.error || 'error.txt';
       console.log(`エラーが発生しました。${errorTxt} へ出力します。`);
       fs.writeFile(errorTxt, `${errors.join('\n')}\n`, (err) => {
         if (err) {
-            throw err;
+          throw err;
         }
       });
     }
   } catch (e) {
     console.log(e.stack);
   } finally {
-    console.log('finally');
     browser.close();
   }
 })(args.targets);

@@ -48,8 +48,21 @@ class JanSearchBase {
 
     this.srcConfig = this.getSrcConfig();
     this.timeout = _constants.default.timeout;
-    this.replacer = new _Replacer.default(this.srcConfig.replacer, _lodash.default.get(this, 'rc.replacer'));
     this.imageInfo = {};
+    this.updateSiteInformation();
+    this.replacer = new _Replacer.default(this.srcConfig.replacer, _lodash.default.get(this, 'rc.replacer'));
+  }
+
+  updateSiteInformation() {
+    if (this.siteKey && this.rc.site[this.siteKey]) {
+      const custom = this.rc.site[this.siteKey];
+
+      if (_lodash.default.isObject(custom)) {
+        _lodash.default.toPairs(custom).forEach(([path, value]) => _lodash.default.set(this.srcConfig, path, value));
+      } else {
+        throw new Error(`rc file site[${this.siteKey}] is not Object.`);
+      }
+    }
   }
   /**
    * セレクタが全て存在するかチェックします。
@@ -195,7 +208,7 @@ class JanSearchBase {
     }
   }
   /**
-   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報をかえします。
+   * 検索結果画面の商品分のリンク先を取得し、すべてのjan情報を返します。
    */
 
 
@@ -217,7 +230,18 @@ class JanSearchBase {
 
         if (!jan) jan = await this.getProductTexts(link);
         if (!jan) return;
-        const replacedJan = this.replacer.replaceValues(jan);
+        const replacedJan = this.replacer.replaceValues(jan); // ページをスキップする判断をする
+
+        const skipInfo = _lodash.default.isArray(this.srcConfig.productPageSkipSelectors) ? this.srcConfig.productPageSkipSelectors : undefined;
+
+        if (skipInfo) {
+          // skipセレクタの要素を検索して存在を確認する
+          if (await (0, _pIteration.some)(skipInfo, async sel => (await this.xselectLink(sel)).length > 0)) {
+            console.log('対象外になるためスキップします。', link);
+            return;
+          }
+        }
+
         const nullables = Object.assign({}, this.srcConfig.nullables || {});
         const checkers = Object.assign({}, DEFAULT_PRODUCT_TEXTS_CHECK_DEF, this.srcConfig.checkers || {}); // 必須項目のチェック
 
@@ -506,6 +530,24 @@ class JanSearchBase {
     });
   }
   /**
+   * 特定キーワードの文字列からデータに変換して返します。
+   * 特定キーワードは現在以下の通り。
+   * url: ページURL
+   *
+   * @param {String} sel 特定キーワード
+   * @return {String} 取得した値(取得できない場合には空文字列)
+   */
+
+
+  async specialPageText(sel) {
+    if (sel === 'url') {
+      // url文字列の場合、url値を使う
+      return await this.page.url();
+    }
+
+    return undefined;
+  }
+  /**
    * プロダクトページから productPageSelectors に定義されているテキストを取得します。
    * 定義がテキストの場合には、単純セレクタで単純文字列の取得を行います。
    * 定義がオブジェクトの場合には、path がセレクタで、複数ヒット・配列定義が可能。
@@ -521,22 +563,21 @@ class JanSearchBase {
 
     try {
       if (_lodash.default.isString(sel)) {
-        if (sel === 'url') {
-          // url文字列の場合、url値を使う
-          return this.page.url();
-        }
-
-        return this.xselectText(sel);
+        return (await this.specialPageText(sel)) || (await this.xselectText(sel));
       }
 
-      if (_lodash.default.isObject(sel)) {
+      if (_lodash.default.isObject(sel) && (_lodash.default.isArray(sel.selector) || _lodash.default.isString(sel.selector))) {
+        const attribute = sel.attr;
+        const separator = sel.separator || '・';
         const paths = _lodash.default.isArray(sel.selector) ? sel.selector : [sel.selector];
         const texts = await (0, _pIteration.reduce)(paths, async (arr, path) => {
+          const spVal = await this.specialPageText(path);
+          if (spVal) return [...arr, spVal];
           const targets = await this.xselectLink(path);
-          return [...arr, ...(await (0, _pIteration.mapSeries)(targets, async target => await (sel.attr ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, sel.attr) : await (await target.getProperty('textContent')).jsonValue())))];
+          return [...arr, ...(await (0, _pIteration.mapSeries)(targets, async target => await (attribute ? await this.page.evaluate((node, attr) => node.getAttribute(attr), target, attribute) : await (await target.getProperty('textContent')).jsonValue())))];
           return arr;
         }, []);
-        return texts.filter(v => !!v).join(sel.separator || '・');
+        return texts.filter(v => !!v).join(separator);
       }
 
       this.addErr('productPageSelectorsの定義が不正です', key);

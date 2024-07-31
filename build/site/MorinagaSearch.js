@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const MORINAGA_CONSTANTS = {
   searchConfig: {
+    name: '森永',
     prefix: 'Morinaga',
     top: 'https://www.morinaga.co.jp/products/',
     searchPageSelectors: {

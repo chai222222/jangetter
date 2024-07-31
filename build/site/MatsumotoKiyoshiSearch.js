@@ -15,6 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const MATSUMOTOKIYOSHI_CONSTANTS = {
   searchConfig: {
+    name: 'もぐナビ',
     prefix: 'MatsumotoKiyoshi',
     top: 'https://www.matsukiyo.co.jp/store/online/',
     searchPageSelectors: {

@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const NISSUI_CONSTANTS = {
   searchConfig: {
+    name: 'NISSUI',
     prefix: 'Nissui',
     top: 'http://www.nissui.co.jp/product/index.html',
     searchPageSelectors: {

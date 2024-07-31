@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const MOGUNAVI_CONSTANTS = {
   searchConfig: {
+    name: 'もぐナビ',
     prefix: 'Mogunavi',
     top: 'https://mognavi.jp/',
     searchPageSelectors: {

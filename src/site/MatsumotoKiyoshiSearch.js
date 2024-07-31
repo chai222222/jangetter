@@ -4,6 +4,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const MATSUMOTOKIYOSHI_CONSTANTS = {
   searchConfig: {
+    name: 'もぐナビ',
     prefix: 'MatsumotoKiyoshi',
     top: 'https://www.matsukiyo.co.jp/store/online/',
     searchPageSelectors: {

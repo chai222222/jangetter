@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const MYOJO_CONSTANTS = {
   searchConfig: {
+    name: '明星食品',
     prefix: 'Myojo',
     top: 'https://www.myojofoods.co.jp/search/',
     lastSupportedDate: '2022/06/02: 19:00:00',
@@ -15,7 +16,13 @@ const MYOJO_CONSTANTS = {
     },
     productPageSelectors: {
       jan: '//dt[contains(text(), "JANコード")]/../dd',
-      title: 'h1.ns-headline_01',
+      title: {
+        selector: [
+          'h1.ns-headline_01',
+          '//dt[contains(text(), "内容量")]/../dd',
+        ],
+        separator: ' ',
+      },
       allergy: {
         selector: 'ul.ns-c-list_allergens--item li.active a',
       },
@@ -28,6 +35,8 @@ const MYOJO_CONSTANTS = {
     },
     replacer: {
       title: [
+        { pattern: /(\w+) *\( *\w+ *\) *$/, value: '$1' },
+        REPLACERS.toOneSpace,
         REPLACERS.trim,
       ],
     },

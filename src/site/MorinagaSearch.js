@@ -3,6 +3,7 @@ import { REPLACERS } from '../util/Replacer';
 
 const MORINAGA_CONSTANTS = {
   searchConfig: {
+    name: '森永',
     prefix: 'Morinaga',
     top: 'https://www.morinaga.co.jp/products/',
     searchPageSelectors: {

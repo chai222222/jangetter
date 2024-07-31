@@ -33,6 +33,8 @@ var _GyoumuSuperSearch = _interopRequireDefault(require("./GyoumuSuperSearch"));
 
 var _NissuiSearch = _interopRequireDefault(require("./NissuiSearch"));
 
+var _PokkaSapporo = _interopRequireDefault(require("./PokkaSapporo"));
+
 var _MyojpSearch = _interopRequireDefault(require("./MyojpSearch"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -52,6 +54,7 @@ var _default = {
   house: (...args) => new _HouseSearch.default(...args),
   gyoumusuper: (...args) => new _GyoumuSuperSearch.default(...args),
   nissui: (...args) => new _NissuiSearch.default(...args),
+  pokka: (...args) => new _PokkaSapporo.default(...args),
   myojo: (...args) => new _MyojpSearch.default(...args)
 };
 exports.default = _default;

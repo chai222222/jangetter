@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const POKKASAPPORO_CONSTANTS = {
   searchConfig: {
+    name: 'ポッカ',
     prefix: 'PokkaSapporo',
     top: 'https://www.pokkasapporo-fb.jp/products/',
     searchPageSelectors: {

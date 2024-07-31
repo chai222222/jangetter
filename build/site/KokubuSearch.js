@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const KOKUBU_CONSTANTS = {
   searchConfig: {
+    name: '問屋国分ネット卸',
     prefix: 'Kokubu',
     top: 'http://netton.kokubu.jp/shop/default.aspx',
     searchPageSelectors: {
