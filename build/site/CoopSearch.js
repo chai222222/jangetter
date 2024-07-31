@@ -16,7 +16,7 @@ const COOP_CONSTANTS = {
     name: 'コープ',
     prefix: 'Coop',
     top: 'https://mdinfo.jccu.coop/bb/',
-    lastSupportedDate: '2022/05/28: 11:00:00',
+    lastSupportedDate: '2024/05/28: 11:00:00',
     searchPageSelectors: {
       productsLink: '#bubble_tooltip + table td:nth-child(2) a[href*="/bb/"]',
       nextLink: 'td.detail span.next a',

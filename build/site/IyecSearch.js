@@ -19,7 +19,7 @@ const IYEC_CONSTANTS = {
     name: 'イトーヨーカドー',
     prefix: 'Iyec',
     top: 'https://www.iy-net.jp/',
-    lastSupportedDate: '2022/06/02: 17:00:00(暫定 --debug-window 必須)',
+    lastSupportedDate: '2024/07/31: 13:00:00(暫定 --debug-window 必須)',
     searchPageSelectors: {
       productsLink: 'div.Presenter__ProductImgGroup-sc-ip6p2i-1 > a',
       productsPageWaiter: ['div.SearchProduct__PageTitleWrapper-sc-1yd8y9g-2'],
@@ -48,7 +48,8 @@ const IYEC_CONSTANTS = {
       category: [{
         pattern: /\s+/g,
         value: ' '
-      }]
+      }],
+      title: [_Replacer.REPLACERS.toHarfWidthSpace, _Replacer.REPLACERS.toOneSpace, _Replacer.REPLACERS.trim, _Replacer.REPLACERS.lastWideParenthesesToHarfWidth]
     }
   }
 };

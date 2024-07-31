@@ -16,7 +16,7 @@ const TAJIMA_CONSTANTS = {
     name: '但馬屋',
     prefix: 'Tajima',
     top: 'http://www.tajimaya-cc.net/',
-    lastSupportedDate: '2022/05/24: 18:00:00',
+    lastSupportedDate: '2024/07/31: 13:00:00',
     searchPageSelectors: {
       productsLink: 'ul.prod_list a',
       nextLink: 'a.next',
@@ -44,7 +44,7 @@ const TAJIMA_CONSTANTS = {
     replacer: {
       title: [{
         pattern: /[０-９]+\w+$/,
-        value: _Replacer.REPLACER_FUNCTIONS.toHarfWidthDigitOnly
+        value: _Replacer.REPLACER_FUNCTIONS.toHarfWidthDigitOnlyFunc
       }, // 連結した内容量が全角数値＋半角単位である場合に半角にする
       {
         pattern: /^エース /,

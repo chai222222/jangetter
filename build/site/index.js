@@ -19,8 +19,6 @@ var _KokubuSearch = _interopRequireDefault(require("./KokubuSearch"));
 
 var _MogunaviSearch = _interopRequireDefault(require("./MogunaviSearch"));
 
-var _KenkocomSearch = _interopRequireDefault(require("./KenkocomSearch"));
-
 var _CreateSdSearch = _interopRequireDefault(require("./CreateSdSearch"));
 
 var _MorinagaSearch = _interopRequireDefault(require("./MorinagaSearch"));
@@ -47,7 +45,6 @@ var _default = {
   coop: (...args) => new _CoopSearch.default(...args),
   kokubu: (...args) => new _KokubuSearch.default(...args),
   mogunavi: (...args) => new _MogunaviSearch.default(...args),
-  kenkocom: (...args) => new _KenkocomSearch.default(...args),
   createsd: (...args) => new _CreateSdSearch.default(...args),
   morinaga: (...args) => new _MorinagaSearch.default(...args),
   sunyo: (...args) => new _SunyoSearch.default(...args),

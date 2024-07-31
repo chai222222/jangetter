@@ -5,7 +5,6 @@ import LohacoSearch from './LohacoSearch';
 import CoopSearch from './CoopSearch';
 import KokubuSearch from './KokubuSearch';
 import MogunaviSearch from './MogunaviSearch';
-import KenkocomSearch from './KenkocomSearch';
 import CreateSdSearch from './CreateSdSearch';
 import MorinagaSearch from './MorinagaSearch';
 import SunyoSearch from './SunyoSearch';
@@ -23,7 +22,6 @@ export default {
   coop: (...args) => new CoopSearch(...args),
   kokubu: (...args) => new KokubuSearch(...args),
   mogunavi: (...args) => new MogunaviSearch(...args),
-  kenkocom: (...args) => new KenkocomSearch(...args),
   createsd: (...args) => new CreateSdSearch(...args),
   morinaga: (...args) => new MorinagaSearch(...args),
   sunyo: (...args) => new SunyoSearch(...args),

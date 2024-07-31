@@ -9,7 +9,7 @@ const AEON_CONSTANTS = {
     name: 'イオン',
     prefix: 'Aeon',
     top: 'https://shop.aeon.com/netsuper/',
-    lastSupportedDate: '2024/05/21: 17:00:00',
+    lastSupportedDate: '2024/07/31: 13:00:00',
     searchPageSelectors: {
       productsLink: 'div.search.results ol li > a',
       nextLink: '//div[contains(concat(" ", normalize-space(@class), " "), " main ")]/div[last()]//a[@tabindex=0]/span[contains(text(), "次")]',
@@ -42,7 +42,6 @@ const AEON_CONSTANTS = {
 };
 
 export default class AeonSearch extends JanSearchBase {
-
   /**
    * 検索可能画面になるまで遷移する。
    */

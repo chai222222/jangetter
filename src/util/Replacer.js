@@ -2,19 +2,20 @@ import _ from 'lodash';
 
 /** 共通置き換え関数定義 */
 export const REPLACER_FUNCTIONS = {
-  toHarfWidth: (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0),
-  toHarfWidthDigitOnly: (s) => s.replace(/[０-９]/g, REPLACER_FUNCTIONS.toHarfWidth),
+  toFirstCharHarfWidthFunc: (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0),
+  toHarfWidthDigitOnlyFunc: (s) => s.replace(/[０-９]/g, REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc),
+  toAllCharHarfWidthFunc: (s) => [...s].map(REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc).join(''),
 };
 
 /** 共通リプレーサ定義 */
 export const REPLACERS = {
   toHarfWidth: {
     pattern: /[！-～]/g,
-    value: REPLACER_FUNCTIONS.toHarfWidth,
+    value: REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc,
   },
   toHarfWidthAlnum: {
     pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
-    value: REPLACER_FUNCTIONS.toHarfWidth,
+    value: REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc,
   },
   toHarfWidthSpace: {
     pattern: /　+/g,
@@ -35,8 +36,8 @@ export const REPLACERS = {
     value: ' ',
   },
   lastWideParenthesesToHarfWidth: {
-    pattern: /（[０-９]） *$/g,
-    value: REPLACER_FUNCTIONS.toHarfWidth,
+    pattern: /（[０-９]+[Ａ-Ｚａ-ｚ]+）$/,
+    value: REPLACER_FUNCTIONS.toAllCharHarfWidthFunc,
   },
 };
 

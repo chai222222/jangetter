@@ -1,7 +1,7 @@
 {
   "name": "jangetter",
-  "version": "1.0.37",
-  "description": "get jan!",
+  "version": "1.0.38",
+  "description": "get jan!, and image.",
   "main": "index.js",
   "bin": {
     "jangetter": "bin/jangetter.js"
