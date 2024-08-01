@@ -32,7 +32,7 @@ export default class JanSearchBase {
   }
 
   updateSiteInformation() {
-    if (this.siteKey && this.rc.site[this.siteKey]) {
+    if (_.isString(this.siteKey) && _.isObject(_.get(this, `rc.site[${this.siteKey}]`))) {
       const custom = this.rc.site[this.siteKey];
       if (_.isObject(custom)) {
         _.toPairs(custom).forEach(([path, value]) => _.set(this.srcConfig, path, value));
