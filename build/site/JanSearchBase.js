@@ -54,7 +54,7 @@ class JanSearchBase {
   }
 
   updateSiteInformation() {
-    if (this.siteKey && this.rc.site[this.siteKey]) {
+    if (_lodash.default.isString(this.siteKey) && _lodash.default.isObject(_lodash.default.get(this, `rc.site[${this.siteKey}]`))) {
       const custom = this.rc.site[this.siteKey];
 
       if (_lodash.default.isObject(custom)) {
