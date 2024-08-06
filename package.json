@@ -1,6 +1,6 @@
 {
   "name": "jangetter",
-  "version": "1.0.38",
+  "version": "1.0.39",
   "description": "get jan!, and image.",
   "main": "index.js",
   "bin": {
@@ -35,9 +35,5 @@
     "eslint": "^7.4.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0"
-  },
-  "volta": {
-    "node": "17.9.1",
-    "npm": "8.11.0"
   }
 }

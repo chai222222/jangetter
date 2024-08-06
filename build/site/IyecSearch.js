@@ -11,8 +11,6 @@ var _Replacer = require("../util/Replacer");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 const IYEC_CONSTANTS = {
   zip: '2140038',
   searchConfig: {
@@ -55,9 +53,12 @@ const IYEC_CONSTANTS = {
 };
 
 class IyecSearch extends _JanSearchBase.default {
+  static SEL_ZIP = 'input[name="postalNumber"]';
+  static SEL_ZIP_SRC = 'button[data-testid="post-number-search-button"]';
   /**
    * 検索可能画面になるまで遷移する。
    */
+
   async init() {
     const config = IYEC_CONSTANTS.searchConfig;
     let count = 10;
@@ -120,8 +121,4 @@ class IyecSearch extends _JanSearchBase.default {
 }
 
 exports.default = IyecSearch;
-
-_defineProperty(IyecSearch, "SEL_ZIP", 'input[name="postalNumber"]');
-
-_defineProperty(IyecSearch, "SEL_ZIP_SRC", 'button[data-testid="post-number-search-button"]');
 //# sourceMappingURL=IyecSearch.js.map

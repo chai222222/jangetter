@@ -17,14 +17,13 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 // const json2csvParser = new Json2csvParser({fields});
 // const csv = json2csvParser.parse(result);
 class CsvWriter {
-  constructor(path) {
-    _defineProperty(this, "result", []);
+  static FIELDS = ['jan', 'title', 'category'];
+  result = [];
 
+  constructor(path) {
     this.path = path;
   }
 
@@ -48,8 +47,6 @@ class CsvWriter {
   }
 
 }
-
-_defineProperty(CsvWriter, "FIELDS", ['jan', 'title', 'category']);
 
 class WriterCreator {
   static createCsvWriter(path) {

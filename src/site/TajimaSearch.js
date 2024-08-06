@@ -38,11 +38,13 @@ const TAJIMA_CONSTANTS = {
     ],
     replacer: {
       title: [
-        { pattern: /[０-９]+\w+$/, value: REPLACER_FUNCTIONS.toHarfWidthDigitOnlyFunc }, // 連結した内容量が全角数値＋半角単位である場合に半角にする
-        { pattern: /^エース /, value: 'エースコック '},
-        { pattern: /^おやつC /, value: 'おやつカンパニー '},
-        REPLACERS.toOneSpace,
         REPLACERS.trim,
+        { pattern: /[０-９]+[Ａ-Ｚａ-ｚ]+$/, value: REPLACER_FUNCTIONS.toAllCharHarfWidthFunc }, // 連結した内容量が全角数値、全角英数字である場合に半角にする
+        { pattern: /[０-９]+[A-Za-z]+$/, value: REPLACER_FUNCTIONS.toHarfWidthDigitOnlyFunc }, // 連結した内容量が全角数値、半角英数字である場合に半角にする
+        { pattern: /^エース /, value: 'エースコック ' },
+        { pattern: /^おやつC /, value: 'おやつカンパニー ' },
+        REPLACERS.toOneSpace,
+        { pattern: /( [0-9]+[A-Za-z]+)\1/, value: '$1' }, // 空白数字英字が最後に同じ文字列が重複(2つ)になった場合、１つにする
       ],
       allergy: [
         { pattern: /^(?!.*一部に.*を含む).*$/, value: '' }, // 一部にが含まれない場合すべて削除する

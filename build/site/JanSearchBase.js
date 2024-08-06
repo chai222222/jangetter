@@ -25,12 +25,6 @@ var _constants = _interopRequireDefault(require("../constants"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 const DEFAULT_PRODUCT_TEXTS_CHECK_DEF = {
   jan: {
     regexp: '^\\d+$',
@@ -453,9 +447,8 @@ class JanSearchBase {
 
     const imgs = this.srcConfig.productPageImageSelectors;
     if (!imgs) throw new Error('Not defined productPageImageSelectors!');
-
-    const row = _objectSpread({}, jan);
-
+    const row = { ...jan
+    };
     await (0, _pIteration.forEachSeries)(_lodash.default.toPairs(imgs), async ([key, selector]) => {
       const imageSrc = await this.page.evaluate(sel => {
         const node = document.querySelector(sel); // img.src or a tag
