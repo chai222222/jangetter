@@ -43,13 +43,9 @@ const TAJIMA_CONSTANTS = {
     productPageSkipSelectors: ['//th[contains(text(), "カテゴリー")]/../td/a[contains(text(), "冷凍食品")]'],
     replacer: {
       title: [_Replacer.REPLACERS.trim, {
-        pattern: /[０-９]+[Ａ-Ｚａ-ｚ]+$/,
-        value: _Replacer.REPLACER_FUNCTIONS.toAllCharHarfWidthFunc
-      }, // 連結した内容量が全角数値、全角英数字である場合に半角にする
-      {
-        pattern: /[０-９]+[A-Za-z]+$/,
-        value: _Replacer.REPLACER_FUNCTIONS.toHarfWidthDigitOnlyFunc
-      }, // 連結した内容量が全角数値、半角英数字である場合に半角にする
+        pattern: /[0-9０-９]+([.．][0-9０-９]+)?[Ａ-Ｚａ-ｚA-Za-z]+$/,
+        value: _Replacer.REPLACER_FUNCTIONS.toHarfWidthAlnumDotFunc
+      }, // 連結した内容量が数値～英数字～である場合に全角を半角にする
       {
         pattern: /^エース /,
         value: 'エースコック '
