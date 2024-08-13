@@ -12,26 +12,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /** 共通置き換え関数定義 */
 const REPLACER_FUNCTIONS = {
   toFirstCharHarfWidthFunc: s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0),
-  toHarfWidthDigitOnlyFunc: s => s.replace(/[０-９]/g, REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc),
-  toAllCharHarfWidthFunc: s => [...s].map(REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc).join('')
+  toHarfWidthDigitFunc: s => s.replace(/[０-９]/g, REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc),
+  toHarfWidthAlnumFunc: s => s.replace(/[０-９Ａ-Ｚａ-ｚ]/g, REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc),
+  toHarfWidthAlnumDotFunc: s => s.replace(/[０-９Ａ-Ｚａ-ｚ．]/g, REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc),
+  toHarfWidthAllCharFunc: s => [...s].map(REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc).join('')
 };
 /** 共通リプレーサ定義 */
 
 exports.REPLACER_FUNCTIONS = REPLACER_FUNCTIONS;
 const REPLACERS = {
   toHarfWidth: {
+    // 記号英数字を半角(記号が全部なのかあやしい)
     pattern: /[！-～]/g,
     value: REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc
   },
   toHarfWidthAlnum: {
+    // 英数字を半角
     pattern: /[Ａ-Ｚａ-ｚ０-９]/g,
     value: REPLACER_FUNCTIONS.toFirstCharHarfWidthFunc
   },
   toHarfWidthSpace: {
+    // 全角空白を半角
     pattern: /　+/g,
     value: ' '
   },
-  trim: [{
+  trim: [// 前後の半角空白を除去
+  {
     pattern: /^\s+/,
     value: ''
   }, {
@@ -39,20 +45,24 @@ const REPLACERS = {
     value: ''
   }],
   toOneSpace: {
+    // 複数の連続する空白を１つの空白に変換
     pattern: /\s\s+/g,
     value: ' '
   },
   toNoSpace: {
+    // 空白を全て除去
     pattern: /\s/g,
     value: ''
   },
   toOneLine: {
+    // 改行コードを除去
     pattern: /\r?\n/g,
     value: ' '
   },
   lastWideParenthesesToHarfWidth: {
+    // 最後が"（全角数値～全角英字～）"である場合に全てを半角に変換
     pattern: /（[０-９]+[Ａ-Ｚａ-ｚ]+）$/,
-    value: REPLACER_FUNCTIONS.toAllCharHarfWidthFunc
+    value: REPLACER_FUNCTIONS.toHarfWidthAllCharFunc
   }
 };
 exports.REPLACERS = REPLACERS;
