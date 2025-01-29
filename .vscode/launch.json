@@ -20,7 +20,7 @@
             "program": "${workspaceFolder}\\src\\index.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
             "args": [ ],
-        
+
         },
         {
             "type": "node",
@@ -32,7 +32,7 @@
             "program": "${workspaceFolder}\\src\\index.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
             "args": [ "--info" ],
-        
+
         },
         {
             "type": "node",
@@ -44,7 +44,7 @@
             "program": "${workspaceFolder}\\src\\index.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
             "args": [ "--info", "--aeon" ],
-        
+
         },
         {
             "type": "node",
@@ -55,7 +55,7 @@
             ],
             "program": "${workspaceFolder}\\src\\index.js",
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
-            "args": [ "-g", "--myojo", "青森スタミナ源たれ"],
+            "args": [ "-g", "--tajima", "濃い深み抹茶"],
         }
     ]
 }

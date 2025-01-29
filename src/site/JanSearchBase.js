@@ -171,6 +171,7 @@ export default class JanSearchBase {
     const hasDupLinks = await this.getAllJanUrls();
     const links = Array.from(new Set(this.filterJanUrl(hasDupLinks)));
     console.log('** LINKS', links);
+    const savedJan = {}; // 重複チェック用
     let skipCheerio = false;
     const result = await mapSeries(links, async (link, idx) => {
       try {
@@ -191,6 +192,11 @@ export default class JanSearchBase {
             console.log('対象外になるためスキップします。', link);
             return;
           }
+        }
+        console.log(jan.jan);
+        if (savedJan[jan.jan]) {
+            console.log(`重複JAN[${jan.jan}]になるためスキップします。`, link);
+            return;
         }
         const nullables = Object.assign({}, this.srcConfig.nullables || {});
         const checkers = Object.assign({}, DEFAULT_PRODUCT_TEXTS_CHECK_DEF, this.srcConfig.checkers || {});
@@ -214,6 +220,7 @@ export default class JanSearchBase {
         if (!allOk) return;
         await this.getImages(replacedJan, dir);
         this.writer.write(replacedJan);
+        savedJan[jan.jan] = 1; // 処理したjan
       } catch (e) {
         this.addErr('商品ページへ移動できませんでした', link, e);
       }
